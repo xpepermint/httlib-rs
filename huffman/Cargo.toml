@@ -1,0 +1,13 @@
+[package]
+name = "httlib-huffman"
+description = "Huffman algorithm for HPACK."
+license = "MIT"
+version = "0.1.0"
+authors = ["Kristijan Sedlak <xpepermint@gmail.com>"]
+edition = "2018"
+documentation = "https://github.com/xpepermint/httlib-rs"
+homepage = "https://github.com/xpepermint/httlib-rs"
+repository = "https://github.com/xpepermint/httlib-rs"
+readme = "README.md"
+
+[dependencies]
