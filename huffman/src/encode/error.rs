@@ -1,0 +1,20 @@
+use std::error;
+use std::fmt;
+
+/// An object returned by the encode function when an error occurs.
+#[derive(Debug)]
+pub enum EncodeError {
+    /// Indicates that the encoder received an invalid ASCII character. Note
+    /// that only ASCII characters provided in the HPACK spec should be used.
+    InvalidAscii,
+}
+
+impl fmt::Display for EncodeError {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::InvalidAscii => write!(fmt, "Failed to encode an invalid ASCII byte."),
+        }
+    }
+}
+
+impl error::Error for EncodeError {}

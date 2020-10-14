@@ -7,14 +7,14 @@
 //! [Canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
 
 mod builder;
-mod decoder;
-mod encoder;
+mod decode;
+mod encode;
 mod flattener;
 mod parser;
 pub mod data;
 
 pub use builder::*;
-pub use decoder::*;
-pub use encoder::*;
+pub use decode::*;
+pub use encode::*;
 pub use flattener::*;
 pub use parser::*;
