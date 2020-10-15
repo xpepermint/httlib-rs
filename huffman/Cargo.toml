@@ -8,8 +8,7 @@ edition = "2018"
 documentation = "https://github.com/xpepermint/httlib-huffman"
 homepage = "https://github.com/xpepermint/httlib-rs"
 repository = "https://github.com/xpepermint/httlib-rs"
-keywords = ["huffman", "canonical", "hpack", "http", "encode", "encoder",
-    "encoding", "decode", "decoder", "decoding"]
+keywords = ["huffman", "canonical", "hpack", "http"]
 readme = "README.md"
 
 [features]
