@@ -1,3 +1,4 @@
+
 pub fn flatten(codings: &[(u8, u32)], speed: usize) -> Vec<Vec<(Option<usize>, Option<usize>, usize)>> { // next_id, ascii, leftover
     let blank_transition = generate_blank_transition(speed);
 
@@ -37,13 +38,6 @@ pub fn flatten(codings: &[(u8, u32)], speed: usize) -> Vec<Vec<(Option<usize>, O
             let target = transitions.get_mut(*key).unwrap();
             target.1 = Some(ascii);
             target.2 = leftover;
-        }
-    }
-
-    for (id, row) in matrix.iter().enumerate() {
-        println!("id: {:?}", id);
-        for col in row.iter() {
-            println!("    {:?}", col);
         }
     }
 

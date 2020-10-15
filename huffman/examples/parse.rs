@@ -12,12 +12,7 @@ fn main() {
     println!("");
     println!("/// This is a static Huffman table built from the codes found in the official");
     println!("/// HPACK specification (Appendix B).");
-    println!("/// ");
-    println!("/// The result is a list of tuples where the first item represents the number of");
-    println!("/// bits for the code representing the symbol and the second is the Huffman code");
-    println!("/// for the symbol represented as a base-2 integer, aligned on the most");
-    println!("/// significant bit (MSB).");
-    println!("pub const ENCODE_TABLE: [(u8, u32); 257] = [");
+    println!("pub const ENCODE_TABLE: [(u8, u32); 257] = [ // (length, msb)");
     for coding in codings.iter() {
         println!("  ({}, 0x{:02x}),", coding.0, coding.1);
     }
