@@ -8,10 +8,10 @@
 
 pub mod decode;
 pub mod encode;
-pub mod flattener;
-pub mod parser;
+pub mod flatten;
+pub mod parse;
 
 pub use decode::*;
 pub use encode::*;
-pub use flattener::*;
-pub use parser::*;
+pub use flatten::*;
+pub use parse::*;

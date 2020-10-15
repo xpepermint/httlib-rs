@@ -9,6 +9,8 @@ pub(crate) struct DecodeReader {
 }
 
 impl DecodeReader {
+    pub const MAX_BUFFER_SIZE: usize = 32;
+
     pub fn new(speed: u8) -> Self {
         Self {
             speed: speed as usize,
@@ -20,8 +22,10 @@ impl DecodeReader {
 
     /// Vedno sprejemamo byte!!!!
     pub fn write(&mut self, src: u8) -> Result<(), DecoderError> {
-        // Handle DecoderError::BufferOverflow
-        // Handle DecoderError::InvalidChunkSize
+        if self.buf_size + 8 > Self::MAX_BUFFER_SIZE {
+            return Err(DecoderError::BufferOverflow);
+        }
+
         self.buf <<= 8; // make space for new chunk
         self.buf_size += 8;
         self.buf |= src as usize; // apply new chunk
@@ -66,7 +70,7 @@ impl DecodeReader {
             self.id = next_id;
             Ok(None)
         } else {
-           Err(DecoderError::InvalidHuffmanCode)
+           Err(DecoderError::InvalidInput)
         }
     }    
 
@@ -78,9 +82,9 @@ impl DecodeReader {
                 match crate::decode::table1::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
-                        None => Err(DecoderError::InvalidHuffmanCode),
+                        None => Err(DecoderError::InvalidInput),
                     },
-                    None => Err(DecoderError::InvalidHuffmanCode),
+                    None => Err(DecoderError::InvalidInput),
                 }
             },
             #[cfg(feature = "decode2")]
@@ -88,9 +92,9 @@ impl DecodeReader {
                 match crate::decode::table2::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
-                        None => Err(DecoderError::InvalidHuffmanCode),
+                        None => Err(DecoderError::InvalidInput),
                     },
-                    None => Err(DecoderError::InvalidHuffmanCode),
+                    None => Err(DecoderError::InvalidInput),
                 }
             },
             #[cfg(feature = "decode3")]
@@ -98,9 +102,9 @@ impl DecodeReader {
                 match crate::decode::table3::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
-                        None => Err(DecoderError::InvalidHuffmanCode),
+                        None => Err(DecoderError::InvalidInput),
                     },
-                    None => Err(DecoderError::InvalidHuffmanCode),
+                    None => Err(DecoderError::InvalidInput),
                 }
             },
             #[cfg(feature = "decode4")]
@@ -108,9 +112,9 @@ impl DecodeReader {
                 match crate::decode::table4::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
-                        None => Err(DecoderError::InvalidHuffmanCode),
+                        None => Err(DecoderError::InvalidInput),
                     },
-                    None => Err(DecoderError::InvalidHuffmanCode),
+                    None => Err(DecoderError::InvalidInput),
                 }
             },
             #[cfg(feature = "decode5")]
@@ -118,13 +122,13 @@ impl DecodeReader {
                 match crate::decode::table5::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
-                        None => Err(DecoderError::InvalidHuffmanCode),
+                        None => Err(DecoderError::InvalidInput),
                     },
-                    None => Err(DecoderError::InvalidHuffmanCode),
+                    None => Err(DecoderError::InvalidInput),
                 }
             },
             _ => {
-                Err(DecoderError::InvalidHuffmanCode) // TODO: INVALID SPEED!!!!
+                Err(DecoderError::InvalidSpeed)
             }
         }
     }

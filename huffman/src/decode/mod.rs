@@ -31,6 +31,8 @@ pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: u8) -> Result<(), DecoderErr
 
 #[cfg(test)]
 mod test {
+    use super::*;
+
     fn supported_characters() -> Vec<(&'static [u8], Vec<u8>)> {
         vec![
             (&[0],   vec![255, 199]),               // 0

@@ -91,8 +91,8 @@ mod test {
     #[test]
     fn flattens_1bits() { 
         assert_eq!(
-            flatten(&crate::data::encoder::ENCODE_TABLE, 1),
-            crate::data::decoder1::DECODE_TABLE.to_vec()
+            flatten(&crate::encode::table::ENCODE_TABLE, 1),
+            crate::decode::table1::DECODE_TABLE.to_vec()
         );
     }
 
@@ -100,8 +100,8 @@ mod test {
     #[test]
     fn flattens_2bits() { 
         assert_eq!(
-            flatten(&crate::data::encoder::ENCODE_TABLE, 2),
-            crate::data::decoder2::DECODE_TABLE.to_vec()
+            flatten(&crate::encode::table::ENCODE_TABLE, 2),
+            crate::decode::table2::DECODE_TABLE.to_vec()
         );
     }
 
@@ -109,8 +109,8 @@ mod test {
     #[test]
     fn flattens_3bits() { 
         assert_eq!(
-            flatten(&crate::data::encoder::ENCODE_TABLE, 3),
-            crate::data::decoder3::DECODE_TABLE.to_vec()
+            flatten(&crate::encode::table::ENCODE_TABLE, 3),
+            crate::decode::table3::DECODE_TABLE.to_vec()
         );
     }
 
@@ -118,8 +118,8 @@ mod test {
     #[test]
     fn flattens_4bits() { 
         assert_eq!(
-            flatten(&crate::data::encoder::ENCODE_TABLE, 4),
-            crate::data::decoder4::DECODE_TABLE.to_vec()
+            flatten(&crate::encode::table::ENCODE_TABLE, 4),
+            crate::decode::table4::DECODE_TABLE.to_vec()
         );
     }
 
@@ -127,8 +127,8 @@ mod test {
     #[test]
     fn flattens_5bits() { 
         assert_eq!(
-            flatten(&crate::data::encoder::ENCODE_TABLE, 5),
-            crate::data::decoder5::DECODE_TABLE.to_vec()
+            flatten(&crate::encode::table::ENCODE_TABLE, 5),
+            crate::decode::table5::DECODE_TABLE.to_vec()
         );
     }
 
