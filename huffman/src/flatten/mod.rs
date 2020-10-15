@@ -1,4 +1,20 @@
+//! This module provides features for flattening [Huffman tree] and generating
+//! translation matrixs.
+//! 
+//! [Huffman tree]: https://en.wikipedia.org/wiki/Huffman_coding
 
+/// Generates a translation matrix that can be used to decode a decoded content.
+/// The function expects the `speed` attribute which represents the number of
+/// bits that the decoder will read at a time when decoding an encoded sequence. 
+/// The speed attribute can be between 1 bit and 5 bits. The higher number will
+/// have a positive effect on performance but a higher more footprint.
+/// 
+/// ```rs
+/// use httlib_huffman::encode::table::ENCODE_TABLE;
+/// 
+/// let speed = 4; // decoder will read 4 bits at a time
+/// let table = flatten(&ENCODE_TABLE, speed);
+/// ```
 pub fn flatten(codings: &[(u8, u32)], speed: usize) -> Vec<Vec<(Option<usize>, Option<usize>, usize)>> { // next_id, ascii, leftover
     let blank_transition = generate_blank_transition(speed);
 
@@ -44,6 +60,7 @@ pub fn flatten(codings: &[(u8, u32)], speed: usize) -> Vec<Vec<(Option<usize>, O
     table
 }
 
+/// Generates a black transition object based on the provided speed attribute.
 fn generate_blank_transition(speed: usize) -> Vec<(Option<usize>, Option<usize>, usize)> {
     let mut transition = Vec::new();
 
@@ -54,8 +71,14 @@ fn generate_blank_transition(speed: usize) -> Vec<(Option<usize>, Option<usize>,
     transition
 }
 
-/// Za prejeti coding najprej splita bite v vektor ob bits velikosti glede na
-/// podani `speed`. Ce ima zadnji bit leftover naredimo variante.
+/// Generates all key paths for the particular coding. If the key has leftovers
+/// the function will fill that gap with all possible variants.
+/// 
+/// ```
+/// Code:       [1100, 0000, 1110, 011X]
+/// Variants:   [1100, 0000, 1110, 0110]
+///             [1100, 0000, 1110, 0111]
+/// ```
 fn generate_coding_paths(coding: &(u8, u32), speed: usize) -> Vec<Vec<usize>> {
     let mut bits: u32 = 0; // HPACK value can be up to 32 bits
     let chunks_len = (coding.0 as f32 / speed as f32).ceil() as usize;

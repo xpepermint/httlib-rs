@@ -1,4 +1,4 @@
-//! An implementation of the [Canonical Huffman] decoder for [HPACK].
+//! This module provides an implementation of the [canonical Huffman] encoder.
 //! 
 //! Encoding is relatively easy since we are replacing the individual characters
 //! with the Huffman code. We add an EOS sign at the end and the desired
@@ -7,16 +7,16 @@
 //! The Huffman encoder implementation illustration:
 //! 
 //! ```txt
-//! [add "!"]        1111111000
-//! [add "$"]        11111110001111111111001
-//! [add "%"]        11111110001111111111001010101 (fix length)
-//! [add "&"]        1111111000111111111100101010111111000
-//! [add "A"]        1111111000111111111100101010111111000100001
-//! [add EOS]        1111111000111111111100101010111111000100001111111111111111111111111111111
-//! [add padding]    11111110001111111111001010101111110001000011111111111111111111111111111111111111
+//! [add "!"]     1111111000
+//! [add "$"]     11111110001111111111001
+//! [add "%"]     11111110001111111111001010101 (fix length)
+//! [add "&"]     1111111000111111111100101010111111000
+//! [add "A"]     1111111000111111111100101010111111000100001
+//! [add EOS]     1111111000111111111100101010111111000100001111111111111111111111111111111
+//! [add padding] 11111110001111111111001010101111110001000011111111111111111111111111111111111111
 //! 
-//! [result]         [254   ][63    ][242   ][175   ][196   ][63    ]
-//!                  111111100011111111110010101011111100010000111111
+//! [result]      [254   ][63    ][242   ][175   ][196   ][63    ]
+//!               111111100011111111110010101011111100010000111111
 //! ```
 //! 
 //! The illustration shows how the encoder iterates through all the ASCII
@@ -65,16 +65,16 @@
 //! the use of numbers and bitwise operators.
 //! 
 //! ```txt
-//! [add "!"]        111111100000000000000000000000000000000000000000
-//! [add "$"]        11111110001111111111001000000000000000000000000000000000
-//! [add "%"]        1111111000111111111100101010100000000000000000000000000000000000 (fix length)
-//! [add "&"]                  11111111110010101011111100000000000000000000000000000000000000
-//! [add "A"]                        1111001010101111110001000010000000000000000000000000000000000000
-//! [add EOS]                        1111001010101111110001000011111111111111111111111111111110000000
-//! [add padding]                    1111001010101111110001000011111111111111111111111111111111111111
+//! [add "!"]     111111100000000000000000000000000000000000000000
+//! [add "$"]     11111110001111111111001000000000000000000000000000000000
+//! [add "%"]     1111111000111111111100101010100000000000000000000000000000000000 (fix length)
+//! [add "&"]               11111111110010101011111100000000000000000000000000000000000000
+//! [add "A"]                     1111001010101111110001000010000000000000000000000000000000000000
+//! [add EOS]                     1111001010101111110001000011111111111111111111111111111110000000
+//! [add padding]                 1111001010101111110001000011111111111111111111111111111111111111
 //! 
-//! [result]         [254   ][63    ][242   ][175   ][196   ][63    ]
-//!                  111111100011111111110010101011111100010000111111
+//! [result]      [254   ][63    ][242   ][175   ][196   ][63    ]
+//!               111111100011111111110010101011111100010000111111
 //! ```
 //! 
 //! Although the illustration is quite similar to the previous one, it is much
@@ -98,7 +98,7 @@
 //! 
 //! [HPACK]: https://tools.ietf.org/html/rfc7541
 //! [HTTP/2]: https://tools.ietf.org/html/rfc7540
-//! [Canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
+//! [canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
 mod error;
 pub mod table;
 
@@ -110,11 +110,9 @@ pub use error::*;
 /// ```rs
 /// use httlib_huffman::encode;
 /// 
-/// let mut dst = Vec::new();
-/// match encode(b"Hello world!", &mut dst) {
-///     Ok(sequence) => { ... },
-///     Err(err) => { ... },
-/// }
+/// let mut sequence = Vec::new();
+/// let text = "Hello world!".as_bytes();
+/// match encode(&text, &mut sequence)?;
 /// ```
 pub fn encode(src: &[u8], dst: &mut Vec<u8>) -> Result<(), EncodeError> {
     let mut bits: u64 = 0;
@@ -124,7 +122,7 @@ pub fn encode(src: &[u8], dst: &mut Vec<u8>) -> Result<(), EncodeError> {
     for &byte in src {
         let (code_len, code) = match codings.get(byte as usize) {
             Some(coding) => coding,
-            None => return Err(EncodeError::InvalidAscii),
+            None => return Err(EncodeError::InvalidCharacter),
         };
 
         bits |= (*code as u64) << (bits_left - code_len); // shift and add old and new numbers

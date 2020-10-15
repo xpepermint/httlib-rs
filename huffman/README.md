@@ -1,66 +1,41 @@
-> Huffman algorithm for HPACK.
+> Canonical Huffman algorithm for handling HPACK format in HTTP/2.
 
-This crate implements static Huffman encoding/decoding algorithm for HTTP/2 used by [HPACK](https://tools.ietf.org/html/rfc7541#appendix-B).
+[Documentation]
 
-Features:
-- `encode`: Enables encoding features (default).
-- `decode1`: Enables decoding features for reading 1 bit at a time.
-- `decode2`: Enables decoding features for reading 2 bits at a time.
-- `decode3`: Enables decoding features for reading 3 bits at a time.
-- `decode4`: Enables decoding features for reading 4 bits at a time (default).
-- `decode5`: Enables decoding features for reading 5 bits at a time.
-- `flatten`: Enables features for flattening Huffman table (default).
-- `parse`: Enables features for parsing Huffman table (default).
+This crate implements [canonical Huffman] functionality for handling [HPACK]
+format in [HTTP/2]. It exposes a simple API for performing the encoding and
+decoding of [HTTP/2] header string literals according to the [HPACK] spec.
 
-```toml
-[dependencies.httlib-huffman]
-...
-default-features = false
-features = ["encode", "decoder", "decode4"]
-```
+Header Compression format for [HTTP/2], known as [HPACK], foresees the use
+of the Huffman algorithm for encoding header literal values. This
+contributes to the additional decrease in the quantity of data, transferred
+with each web request and response.
 
-Usage:
-```rs
-// Parses HPACK's static Huffman codings.
-let codings = httlib_huffman::parse(txt);
+A [Huffman code] is a particular type of optimal prefix code that is
+commonly used for lossless data compression. The process of finding or using
+such a code proceeds by means of Huffman coding, an algorithm developed by
+David A. Huffman. The output from Huffman's algorithm can be viewed as a
+variable-length code table for encoding a source symbol (such as a character
+in a file). The algorithm derives this table from the estimated probability
+or frequency of occurrence (weight) for each possible value of the source
+symbol. As in other entropy encoding methods, more common symbols are
+generally represented using fewer bits than less common symbols. Huffman's
+method can be efficiently implemented, finding a code in time linear to the
+number of input weights if these weights are sorted.
 
-/// Builds Huffman transition table for decoding Huffman sequence. The function
-/// accepts the `speed` attribute which indicates the number of bits that the
-/// decoder should read at the time. Note that increasing the speed, makes the 
-/// decoder faster but also contributes to a higher memory footprint. The 
-/// suggested value is 4 bits.
-let table = httlib_huffman::flatten(codings, speed);
+[HPACK] compression entails a pre-created [canonical Huffman] code table
+for encoding [ASCII] characters to the Huffman sequence. A
+[canonical Huffman] code is a particular type of [Huffman code] with unique
+properties that allow it to be described in a very compact manner. The
+advantage of a [canonical Huffman] tree is that one can encode data in fewer
+bits than with a fully described tree. In the aforementioned table are the
+Huffman codes for each [ASCII] character with a length up to 32 bits (4x by
+8 fields with value 0 or 1), in the form of base-2 integer, aligned on the
+most significant bit (MSB is the bit farthest to the left).
 
-/// Rebuilds Huffman tree and returns the root node.
-let tree = httlib_huffman::build(codings);
-
-// Encodes data bytes to Huffman's sequence.
-let sequence = httlib_huffman::encode(codings);
-
-/// Decodes Huffman's sequence from the provided table. The table design
-/// explains how many bits should be read at the time.
-let data = httlib_huffman::decode(sequence, table);
-```
-
-See it in action:
-
-```bash
-# Builds the ENCODE_TABLE.
-$ cargo run --exeample parse
-# Builds the DECODE_TABLE (speed = 2 ... decode 2 bits at a time).
-$ cargo run --exeample flatten <speed>
-# Encode a sample text (data = "ABCD").
-$ cargo run --exeample encode <data>
-# Decode a sample sequence (sequence = "0101010001010101").
-$ cargo run --exeample decode <sequence>
-```
-
-Testing:
-
-```bash
-$ cargo test --all-features
-```
-
-# TODO
-
-* Rename table to table
+[ASCII]: https://en.wikipedia.org/wiki/ASCII
+[HPACK]: https://tools.ietf.org/html/rfc7541
+[HTTP/2]: https://tools.ietf.org/html/rfc7540
+[Huffman code]: https://en.wikipedia.org/wiki/Huffman_coding
+[canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
+[Documentation]: https://github.com/xpepermint/httlib-huffman

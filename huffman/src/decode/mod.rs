@@ -1,3 +1,7 @@
+//! This module provides an implementation of the [canonical Huffman] decoder.
+//! 
+//! [canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
+
 mod error;
 mod reader;
 #[cfg(feature = "decode1")]
@@ -16,6 +20,15 @@ use reader::*;
 
 /// Decodes Huffman's sequence from the provided table. The table design
 /// explains how many bits should be read at the time.
+/// 
+/// ```rs
+/// use httlib_huffman::decode;
+///
+/// let mut text = Vec::new();
+/// let speed = 3;
+/// let sequence = vec![168, 209, ...];
+/// decode(&sequence, &mut text, speed).unwrap();
+/// ```
 pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: u8) -> Result<(), DecoderError> {
     let mut reader = DecodeReader::new(speed);
 

@@ -1,3 +1,6 @@
+//! This module provides features for parsing [Huffman code] table provided by
+//! the [HPACK] documentation.
+//! 
 //! [HPACK] compression provides a pre-created [Huffman code] table for encoding
 //! [ASCII] characters to the Huffman sequence. This Huffman code was generated
 //! from statistics obtained on a large sample of HTTP headers.
@@ -15,6 +18,16 @@
 
 /// Parses the HPACK's static Huffman table. The function expects data to be in
 /// format as provided by the spec (7.2).
+/// 
+/// ```rs
+/// use std::fs;
+/// use std::path::Path;
+/// use httlib_huffman::{parse};
+/// 
+/// let path = Path::new("assets/hpack-huffman.txt");
+/// let data = fs::read_to_string(path).expect("Can't read file.");
+/// let codings = parse(&data);
+/// ```
 pub fn parse(data: &str) -> Vec<(u16, u32)> {
     let lines = data.lines();
     let mut codings = vec![];

@@ -1,22 +1,24 @@
 [package]
 name = "httlib-huffman"
-description = "Huffman algorithm for HPACK."
+description = "Canonical Huffman algorithm for handling HPACK format in HTTP/2."
 license = "MIT"
 version = "0.1.0"
 authors = ["Kristijan Sedlak <xpepermint@gmail.com>"]
 edition = "2018"
-documentation = "https://github.com/xpepermint/httlib-rs"
+documentation = "https://github.com/xpepermint/httlib-huffman"
 homepage = "https://github.com/xpepermint/httlib-rs"
 repository = "https://github.com/xpepermint/httlib-rs"
+keywords = ["huffman", "canonical", "hpack", "http", "encode", "encoder",
+    "encoding", "decode", "decoder", "decoding"]
 readme = "README.md"
 
 [features]
 default = ["encode", "decode4", "flatten", "parse"]
-encode = []
-decode1 = []
-decode2 = []
-decode3 = []
-decode4 = []
-decode5 = []
-flatten = []
-parse = []
+encode = []     # Enables encoding features (default).
+decode1 = []    # Enables decoding features for reading 1 bit at a time.
+decode2 = []    # Enables decoding features for reading 2 bits at a time.
+decode3 = []    # Enables decoding features for reading 3 bits at a time.
+decode4 = []    # Enables decoding features for reading 4 bits at a time.
+decode5 = []    # Enables decoding features for reading 5 bits at a time.
+flatten = []    # Enables features for flattening Huffman table (default).
+parse = []      # Enables features for parsing Huffman table (default).

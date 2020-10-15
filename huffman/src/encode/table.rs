@@ -1,5 +1,7 @@
 /// This is a static Huffman table built from the codes found in the official
-/// HPACK specification (Appendix B).
+/// HPACK specification ([Appendix B]).
+/// 
+/// [Appendix B]: https://tools.ietf.org/html/rfc7541#appendix-B
 pub const ENCODE_TABLE: [(u8, u32); 257] = [ // (length, msb)
   (13, 0x1ff8),
   (23, 0x7fffd8),

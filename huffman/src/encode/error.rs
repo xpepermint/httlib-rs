@@ -6,13 +6,13 @@ use std::fmt;
 pub enum EncodeError {
     /// Indicates that the encoder received an invalid ASCII character. Note
     /// that only ASCII characters provided in the HPACK spec should be used.
-    InvalidAscii,
+    InvalidCharacter,
 }
 
 impl fmt::Display for EncodeError {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::InvalidAscii => write!(fmt, "Failed to encode a character."),
+            Self::InvalidCharacter => write!(fmt, "Failed to encode a character."),
         }
     }
 }
