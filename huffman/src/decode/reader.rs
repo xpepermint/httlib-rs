@@ -5,7 +5,7 @@ pub struct DecodeReader {
     speed: u8,
     id: usize,
     buf: usize,
-    buf_size: usize,
+    pub buf_size: usize,
 }
 
 impl DecodeReader {
@@ -35,8 +35,17 @@ impl DecodeReader {
 
     pub fn flush(&mut self) -> Result<(), DecoderError> {
         let shift_len = (self.buf_size as f64 / self.speed as f64).ceil() as usize * self.speed as usize - self.buf_size;
+        println!("XXXX===================== shift_len: {}", shift_len);
+        println!("XXXX===================== id:        {}", self.id);
+        println!("XXXX=====================  1:[{:0>1$}]", format!("{:b}", self.buf), 16);
         self.buf <<= shift_len;
+        println!("XXXX=====================  2:[{:0>1$}]", format!("{:b}", self.buf), 16);
+        self.buf |= 2u32.pow(shift_len as u32) as usize - 1;
+        println!("XXXX=====================    [{:0>1$}]", format!("{:b}", 2u32.pow(shift_len as u32) as usize - 1), 16);
+        println!("XXXX=====================  3:[{:0>1$}]", format!("{:b}", self.buf), 16);
+        println!("XXXX=====================    {:b}|{:?}", self.buf, self.buf_size);
         self.buf_size += shift_len;
+        println!("XXXX=====================    {:b}|{:?}", self.buf, self.buf_size);
         Ok(())
     }
 

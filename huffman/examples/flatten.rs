@@ -1,10 +1,10 @@
 extern crate httlib_huffman;
 
-use httlib_huffman::{flatten2};
+use httlib_huffman::{flatten};
 use httlib_huffman::data::encoder::ENCODE_TABLE;
 
 fn main() {
-    let matrix = flatten2(&ENCODE_TABLE, 4);
+    let matrix = flatten(&ENCODE_TABLE, 4);
 
     println!("");
 /// This is a static translation matrix for decoding Huffman sequence by reading

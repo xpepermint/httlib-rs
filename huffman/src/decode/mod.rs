@@ -11,27 +11,28 @@ pub fn decode(src: &[u8], dst: &mut Vec<u8>) -> Result<(), DecoderError> {
     let speed = (matrix[0].len() as f32).log2() as u32;
     let mut reader = DecodeReader::new(speed as u8);
 
-    let bytes_len = src.len();
-
-    for (i, byte) in src.iter().enumerate() {
+    for (_, byte) in src.iter().enumerate() {
 
         // TODO: make this of dynamic size
         reader.write((byte >> 4) as usize)?;
-        while let Some(byte) = reader.decode()? {
-            dst.push(byte);
-        }
-
         reader.write((byte & 0xf) as usize)?;
-        while let Some(byte) = reader.decode()? {
+        loop {
+            if let Some(byte) = reader.decode()? {
+                dst.push(byte);
+            }
+            if reader.buf_size < 4 {
+                break;
+            }
+        }
+    }
+
+    reader.flush()?;
+    loop {
+        if let Some(byte) = reader.decode()? {
             dst.push(byte);
         }
-
-        if i + 1 == bytes_len {
-            reader.flush()?;
-        }
-
-        while let Some(byte) = reader.decode()? {
-            dst.push(byte);
+        if reader.buf_size < 4 {
+            break;
         }
     }
 
