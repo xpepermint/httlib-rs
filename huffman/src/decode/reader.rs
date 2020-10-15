@@ -1,95 +1,126 @@
 use crate::DecoderError;
 
 /// * dekoder ima kapaciteto 128
-pub struct DecodeReader {
-    speed: u8,
+pub(crate) struct DecodeReader {
+    speed: usize,
     id: usize,
     buf: usize,
-    pub buf_size: usize,
+    buf_size: usize,
 }
 
 impl DecodeReader {
     pub fn new(speed: u8) -> Self {
         Self {
-            speed,
+            speed: speed as usize,
             id: 0,
             buf: 0,
             buf_size: 0,
         }
     }
 
-    pub fn write(&mut self, src: usize) -> Result<(), DecoderError> {
+    /// Vedno sprejemamo byte!!!!
+    pub fn write(&mut self, src: u8) -> Result<(), DecoderError> {
         // Handle DecoderError::BufferOverflow
         // Handle DecoderError::InvalidChunkSize
-        let speed = self.speed as usize;
-
-        println!("  src:            {:0>1$}", format!("{:b}", src), 8);
-
-        self.buf <<= speed; // make space for new chunk
-        self.buf_size += speed;
-        self.buf |= src; // apply new chunk
-        println!("   self.buf:      {:0>1$}", format!("{:b}", self.buf), 8);
+        self.buf <<= 8; // make space for new chunk
+        self.buf_size += 8;
+        self.buf |= src as usize; // apply new chunk
 
         Ok(())
     }
 
     pub fn flush(&mut self) -> Result<(), DecoderError> {
         let shift_len = (self.buf_size as f64 / self.speed as f64).ceil() as usize * self.speed as usize - self.buf_size;
-        println!("XXXX===================== shift_len: {}", shift_len);
-        println!("XXXX===================== id:        {}", self.id);
-        println!("XXXX=====================  1:[{:0>1$}]", format!("{:b}", self.buf), 16);
+
         self.buf <<= shift_len;
-        println!("XXXX=====================  2:[{:0>1$}]", format!("{:b}", self.buf), 16);
         self.buf |= 2u32.pow(shift_len as u32) as usize - 1;
-        println!("XXXX=====================    [{:0>1$}]", format!("{:b}", 2u32.pow(shift_len as u32) as usize - 1), 16);
-        println!("XXXX=====================  3:[{:0>1$}]", format!("{:b}", self.buf), 16);
-        println!("XXXX=====================    {:b}|{:?}", self.buf, self.buf_size);
         self.buf_size += shift_len;
-        println!("XXXX=====================    {:b}|{:?}", self.buf, self.buf_size);
+
         Ok(())
     }
 
     // Decodes 4 bits
-    pub fn decode(&mut self) -> Result<Option<u8>, DecoderError> {
-        if self.buf_size < self.speed as usize {
-            return Ok(None);
+    pub fn decode(&mut self, dst: &mut Vec<u8>) -> Result<(), DecoderError> {
+        loop {
+            if self.buf_size < self.speed {
+                break;
+            } else if let Some(byte) = self.decode_next()? {
+                dst.push(byte);
+            }
         }
+        Ok(())
+    }
 
-        let speed = self.speed as usize;
+    /// predvideva da je buffer_len vsaj velikosti 1 chunk, sicer ne klicat.
+    fn decode_next(&mut self) -> Result<Option<u8>, DecoderError> {
+        let key = self.buf >> self.buf_size - self.speed;
+        let (next_id, ascii, leftover) = self.find_target(key)?;
 
-        let transitions = match crate::data::decoder4::DECODE_TABLE.get(self.id) {
-            Some(record) => record,
-            None => return Err(DecoderError::InvalidHuffmanCode),
-        };
-        // println!("---------");
-        // println!("  id:             {:?}", self.id);
-
-        let key = self.buf >> self.buf_size - speed;
-        // println!("   key:           {:0>1$}", format!("{:b}", key), 8);
-        // println!("   key:           {:?}", key);
-
-        let (next_id, ascii, leftover) = match transitions.get(key as usize) {
-            Some(next_state) => next_state,
-            None => return Err(DecoderError::InvalidHuffmanCode),
-        };
-
-        let key = self.buf >> self.buf_size - speed + leftover << leftover;
-        self.buf -= key >> leftover << self.buf_size - speed + leftover; // remove key from buffer
-        self.buf_size -= speed - *leftover;
-        // println!("   self.buf:      {:0>1$}", format!("{:b}", self.buf), 8);
-        // println!("   self.buf_size  {:?}", self.buf_size);
-        // println!("   leftover:      {:?}", leftover);
-        // println!("   next_id:       {:?}", next_id);
+        self.buf -= key >> leftover << self.buf_size - self.speed + leftover; // remove key from buffer
+        self.buf_size -= self.speed - leftover;
 
         if let Some(ascii) = ascii {
-            // println!("  END ======> {:?}", ascii);
             self.id = 0;
-            Ok(Some(*ascii as u8))
+            Ok(Some(ascii as u8))
         } else if let Some(next_id) = next_id {
-            self.id = *next_id;
+            self.id = next_id;
             Ok(None)
         } else {
            Err(DecoderError::InvalidHuffmanCode)
+        }
+    }    
+
+    /// Uposteva speed za izbor translation tabele
+    fn find_target(&self, key: usize) -> Result<(Option<usize>, Option<usize>, usize), DecoderError> {
+        match self.speed {
+            1 => {
+                match crate::data::decoder1::DECODE_TABLE.get(self.id) {
+                    Some(transitions) => match transitions.get(key as usize) {
+                        Some(target) => Ok(*target),
+                        None => Err(DecoderError::InvalidHuffmanCode),
+                    },
+                    None => Err(DecoderError::InvalidHuffmanCode),
+                }
+            },
+            2 => {
+                match crate::data::decoder2::DECODE_TABLE.get(self.id) {
+                    Some(transitions) => match transitions.get(key as usize) {
+                        Some(target) => Ok(*target),
+                        None => Err(DecoderError::InvalidHuffmanCode),
+                    },
+                    None => Err(DecoderError::InvalidHuffmanCode),
+                }
+            },
+            3 => {
+                match crate::data::decoder3::DECODE_TABLE.get(self.id) {
+                    Some(transitions) => match transitions.get(key as usize) {
+                        Some(target) => Ok(*target),
+                        None => Err(DecoderError::InvalidHuffmanCode),
+                    },
+                    None => Err(DecoderError::InvalidHuffmanCode),
+                }
+            },
+            4 => {
+                match crate::data::decoder4::DECODE_TABLE.get(self.id) {
+                    Some(transitions) => match transitions.get(key as usize) {
+                        Some(target) => Ok(*target),
+                        None => Err(DecoderError::InvalidHuffmanCode),
+                    },
+                    None => Err(DecoderError::InvalidHuffmanCode),
+                }
+            },
+            5 => {
+                match crate::data::decoder5::DECODE_TABLE.get(self.id) {
+                    Some(transitions) => match transitions.get(key as usize) {
+                        Some(target) => Ok(*target),
+                        None => Err(DecoderError::InvalidHuffmanCode),
+                    },
+                    None => Err(DecoderError::InvalidHuffmanCode),
+                }
+            },
+            _ => {
+                Err(DecoderError::InvalidHuffmanCode) // TODO: INVALID SPEED!!!!
+            }
         }
     }
 }

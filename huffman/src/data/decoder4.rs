@@ -1,5 +1,6 @@
-// next_id, ascii, leftover
-pub const DECODE_TABLE: [[(Option<usize>, Option<usize>, usize); 16]; 54] = [
+/// This is a static translation matrix for decoding Huffman sequence by reading
+/// 4-bit(s) at at time.
+pub const DECODE_TABLE: [[(Option<usize>, Option<usize>, usize); 16]; 54] = [ // (next_id, ascii, leftover)
     [ // 0
         (Some(15), None, 0),
         (Some(16), None, 0),

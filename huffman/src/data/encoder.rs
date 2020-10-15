@@ -5,7 +5,7 @@
 /// bits for the code representing the symbol and the second is the Huffman code
 /// for the symbol represented as a base-2 integer, aligned on the most
 /// significant bit (MSB).
-pub const ENCODE_TABLE: [(u8, u32); 257] = [
+pub const ENCODE_TABLE: [(u8, u32); 257] = [ // (length, msb)
   (13, 0x1ff8),
   (23, 0x7fffd8),
   (28, 0xfffffe2),

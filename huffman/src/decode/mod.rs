@@ -2,39 +2,19 @@ mod error;
 mod reader;
 
 pub use error::*;
-pub use reader::*;
+use reader::*;
 
 /// Decodes Huffman's sequence from the provided matrix. The matrix design
 /// explains how many bits should be read at the time.
-pub fn decode(src: &[u8], dst: &mut Vec<u8>) -> Result<(), DecoderError> {
-    let matrix = crate::data::decoder4::DECODE_TABLE;
-    let speed = (matrix[0].len() as f32).log2() as u32;
-    let mut reader = DecodeReader::new(speed as u8);
+pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: u8) -> Result<(), DecoderError> {
+    let mut reader = DecodeReader::new(speed);
 
-    for (_, byte) in src.iter().enumerate() {
-
-        // TODO: make this of dynamic size
-        reader.write((byte >> 4) as usize)?;
-        reader.write((byte & 0xf) as usize)?;
-        loop {
-            if let Some(byte) = reader.decode()? {
-                dst.push(byte);
-            }
-            if reader.buf_size < 4 {
-                break;
-            }
-        }
+    for byte in src.iter() {
+        reader.write(*byte)?;
+        reader.decode(dst)?;
     }
-
     reader.flush()?;
-    loop {
-        if let Some(byte) = reader.decode()? {
-            dst.push(byte);
-        }
-        if reader.buf_size < 4 {
-            break;
-        }
-    }
+    reader.decode(dst)?;
 
     Ok(())
 }
@@ -43,9 +23,8 @@ pub fn decode(src: &[u8], dst: &mut Vec<u8>) -> Result<(), DecoderError> {
 mod test {
     use super::*;
 
-    #[test]
-    fn decodes_ascii_characters() { 
-        let chars = vec![
+    fn supported_characters() -> Vec<(&'static [u8], Vec<u8>)> {
+        vec![
             (&[0],   vec![255, 199]),               // 0
             (&[1],   vec![255, 255, 177]),          // 1
             (&[2],   vec![255, 255, 254, 47]),      // 2
@@ -302,81 +281,156 @@ mod test {
             (&[253],  vec![255, 255, 253, 255]),    // 253
             (&[254],  vec![255, 255, 254, 31]),     // 254
             (&[255],  vec![255, 255, 251, 191]),    // 255 
-        ]; // EOS is not a character
+        ] // EOS is not a character
+    }
 
-        for (ansii_bytes, code_bytes) in chars.iter() {
+    fn sample_literals() -> Vec<(Vec<u8>, Vec<u8>)> {
+        vec![(
+            vec![3, 4, 1, 2],
+            vec![255, 255, 254, 63, 255, 255, 228, 255, 255, 177, 255, 255, 252, 95],
+        ), (
+            b":method".to_vec(),
+            vec![185, 73, 83, 57, 228],
+        ), (
+            b":scheme".to_vec(),
+            vec![184, 130, 78, 90, 75],
+        ), (
+            b":authority".to_vec(),
+            vec![184, 59, 83, 57, 236, 50, 125, 127],
+        ), (
+            b"nibbstack.com".to_vec(),
+            vec![168, 209, 198, 132, 140, 157, 87, 33, 233],
+        ), (
+            b"GET".to_vec(),
+            vec![197, 131, 127],
+        ), (
+            b"http".to_vec(),
+            vec![157, 41, 175],
+        ), (
+            b":path".to_vec(),
+            vec![185, 88, 211, 63],
+        ), (
+            b"/images/top/sp2/cmn/logo-ns-130528.png".to_vec(),
+            vec![96, 212, 142, 98, 161, 132, 158, 182, 17, 88, 152, 37, 53, 49, 65, 230, 58, 213, 33, 96, 178, 6, 196, 242, 245, 213, 55],
+        ), (
+            b"hpack-test".to_vec(),
+            vec![158, 177, 147, 170, 201, 42, 19],
+        ), (
+            b"xxxxxxx1".to_vec(),
+            vec![243, 231, 207, 159, 62, 124, 135],
+        ), (
+            b"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0".to_vec(),
+            vec![208, 127, 102, 162, 129, 176, 218, 224, 83, 250, 208, 50, 26, 164, 157, 19, 253, 169, 146, 164, 150, 133, 52, 12, 138, 106, 220, 167, 226, 129, 2, 239, 125, 169, 103, 123, 129, 113, 112, 127, 106, 98, 41, 58, 157, 129, 0, 32, 0, 64, 21, 48, 154, 194, 202, 127, 44, 5, 197, 193],
+        ), (
+            b"accept".to_vec(),
+            vec![25, 8, 90, 211],
+        ), (
+            b"Accept".to_vec(),
+            vec![132, 132, 45, 105],
+        ), (
+            b"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8".to_vec(),
+            vec![73, 124, 165, 137, 211, 77, 31, 67, 174, 186, 12, 65, 164, 199, 169, 143, 51, 166, 154, 63, 223, 154, 104, 250, 29, 117, 208, 98, 13, 38, 61, 76, 121, 166, 143, 190, 208, 1, 119, 254, 190, 88, 249, 251, 237, 0, 23, 123],
+        ), (
+            b"cookie".to_vec(),
+            vec![33, 207, 212, 197],
+        ), (
+            b"B=11231252zdf&b=3&s=0b".to_vec(),
+            vec![187, 0, 66, 38, 66, 38, 197, 238, 73, 126, 35, 129, 159, 132, 64, 8, 255],
+        ), (
+            b"TE".to_vec(),
+            vec![223, 131],
+        ), (
+            b"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non bibendum libero. Etiam ultrices lorem ut.".to_vec(),
+            vec![206, 123, 11, 74, 134, 173, 22, 210, 164, 135, 160, 246, 40, 131, 37, 65, 210, 84, 253, 40, 67, 212, 130, 145, 37, 77, 182, 40, 57, 13, 89, 144, 67, 85, 50, 133, 160, 201, 93, 77, 7, 178, 51, 41, 81, 234, 82, 51, 70, 90, 164, 182, 149, 40, 52, 101, 176, 235, 169, 129, 38, 29, 42, 91, 66, 108, 49, 10, 133, 40, 61, 133, 165, 75, 82, 191],        
+        )]
+    }
+
+    #[test]
+    fn decodes_characters_1bits() {
+        for (ansii_bytes, code_bytes) in supported_characters().iter() {
             let mut dst = Vec::new();
-            decode(&code_bytes, &mut dst).unwrap();
+            decode(&code_bytes, &mut dst, 1).unwrap();
+            assert_eq!(dst, *ansii_bytes);
+        }
+    }
+
+    #[test]
+    fn decodes_characters_2bits() {
+        for (ansii_bytes, code_bytes) in supported_characters().iter() {
+            let mut dst = Vec::new();
+            decode(&code_bytes, &mut dst, 2).unwrap();
+            assert_eq!(dst, *ansii_bytes);
+        }
+    }
+
+    #[test]
+    fn decodes_characters_3bits() {
+        for (ansii_bytes, code_bytes) in supported_characters().iter() {
+            let mut dst = Vec::new();
+            decode(&code_bytes, &mut dst, 3).unwrap();
+            assert_eq!(dst, *ansii_bytes);
+        }
+    }
+
+    #[test]
+    fn decodes_characters_4bits() {
+        for (ansii_bytes, code_bytes) in supported_characters().iter() {
+            let mut dst = Vec::new();
+            decode(&code_bytes, &mut dst, 4).unwrap();
+            assert_eq!(dst, *ansii_bytes);
+        }
+    }
+
+    #[test]
+    fn decodes_characters_5bits() {
+        for (ansii_bytes, code_bytes) in supported_characters().iter() {
+            let mut dst = Vec::new();
+            decode(&code_bytes, &mut dst, 5).unwrap();
+            assert_eq!(dst, *ansii_bytes);
+        }
+    }
+
+    #[test]
+    fn decodes_literals_1bits() { 
+        for (ansii_bytes, code_bytes) in sample_literals().iter() {
+            let mut dst = Vec::new();
+            decode(code_bytes, &mut dst, 1).unwrap();
+            assert_eq!(dst, *ansii_bytes);
+        }
+    }
+
+    #[test]
+    fn decodes_literals_2bits() { 
+        for (ansii_bytes, code_bytes) in sample_literals().iter() {
+            let mut dst = Vec::new();
+            decode(code_bytes, &mut dst, 2).unwrap();
+            assert_eq!(dst, *ansii_bytes);
+        }
+    }
+
+    #[test]
+    fn decodes_literals_3bits() { 
+        for (ansii_bytes, code_bytes) in sample_literals().iter() {
+            let mut dst = Vec::new();
+            decode(code_bytes, &mut dst, 3).unwrap();
             assert_eq!(dst, *ansii_bytes);
         }
     }
 
     #[test]
     fn decodes_literals_4bits() { 
-        let literals = vec![(
-        //     vec![3, 4, 1, 2],
-        //     vec![255, 255, 254, 63, 255, 255, 228, 255, 255, 177, 255, 255, 252, 95],
-        // ), (
-            b":method".to_vec(),
-            vec![185, 73, 83, 57, 228],
-        // ), (
-        //     b":scheme".to_vec(),
-        //     vec![184, 130, 78, 90, 75],
-        // ), (
-        //     b":authority".to_vec(),
-        //     vec![184, 59, 83, 57, 236, 50, 125, 127],
-        // ), (
-        //     b"nibbstack.com".to_vec(),
-        //     vec![168, 209, 198, 132, 140, 157, 87, 33, 233],
-        // ), (
-        //     b"GET".to_vec(),
-        //     vec![197, 131, 127],
-        // ), (
-        //     b"http".to_vec(),
-        //     vec![157, 41, 175],
-        // ), (
-        //     b":path".to_vec(),
-        //     vec![185, 88, 211, 63],
-        // ), (
-        //     b"/images/top/sp2/cmn/logo-ns-130528.png".to_vec(),
-        //     vec![96, 212, 142, 98, 161, 132, 158, 182, 17, 88, 152, 37, 53, 49, 65, 230, 58, 213, 33, 96, 178, 6, 196, 242, 245, 213, 55],
-        // ), (
-        //     b"hpack-test".to_vec(),
-        //     vec![158, 177, 147, 170, 201, 42, 19],
-        // ), (
-        //     b"xxxxxxx1".to_vec(),
-        //     vec![243, 231, 207, 159, 62, 124, 135],
-        // ), (
-        //     b"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0".to_vec(),
-        //     vec![208, 127, 102, 162, 129, 176, 218, 224, 83, 250, 208, 50, 26, 164, 157, 19, 253, 169, 146, 164, 150, 133, 52, 12, 138, 106, 220, 167, 226, 129, 2, 239, 125, 169, 103, 123, 129, 113, 112, 127, 106, 98, 41, 58, 157, 129, 0, 32, 0, 64, 21, 48, 154, 194, 202, 127, 44, 5, 197, 193],
-        // ), (
-        //     b"accept".to_vec(),
-        //     vec![25, 8, 90, 211],
-        // ), (
-        //     b"Accept".to_vec(),
-        //     vec![132, 132, 45, 105],
-        // ), (
-        //     b"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8".to_vec(),
-        //     vec![73, 124, 165, 137, 211, 77, 31, 67, 174, 186, 12, 65, 164, 199, 169, 143, 51, 166, 154, 63, 223, 154, 104, 250, 29, 117, 208, 98, 13, 38, 61, 76, 121, 166, 143, 190, 208, 1, 119, 254, 190, 88, 249, 251, 237, 0, 23, 123],
-        // ), (
-        //     b"cookie".to_vec(),
-        //     vec![33, 207, 212, 197],
-        // ), (
-        //     b"B=11231252zdf&b=3&s=0b".to_vec(),
-        //     vec![187, 0, 66, 38, 66, 38, 197, 238, 73, 126, 35, 129, 159, 132, 64, 8, 255],
-        // ), (
-        //     b"TE".to_vec(),
-        //     vec![223, 131],
-        // ), (
-        //     b"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non bibendum libero. Etiam ultrices lorem ut.".to_vec(),
-        //     vec![206, 123, 11, 74, 134, 173, 22, 210, 164, 135, 160, 246, 40, 131, 37, 65, 210, 84, 253, 40, 67, 212, 130, 145, 37, 77, 182, 40, 57, 13, 89, 144, 67, 85, 50, 133, 160, 201, 93, 77, 7, 178, 51, 41, 81, 234, 82, 51, 70, 90, 164, 182, 149, 40, 52, 101, 176, 235, 169, 129, 38, 29, 42, 91, 66, 108, 49, 10, 133, 40, 61, 133, 165, 75, 82, 191],        
-        )];
-
-        for (ansii_bytes, code_bytes) in literals.iter() {
+        for (ansii_bytes, code_bytes) in sample_literals().iter() {
             let mut dst = Vec::new();
-            decode(code_bytes, &mut dst).unwrap();
-            println!("Expected: {:?}", ansii_bytes);
-            println!("          {:?}", dst);
+            decode(code_bytes, &mut dst, 4).unwrap();
+            assert_eq!(dst, *ansii_bytes);
+        }
+    }
+
+    #[test]
+    fn decodes_literals_5bits() { 
+        for (ansii_bytes, code_bytes) in sample_literals().iter() {
+            let mut dst = Vec::new();
+            decode(code_bytes, &mut dst, 5).unwrap();
             assert_eq!(dst, *ansii_bytes);
         }
     }
