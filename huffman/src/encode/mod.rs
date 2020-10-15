@@ -1,30 +1,4 @@
-//! An implementation of the [Canonical Huffman] code for [HPACK].
-//! 
-//! Header Compression format for [HTTP/2], known as [HPACK], foresees the use
-//! of the Huffman algorithm for encoding header literal values. This
-//! contributes to the additional decrease in the quantity of data, transferred
-//! with each web request and response.
-//! 
-//! A Huffman code is a particular type of optimal prefix code that is commonly
-//! used for lossless data compression. The process of finding or using such a
-//! code proceeds by means of Huffman coding, an algorithm developed by David A.
-//! Huffman. The output from Huffman's algorithm can be viewed as a
-//! variable-length code table for encoding a source symbol (such as a character
-//! in a file). The algorithm derives this table from the estimated probability
-//! or frequency of occurrence (weight) for each possible value of the source
-//! symbol. As in other entropy encoding methods, more common symbols are
-//! generally represented using fewer bits than less common symbols. Huffman's
-//! method can be efficiently implemented, finding a code in time linear to the
-//! number of input weights if these weights are sorted. (Source: Wikipedia)
-//! [HPACK] compression entails a pre-created [Canonical Huffman] code table
-//! for encoding ASCII characters to the Huffman sequence. A [Canonical Huffman]
-//! code is a particular type of Huffman code with unique properties that allow
-//! it to be described in a very compact manner. The advantage of a
-//! [Canonical Huffman] tree is that one can encode data in fewer bits than with
-//! a fully described tree. In the aforementioned table are the Huffman codes
-//! for each ASCII character with a length up to 32 bits (4x by 8 fields with
-//! value 0 or 1), in the form of base-2 integer, aligned on the most
-//! significant bit (MSB is the bit farthest to the left).
+//! An implementation of the [Canonical Huffman] decoder for [HPACK].
 //! 
 //! Encoding is relatively easy since we are replacing the individual characters
 //! with the Huffman code. We add an EOS sign at the end and the desired
@@ -106,6 +80,7 @@
 //! Although the illustration is quite similar to the previous one, it is much
 //! more colorful. It is also apparent that a string of bits is getting shorter
 //! on the left and longer on the right end.
+//! 
 //! When the Huffman code is added to the string for the individual character,
 //! the algorithm immediately ensures 32 free bit spaces where the next
 //! character will be added. This is achieved by the so-called shifting bits

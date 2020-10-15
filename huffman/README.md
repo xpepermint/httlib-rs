@@ -2,6 +2,24 @@
 
 This crate implements static Huffman encoding/decoding algorithm for HTTP/2 used by [HPACK](https://tools.ietf.org/html/rfc7541#appendix-B).
 
+Features:
+- `encode`: Enables encoding features (default).
+- `decode1`: Enables decoding features for reading 1 bit at a time.
+- `decode2`: Enables decoding features for reading 2 bits at a time.
+- `decode3`: Enables decoding features for reading 3 bits at a time.
+- `decode4`: Enables decoding features for reading 4 bits at a time (default).
+- `decode5`: Enables decoding features for reading 5 bits at a time.
+- `flatten`: Enables features for flattening Huffman table (default).
+- `parse`: Enables features for parsing Huffman table (default).
+
+```toml
+[dependencies.httlib-huffman]
+...
+default-features = false
+features = ["encode", "decoder", "decode4"]
+```
+
+Usage:
 ```rs
 // Parses HPACK's static Huffman codings.
 let codings = httlib_huffman::parse(txt);
@@ -36,3 +54,16 @@ $ cargo run --exeample encode <data>
 # Decode a sample sequence (sequence = "0101010001010101").
 $ cargo run --exeample decode <sequence>
 ```
+
+Testing:
+
+```bash
+$ cargo test --all-features
+```
+
+# TODO
+
+* Decoder ERRORs
+* Make Decoder speed dynamic
+* Example output with comment at the top
+* Rename matrix to table

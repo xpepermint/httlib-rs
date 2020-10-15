@@ -87,49 +87,73 @@ fn generate_coding_paths(coding: &(u8, u32), speed: usize) -> Vec<Vec<usize>> {
 mod test {
     use super::*;
 
-    #[cfg(feature = "decode1")]
+    fn sample_encoding_table() -> &'static [(u8, u32)] {
+        &[
+            (13, 0x1ff8),
+            (23, 0x7fffd8),
+            (28, 0xfffffe2),
+            (28, 0xfffffe3),
+            (28, 0xfffffe4),
+            (28, 0xfffffe5),
+            (28, 0xfffffe6),
+            (28, 0xfffffe7),
+            (28, 0xfffffe8),
+        ]
+    }
+    
     #[test]
     fn flattens_1bits() { 
-        assert_eq!(
-            flatten(&crate::encode::table::ENCODE_TABLE, 1),
-            crate::decode::table1::DECODE_TABLE.to_vec()
-        );
+        let table = flatten(&sample_encoding_table(), 1);
+        assert_eq!(table.len(), 41);
+
+        let target = &table[2][1];
+        assert_eq!(target.0, Some(3));
+        assert_eq!(target.1, None);
+        assert_eq!(target.2, 0);
     }
 
-    #[cfg(feature = "decode2")]
     #[test]
     fn flattens_2bits() { 
-        assert_eq!(
-            flatten(&crate::encode::table::ENCODE_TABLE, 2),
-            crate::decode::table2::DECODE_TABLE.to_vec()
-        );
+        let table = flatten(&sample_encoding_table(), 2);
+        assert_eq!(table.len(), 20);
+
+        let target = &table[1][3];
+        assert_eq!(target.0, Some(2));
+        assert_eq!(target.1, None);
+        assert_eq!(target.2, 0);
     }
 
-    #[cfg(feature = "decode3")]
     #[test]
     fn flattens_3bits() { 
-        assert_eq!(
-            flatten(&crate::encode::table::ENCODE_TABLE, 3),
-            crate::decode::table3::DECODE_TABLE.to_vec()
-        );
+        let table = flatten(&sample_encoding_table(), 3);
+        assert_eq!(table.len(), 16);
+
+        let target = &table[1][7];
+        assert_eq!(target.0, Some(2));
+        assert_eq!(target.1, None);
+        assert_eq!(target.2, 0);
     }
 
-    #[cfg(feature = "decode4")]
     #[test]
     fn flattens_4bits() { 
-        assert_eq!(
-            flatten(&crate::encode::table::ENCODE_TABLE, 4),
-            crate::decode::table4::DECODE_TABLE.to_vec()
-        );
+        let table = flatten(&sample_encoding_table(), 4);
+        assert_eq!(table.len(), 9);
+
+        let target = &table[1][15];
+        assert_eq!(target.0, Some(2));
+        assert_eq!(target.1, None);
+        assert_eq!(target.2, 0);
     }
 
-    #[cfg(feature = "decode5")]
     #[test]
     fn flattens_5bits() { 
-        assert_eq!(
-            flatten(&crate::encode::table::ENCODE_TABLE, 5),
-            crate::decode::table5::DECODE_TABLE.to_vec()
-        );
+        let table = flatten(&sample_encoding_table(), 5);
+        assert_eq!(table.len(), 8);
+
+        let target = &table[1][31];
+        assert_eq!(target.0, Some(2));
+        assert_eq!(target.1, None);
+        assert_eq!(target.2, 0);
     }
 
     #[test]

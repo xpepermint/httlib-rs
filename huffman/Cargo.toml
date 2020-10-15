@@ -11,9 +11,12 @@ repository = "https://github.com/xpepermint/httlib-rs"
 readme = "README.md"
 
 [features]
-default = ["decode4"]
+default = ["encode", "decode4", "flatten", "parse"]
+encode = []
 decode1 = []
 decode2 = []
 decode3 = []
 decode4 = []
 decode5 = []
+flatten = []
+parse = []

@@ -257,5 +257,5 @@ pub const ENCODE_TABLE: [(u8, u32); 257] = [ // (length, msb)
   (27, 0x7ffffef),
   (27, 0x7fffff0),
   (26, 0x3ffffee),
-  (30, 0x3fffffff),
+  (30, 0x3fffffff)
 ];

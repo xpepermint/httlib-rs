@@ -1,3 +1,6 @@
+//! The example will print out the source code for the DECODE_TABLE constant
+//! which is provided by this crate through the crate::decode::table4 module.
+
 extern crate httlib_huffman;
 
 use httlib_huffman::{flatten};
