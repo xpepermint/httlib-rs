@@ -38,4 +38,4 @@ most significant bit (MSB is the bit farthest to the left).
 [HTTP/2]: https://tools.ietf.org/html/rfc7540
 [Huffman code]: https://en.wikipedia.org/wiki/Huffman_coding
 [canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
-[Documentation]: https://github.com/xpepermint/httlib-huffman
+[Documentation]: https://docs.rs/httlib-huffman
