@@ -1,4 +1,4 @@
-//! This is an implementation of the [Canonical Huffman] code for [HPACK].
+//! An implementation of the [Canonical Huffman] code for [HPACK].
 //! 
 //! Header Compression format for [HTTP/2], known as [HPACK], foresees the use
 //! of the Huffman algorithm for encoding header literal values. This
