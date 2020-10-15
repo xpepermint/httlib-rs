@@ -10,7 +10,6 @@ pub mod decode;
 pub mod encode;
 pub mod flattener;
 pub mod parser;
-pub mod data;
 
 pub use decode::*;
 pub use encode::*;

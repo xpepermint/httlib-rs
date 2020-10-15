@@ -125,6 +125,7 @@
 //! [HTTP/2]: https://tools.ietf.org/html/rfc7540
 //! [Canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
 mod error;
+pub mod table;
 
 pub use error::*;
 
@@ -143,7 +144,7 @@ pub use error::*;
 pub fn encode(src: &[u8], dst: &mut Vec<u8>) -> Result<(), EncodeError> {
     let mut bits: u64 = 0;
     let mut bits_left = 40;
-    let codings = crate::data::encoder::ENCODE_TABLE; // parsed huffman table
+    let codings = self::table::ENCODE_TABLE; // parsed huffman table
 
     for &byte in src {
         let (code_len, code) = match codings.get(byte as usize) {

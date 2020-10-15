@@ -75,7 +75,7 @@ impl DecodeReader {
         match self.speed {
             #[cfg(feature = "decode1")]
             1 => {
-                match crate::data::decoder1::DECODE_TABLE.get(self.id) {
+                match crate::decode::table1::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
                         None => Err(DecoderError::InvalidHuffmanCode),
@@ -85,7 +85,7 @@ impl DecodeReader {
             },
             #[cfg(feature = "decode2")]
             2 => {
-                match crate::data::decoder2::DECODE_TABLE.get(self.id) {
+                match crate::decode::table2::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
                         None => Err(DecoderError::InvalidHuffmanCode),
@@ -95,7 +95,7 @@ impl DecodeReader {
             },
             #[cfg(feature = "decode3")]
             3 => {
-                match crate::data::decoder3::DECODE_TABLE.get(self.id) {
+                match crate::decode::table3::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
                         None => Err(DecoderError::InvalidHuffmanCode),
@@ -105,7 +105,7 @@ impl DecodeReader {
             },
             #[cfg(feature = "decode4")]
             4 => {
-                match crate::data::decoder4::DECODE_TABLE.get(self.id) {
+                match crate::decode::table4::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
                         None => Err(DecoderError::InvalidHuffmanCode),
@@ -115,7 +115,7 @@ impl DecodeReader {
             },
             #[cfg(feature = "decode5")]
             5 => {
-                match crate::data::decoder5::DECODE_TABLE.get(self.id) {
+                match crate::decode::table5::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
                         None => Err(DecoderError::InvalidHuffmanCode),

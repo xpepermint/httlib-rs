@@ -1,7 +1,7 @@
 extern crate httlib_huffman;
 
 use httlib_huffman::{flatten};
-use httlib_huffman::data::encoder::ENCODE_TABLE;
+use httlib_huffman::encode::table::ENCODE_TABLE;
 
 fn main() {
     let speed = 4;

@@ -1,5 +1,15 @@
 mod error;
 mod reader;
+#[cfg(feature = "decode1")]
+pub mod table1;
+#[cfg(feature = "decode2")]
+pub mod table2;
+#[cfg(feature = "decode3")]
+pub mod table3;
+#[cfg(feature = "decode4")]
+pub mod table4;
+#[cfg(feature = "decode5")]
+pub mod table5;
 
 pub use error::*;
 use reader::*;
@@ -21,8 +31,6 @@ pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: u8) -> Result<(), DecoderErr
 
 #[cfg(test)]
 mod test {
-    use super::*;
-
     fn supported_characters() -> Vec<(&'static [u8], Vec<u8>)> {
         vec![
             (&[0],   vec![255, 199]),               // 0
