@@ -8,15 +8,15 @@ use httlib_huffman::encode::table::ENCODE_TABLE;
 
 fn main() {
     let speed = 4;
-    let matrix = flatten(&ENCODE_TABLE, speed);
-    let matrix_len = matrix.len();
-    let targets_len = matrix[0].len();
+    let table = flatten(&ENCODE_TABLE, speed);
+    let table_len = table.len();
+    let targets_len = table[0].len();
 
     println!("");
-    println!("/// This is a static translation matrix for decoding Huffman sequence by reading");
+    println!("/// This is a static translation table for decoding Huffman sequence by reading");
     println!("/// {}-bit(s) at at time.", speed);
-    println!("pub const DECODE_TABLE: [[(Option<usize>, Option<usize>, usize); {}]; {}] = [ // (next_id, ascii, leftover)", targets_len, matrix_len);
-    for (i, transitions) in matrix.iter().enumerate() {
+    println!("pub const DECODE_TABLE: [[(Option<usize>, Option<usize>, usize); {}]; {}] = [ // (next_id, ascii, leftover)", targets_len, table_len);
+    for (i, transitions) in table.iter().enumerate() {
         println!("    [ // {}", i);
 
         for (j, transition) in transitions.iter().enumerate() {
@@ -27,7 +27,7 @@ fn main() {
             println!("");
         }
         print!("    ]");
-        if i != matrix_len - 1 {
+        if i != table_len - 1 {
             print!(",");
         }
         println!("");

@@ -58,19 +58,19 @@ mod tests {
     fn parses_huffman_table() { 
         let path = Path::new("assets/hpack-huffman.txt");
         let data = fs::read_to_string(path).expect("Can't read file.");
-        let matrix = parse(&data);
+        let table = parse(&data);
 
-        assert_eq!(matrix.len(), 257);
+        assert_eq!(table.len(), 257);
 
-        let item = matrix[10];
+        let item = table[10];
         assert_eq!(item.0, 30);
         assert_eq!(item.1, 0x3ffffffc);
 
-        let item = matrix[32];
+        let item = table[32];
         assert_eq!(item.0, 6);
         assert_eq!(item.1, 0x14);
 
-        let item = matrix.last().unwrap();
+        let item = table.last().unwrap();
         assert_eq!(item.0, 30);
         assert_eq!(item.1, 0x3fffffff);
     }

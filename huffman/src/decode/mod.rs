@@ -14,7 +14,7 @@ pub mod table5;
 pub use error::*;
 use reader::*;
 
-/// Decodes Huffman's sequence from the provided matrix. The matrix design
+/// Decodes Huffman's sequence from the provided table. The table design
 /// explains how many bits should be read at the time.
 pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: u8) -> Result<(), DecoderError> {
     let mut reader = DecodeReader::new(speed);

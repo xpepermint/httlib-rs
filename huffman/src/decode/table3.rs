@@ -1,4 +1,4 @@
-/// This is a static translation matrix for decoding Huffman sequence by reading
+/// This is a static translation table for decoding Huffman sequence by reading
 /// 3-bit(s) at at time.
 #[cfg(feature = "decode3")]
 pub const DECODE_TABLE: [[(Option<usize>, Option<usize>, usize); 8]; 92] = [ // (next_id, ascii, leftover)

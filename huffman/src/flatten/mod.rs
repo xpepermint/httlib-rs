@@ -2,27 +2,27 @@
 pub fn flatten(codings: &[(u8, u32)], speed: usize) -> Vec<Vec<(Option<usize>, Option<usize>, usize)>> { // next_id, ascii, leftover
     let blank_transition = generate_blank_transition(speed);
 
-    let mut matrix: Vec<Vec<(Option<usize>, Option<usize>, usize)>> = Vec::new();
-    matrix.push(blank_transition.clone());
+    let mut table: Vec<Vec<(Option<usize>, Option<usize>, usize)>> = Vec::new();
+    table.push(blank_transition.clone());
 
     for (ascii, coding) in codings.iter().enumerate() {
         let leftover = (coding.0 as f32 / speed as f32).ceil() as usize * speed - coding.0 as usize;
-        let mut id = 0; // current walk index in matrix
+        let mut id = 0; // current walk index in table
         
         for (path_index, keys) in generate_coding_paths(coding, speed).iter().enumerate() {
 
             if path_index == 0 { // create IDs for original path
                 for key_index in 0..keys.len() - 1 { // the last key will be handled afterward
                     let key = keys[key_index];
-                    let target = &matrix[id][key]; // should always exist
+                    let target = &table[id][key]; // should always exist
     
                     let next_id = if let Some(next_id) = target.0 {
                         next_id
                     } else {
-                        matrix.push(blank_transition.clone());
+                        table.push(blank_transition.clone());
 
-                        let next_id = matrix.len() - 1;
-                        let transitions = matrix.get_mut(id).unwrap();
+                        let next_id = table.len() - 1;
+                        let transitions = table.get_mut(id).unwrap();
                         let target = transitions.get_mut(key).unwrap();
                         target.0 = Some(next_id);
 
@@ -34,14 +34,14 @@ pub fn flatten(codings: &[(u8, u32)], speed: usize) -> Vec<Vec<(Option<usize>, O
             } 
             
             let key = keys.last().unwrap(); // handle the last key of all path variants
-            let transitions = matrix.get_mut(id).unwrap();
+            let transitions = table.get_mut(id).unwrap();
             let target = transitions.get_mut(*key).unwrap();
             target.1 = Some(ascii);
             target.2 = leftover;
         }
     }
 
-    matrix
+    table
 }
 
 fn generate_blank_transition(speed: usize) -> Vec<(Option<usize>, Option<usize>, usize)> {

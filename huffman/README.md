@@ -24,12 +24,12 @@ Usage:
 // Parses HPACK's static Huffman codings.
 let codings = httlib_huffman::parse(txt);
 
-/// Builds Huffman transition matrix for decoding Huffman sequence. The function
+/// Builds Huffman transition table for decoding Huffman sequence. The function
 /// accepts the `speed` attribute which indicates the number of bits that the
 /// decoder should read at the time. Note that increasing the speed, makes the 
 /// decoder faster but also contributes to a higher memory footprint. The 
 /// suggested value is 4 bits.
-let matrix = httlib_huffman::flatten(codings, speed);
+let table = httlib_huffman::flatten(codings, speed);
 
 /// Rebuilds Huffman tree and returns the root node.
 let tree = httlib_huffman::build(codings);
@@ -37,9 +37,9 @@ let tree = httlib_huffman::build(codings);
 // Encodes data bytes to Huffman's sequence.
 let sequence = httlib_huffman::encode(codings);
 
-/// Decodes Huffman's sequence from the provided matrix. The matrix design
+/// Decodes Huffman's sequence from the provided table. The table design
 /// explains how many bits should be read at the time.
-let data = httlib_huffman::decode(sequence, matrix);
+let data = httlib_huffman::decode(sequence, table);
 ```
 
 See it in action:
@@ -63,7 +63,4 @@ $ cargo test --all-features
 
 # TODO
 
-* Decoder ERRORs
-* Make Decoder speed dynamic
-* Example output with comment at the top
-* Rename matrix to table
+* Rename table to table
