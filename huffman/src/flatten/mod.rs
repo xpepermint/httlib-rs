@@ -74,7 +74,7 @@ fn generate_blank_transition(speed: usize) -> Vec<(Option<usize>, Option<usize>,
 /// Generates all key paths for the particular coding. If the key has leftovers
 /// the function will fill that gap with all possible variants.
 /// 
-/// ```
+/// ```tst
 /// Code:       [1100, 0000, 1110, 011X]
 /// Variants:   [1100, 0000, 1110, 0110]
 ///             [1100, 0000, 1110, 0111]
