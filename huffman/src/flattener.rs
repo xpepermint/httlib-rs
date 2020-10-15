@@ -87,11 +87,48 @@ fn generate_coding_paths(coding: &(u8, u32), speed: usize) -> Vec<Vec<usize>> {
 mod test {
     use super::*;
 
+    #[cfg(feature = "decode1")]
+    #[test]
+    fn flattens_1bits() { 
+        assert_eq!(
+            flatten(&crate::data::encoder::ENCODE_TABLE, 1),
+            crate::data::decoder1::DECODE_TABLE.to_vec()
+        );
+    }
+
+    #[cfg(feature = "decode2")]
+    #[test]
+    fn flattens_2bits() { 
+        assert_eq!(
+            flatten(&crate::data::encoder::ENCODE_TABLE, 2),
+            crate::data::decoder2::DECODE_TABLE.to_vec()
+        );
+    }
+
+    #[cfg(feature = "decode3")]
+    #[test]
+    fn flattens_3bits() { 
+        assert_eq!(
+            flatten(&crate::data::encoder::ENCODE_TABLE, 3),
+            crate::data::decoder3::DECODE_TABLE.to_vec()
+        );
+    }
+
+    #[cfg(feature = "decode4")]
     #[test]
     fn flattens_4bits() { 
         assert_eq!(
             flatten(&crate::data::encoder::ENCODE_TABLE, 4),
             crate::data::decoder4::DECODE_TABLE.to_vec()
+        );
+    }
+
+    #[cfg(feature = "decode5")]
+    #[test]
+    fn flattens_5bits() { 
+        assert_eq!(
+            flatten(&crate::data::encoder::ENCODE_TABLE, 5),
+            crate::data::decoder5::DECODE_TABLE.to_vec()
         );
     }
 

@@ -6,14 +6,12 @@
 //! [HTTP/2]: https://tools.ietf.org/html/rfc7540
 //! [Canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
 
-pub mod builder;
 pub mod decode;
 pub mod encode;
 pub mod flattener;
 pub mod parser;
 pub mod data;
 
-pub use builder::*;
 pub use decode::*;
 pub use encode::*;
 pub use flattener::*;

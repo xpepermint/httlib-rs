@@ -345,6 +345,7 @@ mod test {
         )]
     }
 
+    #[cfg(feature = "decode1")]
     #[test]
     fn decodes_characters_1bits() {
         for (ansii_bytes, code_bytes) in supported_characters().iter() {
@@ -354,6 +355,7 @@ mod test {
         }
     }
 
+    #[cfg(feature = "decode2")]
     #[test]
     fn decodes_characters_2bits() {
         for (ansii_bytes, code_bytes) in supported_characters().iter() {
@@ -363,6 +365,7 @@ mod test {
         }
     }
 
+    #[cfg(feature = "decode3")]
     #[test]
     fn decodes_characters_3bits() {
         for (ansii_bytes, code_bytes) in supported_characters().iter() {
@@ -372,6 +375,7 @@ mod test {
         }
     }
 
+    #[cfg(feature = "decode4")]
     #[test]
     fn decodes_characters_4bits() {
         for (ansii_bytes, code_bytes) in supported_characters().iter() {
@@ -381,6 +385,7 @@ mod test {
         }
     }
 
+    #[cfg(feature = "decode5")]
     #[test]
     fn decodes_characters_5bits() {
         for (ansii_bytes, code_bytes) in supported_characters().iter() {
@@ -390,6 +395,7 @@ mod test {
         }
     }
 
+    #[cfg(feature = "decode1")]
     #[test]
     fn decodes_literals_1bits() { 
         for (ansii_bytes, code_bytes) in sample_literals().iter() {
@@ -399,6 +405,7 @@ mod test {
         }
     }
 
+    #[cfg(feature = "decode2")]
     #[test]
     fn decodes_literals_2bits() { 
         for (ansii_bytes, code_bytes) in sample_literals().iter() {
@@ -408,6 +415,7 @@ mod test {
         }
     }
 
+    #[cfg(feature = "decode3")]
     #[test]
     fn decodes_literals_3bits() { 
         for (ansii_bytes, code_bytes) in sample_literals().iter() {
@@ -417,6 +425,7 @@ mod test {
         }
     }
 
+    #[cfg(feature = "decode4")]
     #[test]
     fn decodes_literals_4bits() { 
         for (ansii_bytes, code_bytes) in sample_literals().iter() {
@@ -426,6 +435,7 @@ mod test {
         }
     }
 
+    #[cfg(feature = "decode5")]
     #[test]
     fn decodes_literals_5bits() { 
         for (ansii_bytes, code_bytes) in sample_literals().iter() {

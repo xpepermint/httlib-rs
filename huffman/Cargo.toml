@@ -10,4 +10,10 @@ homepage = "https://github.com/xpepermint/httlib-rs"
 repository = "https://github.com/xpepermint/httlib-rs"
 readme = "README.md"
 
-[dependencies]
+[features]
+default = []
+decode1 = []
+decode2 = []
+decode3 = []
+decode4 = []
+decode5 = []

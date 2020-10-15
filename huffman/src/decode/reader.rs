@@ -73,6 +73,7 @@ impl DecodeReader {
     /// Uposteva speed za izbor translation tabele
     fn find_target(&self, key: usize) -> Result<(Option<usize>, Option<usize>, usize), DecoderError> {
         match self.speed {
+            #[cfg(feature = "decode1")]
             1 => {
                 match crate::data::decoder1::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
@@ -82,6 +83,7 @@ impl DecodeReader {
                     None => Err(DecoderError::InvalidHuffmanCode),
                 }
             },
+            #[cfg(feature = "decode2")]
             2 => {
                 match crate::data::decoder2::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
@@ -91,6 +93,7 @@ impl DecodeReader {
                     None => Err(DecoderError::InvalidHuffmanCode),
                 }
             },
+            #[cfg(feature = "decode3")]
             3 => {
                 match crate::data::decoder3::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
@@ -100,6 +103,7 @@ impl DecodeReader {
                     None => Err(DecoderError::InvalidHuffmanCode),
                 }
             },
+            #[cfg(feature = "decode4")]
             4 => {
                 match crate::data::decoder4::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
@@ -109,6 +113,7 @@ impl DecodeReader {
                     None => Err(DecoderError::InvalidHuffmanCode),
                 }
             },
+            #[cfg(feature = "decode5")]
             5 => {
                 match crate::data::decoder5::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {

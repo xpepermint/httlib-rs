@@ -1,6 +1,11 @@
+#[cfg(feature = "decode1")]
 pub mod decoder1;
+#[cfg(feature = "decode2")]
 pub mod decoder2;
+#[cfg(feature = "decode3")]
 pub mod decoder3;
+#[cfg(feature = "decode4")]
 pub mod decoder4;
+#[cfg(feature = "decode5")]
 pub mod decoder5;
 pub mod encoder;

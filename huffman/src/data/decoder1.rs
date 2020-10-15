@@ -1,5 +1,6 @@
 /// This is a static translation matrix for decoding Huffman sequence by reading
 /// 1-bit at at time.
+#[cfg(feature = "decode1")]
 pub const DECODE_TABLE: [[(Option<usize>, Option<usize>, usize); 2]; 256] = [ // (next_id, ascii, leftover)
     [ // 0
         (Some(66), None, 0),
