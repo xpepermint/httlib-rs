@@ -12,7 +12,7 @@ pub enum EncodeError {
 impl fmt::Display for EncodeError {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::InvalidAscii => write!(fmt, "Failed to encode an invalid ASCII byte."),
+            Self::InvalidAscii => write!(fmt, "Failed to encode a character."),
         }
     }
 }
