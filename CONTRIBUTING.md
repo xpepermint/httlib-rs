@@ -16,7 +16,7 @@ $ cargo publish
 
 ```bash
 # Builds the ENCODE_TABLE.
-$ cargo run --exeample parse
+$ cargo run --example parse
 # Builds the DECODE_TABLE.
-$ cargo run --exeample flatten
+$ cargo run --example flatten
 ```
