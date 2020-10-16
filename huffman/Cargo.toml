@@ -2,7 +2,7 @@
 name = "httlib-huffman"
 description = "Canonical Huffman algorithm for handling HPACK format in HTTP/2."
 license = "MIT"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Kristijan Sedlak <xpepermint@gmail.com>"]
 edition = "2018"
 documentation = "https://docs.rs/httlib-huffman"

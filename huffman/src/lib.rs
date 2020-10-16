@@ -78,6 +78,12 @@
 //! features = ["encode", "decode4"]
 //! ```
 //! 
+//! ## Articles
+//! 
+//! * [HPACK: Huffman encoder](https://kristijansedlak.medium.com/hpack-huffman-encoder-explained-61102edd6ecc)
+//! * [HPACK: Huffman translation matrix](https://kristijansedlak.medium.com/hpack-huffman-translation-matrix-f3cae44bfe8c)
+//! * [HPACK: Huffman decoder](https://medium.com/@kristijansedlak/hpack-huffman-decoder-72d215788130)
+//! 
 //! [ASCII]: https://en.wikipedia.org/wiki/ASCII
 //! [HPACK]: https://tools.ietf.org/html/rfc7541
 //! [HTTP/2]: https://tools.ietf.org/html/rfc7540
