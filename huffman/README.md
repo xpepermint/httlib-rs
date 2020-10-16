@@ -1,10 +1,11 @@
-> Canonical Huffman algorithm for handling HPACK format in HTTP/2.
-
-[Documentation]
+# httlib-huffman
 
 This crate implements [canonical Huffman] functionality for handling [HPACK]
 format in [HTTP/2]. It exposes a simple API for performing the encoding and
 decoding of [HTTP/2] header string literals according to the [HPACK] spec.
+
+[![Documentation](https://img.shields.io/badge/-Documentation-blue?style=for-the-badge&logo=Rust)](https://docs.rs/httlib-huffman)
+[![Source](https://img.shields.io/badge/-Source-lightgrey?style=for-the-badge&logo=GitHub)](https://github.com/xpepermint/httlib-rs/tree/main/huffman)
 
 Header Compression format for [HTTP/2], known as [HPACK], foresees the use
 of the Huffman algorithm for encoding header literal values. This
@@ -33,9 +34,56 @@ Huffman codes for each [ASCII] character with a length up to 32 bits (4x by
 8 fields with value 0 or 1), in the form of base-2 integer, aligned on the
 most significant bit (MSB is the bit farthest to the left).
 
+Each module covers this topic in more details so check the rest of the code
+to learn more.
+
+### Usage
+
+Encoding:
+
+```rs
+use httlib_huffman::encode;
+
+let mut sequence = Vec::new();
+let text = "Hello world!".as_bytes();
+match encode(&text, &mut sequence)?;
+```
+
+Decoding:
+
+```rs
+use httlib_huffman::decode;
+
+let mut text = Vec::new();
+let speed = 3;
+let sequence = vec![168, 209, ...];
+decode(&sequence, &mut text, speed).unwrap();
+```
+
+### Features
+
+This crate splits functionalities into features so you can manually enable
+or disable them as needed.
+
+* `encode`: Enables encoding features (default).
+* `decode1`: Enables decoding features for reading 1 bit at a time.
+* `decode2`: Enables decoding features for reading 2 bits at a time.
+* `decode3`: Enables decoding features for reading 3 bits at a time.
+* `decode4`: Enables decoding features for reading 4 bits at a time (default).
+* `decode5`: Enables decoding features for reading 5 bits at a time.
+* `flatten`: Enables features for flattening Huffman table (default).
+* `parse`: Enables features for parsing Huffman table (default).
+
+```toml
+[dependencies.httlib-huffman]
+default-features = false
+features = ["encode", "decode4"]
+```
+
 [ASCII]: https://en.wikipedia.org/wiki/ASCII
 [HPACK]: https://tools.ietf.org/html/rfc7541
 [HTTP/2]: https://tools.ietf.org/html/rfc7540
 [Huffman code]: https://en.wikipedia.org/wiki/Huffman_coding
 [canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
-[Documentation]: https://docs.rs/httlib-huffman
+
+License: MIT

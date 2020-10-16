@@ -2,6 +2,9 @@
 //! format in [HTTP/2]. It exposes a simple API for performing the encoding and
 //! decoding of [HTTP/2] header string literals according to the [HPACK] spec.
 //! 
+//! [![Documentation](https://img.shields.io/badge/-Documentation-blue?style=for-the-badge&logo=Rust)](https://docs.rs/httlib-huffman)
+//! [![Source](https://img.shields.io/badge/-Source-lightgrey?style=for-the-badge&logo=GitHub)](https://github.com/xpepermint/httlib-rs/tree/main/huffman)
+//! 
 //! Header Compression format for [HTTP/2], known as [HPACK], foresees the use
 //! of the Huffman algorithm for encoding header literal values. This
 //! contributes to the additional decrease in the quantity of data, transferred
