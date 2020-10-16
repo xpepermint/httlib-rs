@@ -1,18 +1,22 @@
-See it in action:
+## Publishing
+
+```bash
+$ cd <project>
+# Regenerate readme
+$ cargo readme > README.md
+# Run tests
+$ cargo test --all-features
+# Try to publich
+$ cargo publish --dry-run
+# Publish
+$ cargo publish
+```
+
+## Notes
 
 ```bash
 # Builds the ENCODE_TABLE.
 $ cargo run --exeample parse
 # Builds the DECODE_TABLE.
 $ cargo run --exeample flatten
-# Run all tests.
-$ cargo test --all-features
-```
-
-Publish this crate:
-
-```bash
-$ cd <project>
-$ cargo publish --dry-run
-$ cargo publish
 ```
