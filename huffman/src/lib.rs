@@ -25,12 +25,11 @@
 //! [HPACK] compression entails a pre-created [canonical Huffman] code table
 //! for encoding [ASCII] characters to the Huffman sequence. A
 //! [canonical Huffman] code is a particular type of [Huffman code] with unique
-//! properties that allow it to be described in a very compact manner. The
-//! advantage of a [canonical Huffman] tree is that one can encode data in fewer
-//! bits than with a fully described tree. In the aforementioned table are the
-//! Huffman codes for each [ASCII] character with a length up to 32 bits (4x by
-//! 8 fields with value 0 or 1), in the form of base-2 integer, aligned on the
-//! most significant bit (MSB is the bit farthest to the left).
+//! properties that allow it to be described in a very compact manner. In the
+//! aforementioned table are the Huffman codes for each [ASCII] character with a
+//! length up to 32 bits (4x by 8 fields with value 0 or 1), in the form of
+//! base-2 integer, aligned on the most significant bit (MSB is the bit farthest
+//! to the left).
 //! 
 //! Each module covers this topic in more details so check the rest of the code
 //! to learn more.
