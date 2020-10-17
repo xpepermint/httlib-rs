@@ -48,11 +48,11 @@
 //! 00000001 | 00000010 = 00000011
 //! ```
 //! 
-//! For the sum of two bit numbers, we used the bitwise operator `|` which
-//! serves as a sign for addition "+" in our example. Its rule is to trace the
-//! bits of both numbers and, if a 0 or a 1 is found on the same spot, change
-//! their value to 1, while setting the value to 0 in other cases. This
-//! understanding now enables us to re-implement the example above.
+//! For the sum of two bit numbers, we used the bitwise operator OR denoted by
+//! the "|" symbol which serves as a sign for addition "+" in our example. Its
+//! rule is to trace the bits of both numbers and, if a 0 or a 1 is found on the
+//! same spot, change their value to 1, while setting the value to 0 in other
+//! cases. This understanding now enables us to re-implement the example above.
 //! 
 //! Instead of a string, we will use a u64 data type storing a string of 64
 //! bits. We could also use a data type with a larger capacity (such as u128),
