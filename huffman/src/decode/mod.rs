@@ -46,6 +46,12 @@ pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: u8) -> Result<(), DecoderErr
 mod test {
     use super::*;
 
+    fn decode(bytes: &[u8], speed: u8) -> Result<Vec<u8>, DecoderError> {
+        let mut dst = Vec::new();
+        super::decode(&bytes, &mut dst, 1)?;
+        Ok(dst)
+    }
+
     fn supported_characters() -> Vec<(&'static [u8], Vec<u8>)> {
         vec![
             (&[0],   vec![255, 199]),               // 0
@@ -334,7 +340,7 @@ mod test {
             vec![185, 88, 211, 63],
         ), (
             b"/images/top/sp2/cmn/logo-ns-130528.png".to_vec(),
-            vec![96, 212, 142, 98, 161, 132, 158, 182, 17, 88, 152, 37, 53, 49, 65, 230, 58, 213, 33, 96, 178, 6, 196, 242, 245, 213, 55],
+            vec![96, 212, 142, 98, 161, 132, 158, 182, 17, 88, 152, 37, 53, 49,65, 230, 58, 213, 33, 96, 178, 6, 196, 242, 245, 213, 55],
         ), (
             b"hpack-test".to_vec(),
             vec![158, 177, 147, 170, 201, 42, 19],
@@ -364,107 +370,90 @@ mod test {
             vec![223, 131],
         ), (
             b"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non bibendum libero. Etiam ultrices lorem ut.".to_vec(),
-            vec![206, 123, 11, 74, 134, 173, 22, 210, 164, 135, 160, 246, 40, 131, 37, 65, 210, 84, 253, 40, 67, 212, 130, 145, 37, 77, 182, 40, 57, 13, 89, 144, 67, 85, 50, 133, 160, 201, 93, 77, 7, 178, 51, 41, 81, 234, 82, 51, 70, 90, 164, 182, 149, 40, 52, 101, 176, 235, 169, 129, 38, 29, 42, 91, 66, 108, 49, 10, 133, 40, 61, 133, 165, 75, 82, 191],        
+            vec![206, 123, 11, 74, 134, 173, 22, 210, 164, 135, 160, 246, 40, 131, 37, 65, 210, 84, 253, 40, 67, 212, 130, 145, 37, 77, 182, 40, 57, 13, 89, 144, 67, 85, 50, 133, 160, 201, 93, 77, 7, 178, 51, 41, 81, 234, 82, 51, 70, 90, 164, 182, 149, 40, 52, 101, 176, 235, 169, 129, 38, 29, 42, 91, 66, 108, 49, 10, 133, 40, 61, 133, 165, 75, 82, 191],
+        ), (
+            b"!$%&A".to_vec(),
+            vec![0b11111110, 0b00111111, 0b11110010, 0b10101111, 0b11000100, 0b00111111],
         )]
     }
 
     #[cfg(feature = "decode1")]
     #[test]
-    fn decodes_characters_1bits() {
-        for (ansii_bytes, code_bytes) in supported_characters().iter() {
-            let mut dst = Vec::new();
-            decode(&code_bytes, &mut dst, 1).unwrap();
-            assert_eq!(dst, *ansii_bytes);
+    fn decodes_characters_1bit() {
+        for (data, code) in supported_characters().iter() {
+            assert_eq!(*data, decode(&code, 1).unwrap());
         }
     }
 
     #[cfg(feature = "decode2")]
     #[test]
     fn decodes_characters_2bits() {
-        for (ansii_bytes, code_bytes) in supported_characters().iter() {
-            let mut dst = Vec::new();
-            decode(&code_bytes, &mut dst, 2).unwrap();
-            assert_eq!(dst, *ansii_bytes);
+        for (data, code) in supported_characters().iter() {
+            assert_eq!(*data, decode(&code, 2).unwrap());
         }
     }
 
     #[cfg(feature = "decode3")]
     #[test]
     fn decodes_characters_3bits() {
-        for (ansii_bytes, code_bytes) in supported_characters().iter() {
-            let mut dst = Vec::new();
-            decode(&code_bytes, &mut dst, 3).unwrap();
-            assert_eq!(dst, *ansii_bytes);
+        for (data, code) in supported_characters().iter() {
+            assert_eq!(*data, decode(&code, 3).unwrap());
         }
     }
 
     #[cfg(feature = "decode4")]
     #[test]
     fn decodes_characters_4bits() {
-        for (ansii_bytes, code_bytes) in supported_characters().iter() {
-            let mut dst = Vec::new();
-            decode(&code_bytes, &mut dst, 4).unwrap();
-            assert_eq!(dst, *ansii_bytes);
+        for (data, code) in supported_characters().iter() {
+            assert_eq!(*data, decode(&code, 4).unwrap());
         }
     }
 
     #[cfg(feature = "decode5")]
     #[test]
     fn decodes_characters_5bits() {
-        for (ansii_bytes, code_bytes) in supported_characters().iter() {
-            let mut dst = Vec::new();
-            decode(&code_bytes, &mut dst, 5).unwrap();
-            assert_eq!(dst, *ansii_bytes);
+        for (data, code) in supported_characters().iter() {
+            assert_eq!(*data, decode(&code, 5).unwrap());
         }
     }
 
     #[cfg(feature = "decode1")]
     #[test]
     fn decodes_literals_1bits() { 
-        for (ansii_bytes, code_bytes) in sample_literals().iter() {
-            let mut dst = Vec::new();
-            decode(code_bytes, &mut dst, 1).unwrap();
-            assert_eq!(dst, *ansii_bytes);
+        for (data, code) in sample_literals().iter() {
+            assert_eq!(*data, decode(&code, 1).unwrap());
         }
     }
 
     #[cfg(feature = "decode2")]
     #[test]
     fn decodes_literals_2bits() { 
-        for (ansii_bytes, code_bytes) in sample_literals().iter() {
-            let mut dst = Vec::new();
-            decode(code_bytes, &mut dst, 2).unwrap();
-            assert_eq!(dst, *ansii_bytes);
+        for (data, code) in sample_literals().iter() {
+            assert_eq!(*data, decode(&code, 2).unwrap());
         }
     }
 
     #[cfg(feature = "decode3")]
     #[test]
     fn decodes_literals_3bits() { 
-        for (ansii_bytes, code_bytes) in sample_literals().iter() {
-            let mut dst = Vec::new();
-            decode(code_bytes, &mut dst, 3).unwrap();
-            assert_eq!(dst, *ansii_bytes);
+        for (data, code) in sample_literals().iter() {
+            assert_eq!(*data, decode(&code, 3).unwrap());
         }
     }
 
     #[cfg(feature = "decode4")]
     #[test]
     fn decodes_literals_4bits() { 
-        for (ansii_bytes, code_bytes) in sample_literals().iter() {
-            let mut dst = Vec::new();
-            decode(code_bytes, &mut dst, 4).unwrap();
-            assert_eq!(dst, *ansii_bytes);
+        for (data, code) in sample_literals().iter() {
+            assert_eq!(*data, decode(&code, 4).unwrap());
         }
     }
 
     #[cfg(feature = "decode5")]
     #[test]
     fn decodes_literals_5bits() { 
-        for (ansii_bytes, code_bytes) in sample_literals().iter() {
-            let mut dst = Vec::new();
-            decode(code_bytes, &mut dst, 5).unwrap();
-            assert_eq!(dst, *ansii_bytes);
+        for (data, code) in sample_literals().iter() {
+            assert_eq!(*data, decode(&code, 5).unwrap());
         }
     }
 }
