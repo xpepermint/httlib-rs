@@ -1,8 +1,8 @@
 //! This module provides an implementation of the [canonical Huffman] encoder.
 //! 
 //! Encoding is relatively easy since we are replacing the individual characters
-//! with the Huffman code. We add an EOS sign at the end and the desired
-//! padding, which should be up to 7 bits long.
+//! with the Huffman code. We add an EOS sign at the end to always fill the
+//! entire octet.
 //! 
 //! The Huffman encoder implementation illustration:
 //! 
@@ -13,15 +13,14 @@
 //! [add "&"]     1111111000111111111100101010111111000
 //! [add "A"]     1111111000111111111100101010111111000100001
 //! [add EOS]     1111111000111111111100101010111111000100001111111111111111111111111111111
-//! [add padding] 11111110001111111111001010101111110001000011111111111111111111111111111111111111
 //! 
 //! [result]      [254   ][63    ][242   ][175   ][196   ][63    ]
 //!               111111100011111111110010101011111100010000111111
 //! ```
 //! 
-//! The illustration shows how the encoder iterates through all the ASCII
+//! The illustration shows how the encoder iterates through all the [ASCII]
 //! characters and replaces them with the Huffman code. Each line ends with the
-//! EOS character and 7-bit padding is added.
+//! EOS character which serves as (up to 7 bits) padding.
 //! 
 //! While adding the Hoffman code to the sequence, the length of the added code
 //! must exactly match the number of bits specified in the documentation.
@@ -29,6 +28,7 @@
 //! such as strings, could remove the prepended zeros. In such cases, we have to
 //! do some plumbing to ensure all bits are there (an example of this would be
 //! the character "%").
+//! 
 //! Implementation could be achieved by manipulating a string of ones and zeros.
 //! However, for more complex systems such as high-performance web servers, this
 //! would not be sustainable from the performance perspective. To manage
@@ -71,7 +71,6 @@
 //! [add "&"]               11111111110010101011111100000000000000000000000000000000000000
 //! [add "A"]                     1111001010101111110001000010000000000000000000000000000000000000
 //! [add EOS]                     1111001010101111110001000011111111111111111111111111111110000000
-//! [add padding]                 1111001010101111110001000011111111111111111111111111111111111111
 //! 
 //! [result]      [254   ][63    ][242   ][175   ][196   ][63    ]
 //!               111111100011111111110010101011111100010000111111

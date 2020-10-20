@@ -1,7 +1,7 @@
 /// This is a static translation table for decoding Huffman sequence by reading
 /// 3-bit(s) at at time.
 #[cfg(feature = "decode3")]
-pub const DECODE_TABLE: [[(Option<usize>, Option<usize>, usize); 8]; 92] = [ // (next_id, ascii, leftover)
+pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 8]; 92] = [ // (next_id, ascii, leftover)
     [ // 0
         (Some(34), None, 0),
         (Some(53), None, 0),

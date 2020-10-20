@@ -32,12 +32,10 @@ use reader::*;
 pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: u8) -> Result<(), DecoderError> {
     let mut reader = DecodeReader::new(speed);
 
-    for byte in src.iter() {
-        reader.write(*byte)?;
-        reader.decode(dst)?;
+    for byte in src {
+        reader.decode(*byte, dst)?;
     }
-    reader.flush()?;
-    reader.decode(dst)?;
+    reader.finalize(dst)?;
 
     Ok(())
 }
@@ -48,11 +46,11 @@ mod test {
 
     fn decode(bytes: &[u8], speed: u8) -> Result<Vec<u8>, DecoderError> {
         let mut dst = Vec::new();
-        super::decode(&bytes, &mut dst, 1)?;
+        super::decode(&bytes, &mut dst, speed)?;
         Ok(dst)
     }
 
-    fn supported_characters() -> Vec<(&'static [u8], Vec<u8>)> {
+    fn valid_characters() -> Vec<(&'static [u8], Vec<u8>)> {
         vec![
             (&[0],   vec![255, 199]),               // 0
             (&[1],   vec![255, 255, 177]),          // 1
@@ -85,23 +83,23 @@ mod test {
             (&[28],  vec![255, 255, 255, 143]),     // 28
             (&[29],  vec![255, 255, 255, 159]),     // 29
             (&[30],  vec![255, 255, 255, 175]),     // 30
-            (&[31],  vec![255, 255, 255, 191]),     // 31            
+            (&[31],  vec![255, 255, 255, 191]),     // 31
             (b" ",  vec![83]),                      // 32
             (b"!",  vec![254, 63]),                 // 33
             (b"\"", vec![254, 127]),                // 34
             (b"#",  vec![255, 175]),                // 35
             (b"$",  vec![255, 207]),                // 36
-            (b"%",  vec![87]),                      // 33
-            (b"&",  vec![248]),                     // 33
-            (b"'",  vec![255, 95]),                 // 33
-            (b"(",  vec![254, 191]),                // 33
-            (b")",  vec![254, 255]),                // 33
-            (b"*",  vec![249]),                     // 33
-            (b"+",  vec![255, 127]),                // 33
-            (b",",  vec![250]),                     // 33
-            (b"-",  vec![91]),                      // 33
-            (b".",  vec![95]),                      // 33
-            (b"/",  vec![99]),                      // 33
+            (b"%",  vec![87]),                      // 37
+            (b"&",  vec![248]),                     // 38
+            (b"'",  vec![255, 95]),                 // 39
+            (b"(",  vec![254, 191]),                // 40
+            (b")",  vec![254, 255]),                // 41
+            (b"*",  vec![249]),                     // 42
+            (b"+",  vec![255, 127]),                // 43
+            (b",",  vec![250]),                     // 44
+            (b"-",  vec![91]),                      // 45
+            (b".",  vec![95]),                      // 46
+            (b"/",  vec![99]),                      // 47
             (b"0",  vec![7]),                       // 48
             (b"1",  vec![15]),                      // 49
             (b"2",  vec![23]),                      // 50
@@ -310,10 +308,12 @@ mod test {
             (&[253],  vec![255, 255, 253, 255]),    // 253
             (&[254],  vec![255, 255, 254, 31]),     // 254
             (&[255],  vec![255, 255, 251, 191]),    // 255 
-        ] // EOS is not a character
+        ] // EOS(256) is not a valid character
     }
 
-    fn sample_literals() -> Vec<(Vec<u8>, Vec<u8>)> {
+    fn valid_literals() -> Vec<(Vec<u8>, Vec<u8>)> {
+        // NOTES:
+        // * Padding should be discarded.
         vec![(
             vec![3, 4, 1, 2],
             vec![255, 255, 254, 63, 255, 255, 228, 255, 255, 177, 255, 255, 252, 95],
@@ -386,83 +386,64 @@ mod test {
         )]
     }
 
-    #[cfg(feature = "decode1")]
-    #[test]
-    fn decodes_characters_1bit() {
-        for (data, code) in supported_characters().iter() {
-            assert_eq!(*data, decode(&code, 1).unwrap());
-        }
+    fn invalid_encodings() -> Vec<Vec<u8>> {
+        vec![
+            vec![0, 23, 122],
+            vec![73, 124, 165, 137, 211, 77, 31, 67, 174, 186, 12, 65, 164, 199, 169, 143, 51, 166, 154, 63, 223, 154, 104, 250, 29, 117, 208, 98, 13, 38, 61, 76, 121, 166, 143, 190, 208, 1, 119, 254, 190, 88, 249, 251, 237, 0, 23, 122],
+            vec![0b11111111, 0b11111111], // EOS (padding > 7 bits)
+            vec![0b00011111, 0b11111111, 0b11111111, 0b11111111, 0b11100000], // a, EOS, +5
+            vec![0b11111111, 0b10011111, 0b11111111, 0b11111111, 0b11111111, 0b10000000], // |, EOS, +7
+            vec![0b11111111, 0b00111111, 0b11111111, 0b11111111, 0b11111111], // ?, EOS
+            vec![0b11111111, 0b11111111, 0b11111111, 0b11111100], // EOS, +2
+            vec![0b11111111, 0b00111111, 0b11111111, 0b11111111, 0b11111111, 0b0], // ?, EOS, +8
+            vec![0b11111111, 0b11111111, 0b11111111, 0b11111100, 0b0], // EOS, +10
+        ]
     }
 
-    #[cfg(feature = "decode2")]
     #[test]
-    fn decodes_characters_2bits() {
-        for (data, code) in supported_characters().iter() {
-            assert_eq!(*data, decode(&code, 2).unwrap());
+    fn decodes_characters() {
+        let mut speeds = vec![];
+        #[cfg(feature = "decode1")]
+        speeds.push(1);
+        #[cfg(feature = "decode2")]
+        speeds.push(2);
+        #[cfg(feature = "decode3")]
+        speeds.push(3);
+        #[cfg(feature = "decode4")]
+        speeds.push(4);
+        #[cfg(feature = "decode5")]
+        speeds.push(5);
+
+        for speed in speeds {
+            for (data, code) in valid_characters() { // passes
+                assert_eq!(data, decode(&code, speed).unwrap());
+            }
         }
+        // 256 or higher is an overflowing literal and the decoder will throw an
+        // error because it doesn't fit into the type u8.
     }
 
-    #[cfg(feature = "decode3")]
     #[test]
-    fn decodes_characters_3bits() {
-        for (data, code) in supported_characters().iter() {
-            assert_eq!(*data, decode(&code, 3).unwrap());
-        }
-    }
+    fn decodes_literals() { 
+        let mut speeds = vec![];
+        #[cfg(feature = "decode1")]
+        speeds.push(1);
+        #[cfg(feature = "decode2")]
+        speeds.push(2);
+        #[cfg(feature = "decode3")]
+        speeds.push(3);
+        #[cfg(feature = "decode4")]
+        speeds.push(4);
+        #[cfg(feature = "decode5")]
+        speeds.push(5);
 
-    #[cfg(feature = "decode4")]
-    #[test]
-    fn decodes_characters_4bits() {
-        for (data, code) in supported_characters().iter() {
-            assert_eq!(*data, decode(&code, 4).unwrap());
-        }
-    }
-
-    #[cfg(feature = "decode5")]
-    #[test]
-    fn decodes_characters_5bits() {
-        for (data, code) in supported_characters().iter() {
-            assert_eq!(*data, decode(&code, 5).unwrap());
-        }
-    }
-
-    #[cfg(feature = "decode1")]
-    #[test]
-    fn decodes_literals_1bits() { 
-        for (data, code) in sample_literals().iter() {
-            assert_eq!(*data, decode(&code, 1).unwrap());
-        }
-    }
-
-    #[cfg(feature = "decode2")]
-    #[test]
-    fn decodes_literals_2bits() { 
-        for (data, code) in sample_literals().iter() {
-            assert_eq!(*data, decode(&code, 2).unwrap());
-        }
-    }
-
-    #[cfg(feature = "decode3")]
-    #[test]
-    fn decodes_literals_3bits() { 
-        for (data, code) in sample_literals().iter() {
-            assert_eq!(*data, decode(&code, 3).unwrap());
-        }
-    }
-
-    #[cfg(feature = "decode4")]
-    #[test]
-    fn decodes_literals_4bits() { 
-        for (data, code) in sample_literals().iter() {
-            assert_eq!(*data, decode(&code, 4).unwrap());
-        }
-    }
-
-    #[cfg(feature = "decode5")]
-    #[test]
-    fn decodes_literals_5bits() { 
-        for (data, code) in sample_literals().iter() {
-            assert_eq!(*data, decode(&code, 5).unwrap());
+        for speed in speeds {
+            for (data, code) in valid_literals() { // passes
+                assert_eq!(data, decode(&code, speed).unwrap());
+            }
+            for encoding in invalid_encodings() { // throws
+                assert_eq!(Err(DecoderError::InvalidInput), decode(&encoding, speed));
+            }
         }
     }
 }

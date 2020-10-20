@@ -15,10 +15,10 @@
 /// let speed = 4; // decoder will read 4 bits at a time
 /// let table = flatten(&ENCODE_TABLE, speed);
 /// ```
-pub fn flatten(codings: &[(u8, u32)], speed: usize) -> Vec<Vec<(Option<usize>, Option<usize>, usize)>> { // next_id, ascii, leftover
+pub fn flatten(codings: &[(u8, u32)], speed: usize) -> Vec<Vec<(Option<u8>, Option<u16>, u8)>> { // next_id, ascii, leftover
     let blank_transition = generate_blank_transition(speed);
 
-    let mut table: Vec<Vec<(Option<usize>, Option<usize>, usize)>> = Vec::new();
+    let mut table: Vec<Vec<(Option<u8>, Option<u16>, u8)>> = Vec::new();
     table.push(blank_transition.clone());
 
     for (ascii, coding) in codings.iter().enumerate() {
@@ -37,7 +37,7 @@ pub fn flatten(codings: &[(u8, u32)], speed: usize) -> Vec<Vec<(Option<usize>, O
                     } else {
                         table.push(blank_transition.clone());
 
-                        let next_id = table.len() - 1;
+                        let next_id = (table.len() - 1) as u8;
                         let transitions = table.get_mut(id).unwrap();
                         let target = transitions.get_mut(key).unwrap();
                         target.0 = Some(next_id);
@@ -45,15 +45,15 @@ pub fn flatten(codings: &[(u8, u32)], speed: usize) -> Vec<Vec<(Option<usize>, O
                         next_id
                     };
     
-                    id = next_id;
+                    id = next_id as usize;
                 }
             } 
             
             let key = keys.last().unwrap(); // handle the last key of all path variants
             let transitions = table.get_mut(id).unwrap();
             let target = transitions.get_mut(*key).unwrap();
-            target.1 = Some(ascii);
-            target.2 = leftover;
+            target.1 = Some(ascii as u16);
+            target.2 = leftover as u8;
         }
     }
 
@@ -61,7 +61,7 @@ pub fn flatten(codings: &[(u8, u32)], speed: usize) -> Vec<Vec<(Option<usize>, O
 }
 
 /// Generates a black transition object based on the provided speed attribute.
-fn generate_blank_transition(speed: usize) -> Vec<(Option<usize>, Option<usize>, usize)> {
+fn generate_blank_transition(speed: usize) -> Vec<(Option<u8>, Option<u16>, u8)> {
     let mut transition = Vec::new();
 
     for _ in 0..2u32.pow(speed as u32) {

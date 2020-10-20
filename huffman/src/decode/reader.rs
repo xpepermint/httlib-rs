@@ -1,81 +1,134 @@
 use crate::DecoderError;
 
-/// * dekoder ima kapaciteto 128
+/// An object for decoding Huffman sequence back to the original form.
 pub(crate) struct DecodeReader {
+    /// The number of bits that the reader should read at a time.
     speed: usize,
+
+    /// The ID of the last row in the translation matrix from where the
+    /// decoding should continue.
     id: usize,
+
+    /// Internal buffer of received bits.
     buf: usize,
+
+    /// The number of bits stored in the internal buffer.
     buf_size: usize,
+
+    /// The bit sequence of the last character. This is needed for validating
+    /// how the sequence ends. If the padding is not valid, then the whole 
+    /// sequence is invalid.
+    tail: usize,
+
+    /// The number of bits stored in the tail variable.
+    tail_size: usize,
 }
 
 impl DecodeReader {
-    pub const MAX_BUFFER_SIZE: usize = 32;
-
+    /// Returns a new reader instance.
     pub fn new(speed: u8) -> Self {
         Self {
             speed: speed as usize,
             id: 0,
             buf: 0,
             buf_size: 0,
+            tail: 0,
+            tail_size: 0,
         }
     }
 
-    /// Vedno sprejemamo byte!!!!
-    pub fn write(&mut self, src: u8) -> Result<(), DecoderError> {
-        if self.buf_size + 8 > Self::MAX_BUFFER_SIZE {
-            return Err(DecoderError::BufferOverflow);
-        }
+    /// Decodes the entiry buffer of bits (N-bits where N=speed). If leftovers
+    /// are found in the sequence, some bits < speed will remain in the buffer.
+    pub fn decode(&mut self, byte: u8, dst: &mut Vec<u8>) -> Result<(), DecoderError> {
 
         self.buf <<= 8; // make space for new chunk
         self.buf_size += 8;
-        self.buf |= src as usize; // apply new chunk
+        self.buf |= byte as usize; // apply new chunk
 
-        Ok(())
-    }
-
-    pub fn flush(&mut self) -> Result<(), DecoderError> {
-        let shift_len = (self.buf_size as f64 / self.speed as f64).ceil() as usize * self.speed as usize - self.buf_size;
-
-        self.buf <<= shift_len;
-        self.buf |= 2u32.pow(shift_len as u32) as usize - 1;
-        self.buf_size += shift_len;
-
-        Ok(())
-    }
-
-    // Decodes 4 bits
-    pub fn decode(&mut self, dst: &mut Vec<u8>) -> Result<(), DecoderError> {
         loop {
-            if self.buf_size < self.speed {
+            if self.buf_size < self.speed { // has chunks to process
                 break;
-            } else if let Some(byte) = self.decode_next()? {
-                dst.push(byte);
+            } else {
+                self.decode_next(dst)?;
             }
         }
+
         Ok(())
     }
 
-    /// predvideva da je buffer_len vsaj velikosti 1 chunk, sicer ne klicat.
-    fn decode_next(&mut self) -> Result<Option<u8>, DecoderError> {
+    /// When an application receives the last byte this method should be called
+    /// to adjust the remaining bits in the internal buffer. When needed, the
+    /// buffer size is extended to the remaining speed size so the last chunk
+    /// can be processed by the `decode` method. The extended bits are treated
+    /// as a buffer bits of value 1.
+    pub fn finalize(&mut self, dst: &mut Vec<u8>) -> Result<(), DecoderError> {
+        let shift_len = (self.buf_size as f64 / self.speed as f64).ceil() as usize * self.speed as usize - self.buf_size; // how much missing to chunk size
+        
+        self.buf <<= shift_len; // expand buffer to chunk size
+        self.buf_size += shift_len;
+
+        if self.buf_size >= self.speed { // has chunks to process
+            if let Ok((_, _, leftover)) = self.find_target(self.buf) {
+                if shift_len <= leftover as usize { // has another character
+                    self.decode_next(dst)?;
+                }
+            }
+        }
+
+        self.buf >>= shift_len; // remove leftover
+        self.buf_size -= shift_len;
+
+        self.tail <<= self.buf_size; // append buffer to tail
+        self.tail_size += self.buf_size;
+        self.tail |= self.buf;
+        self.buf = 0;
+        self.buf_size = 0;
+
+        if !vec![0, 1, 3, 7, 15, 31, 63, 127].iter().any(|p| *p == self.tail) { // validate padding
+            return Err(DecoderError::InvalidInput);
+        }
+
+        self.tail = 0; // reset (make object reusable)
+        self.tail_size = 0;
+
+        Ok(())
+    }
+
+    /// Tries to decode the next chunk of N bits where N represents the speed.
+    /// 
+    /// This function expects that the `buf_size` is grater or equal to 1. You
+    /// should not call this function if this condition is not meet.
+    fn decode_next(&mut self, dst: &mut Vec<u8>) -> Result<(), DecoderError> {
         let key = self.buf >> self.buf_size - self.speed;
         let (next_id, ascii, leftover) = self.find_target(key)?;
 
-        self.buf -= key >> leftover << self.buf_size - self.speed + leftover; // remove key from buffer
-        self.buf_size -= self.speed - leftover;
+        self.buf -= key >> leftover << self.buf_size - self.speed + leftover as usize; // remove key from buffer
+        self.buf_size -= self.speed - leftover as usize;
+
+        self.tail <<= self.speed - leftover as usize; // append chunk to tail
+        self.tail |= key >> leftover;
+        self.tail_size += self.speed - leftover as usize;
 
         if let Some(ascii) = ascii {
             self.id = 0;
-            Ok(Some(ascii as u8))
-        } else if let Some(next_id) = next_id {
-            self.id = next_id;
-            Ok(None)
+            self.tail = 0;
+            self.tail_size = 0;
+            if ascii < 256 { // valid character
+                dst.push(ascii as u8);
+                Ok(())
+            } else {
+                Err(DecoderError::InvalidInput)
+            }
+        } else if let Some(next_id) = next_id { // transition
+            self.id = next_id as usize;
+            Ok(())
         } else {
-           Err(DecoderError::InvalidInput)
+            Err(DecoderError::InvalidInput)
         }
     }    
 
-    /// Uposteva speed za izbor translation tabele
-    fn find_target(&self, key: usize) -> Result<(Option<usize>, Option<usize>, usize), DecoderError> {
+    /// Returns the translation target tuple based on reader speed.
+    fn find_target(&self, key: usize) -> Result<(Option<u8>, Option<u16>, u8), DecoderError> {
         match self.speed {
             #[cfg(feature = "decode1")]
             1 => {

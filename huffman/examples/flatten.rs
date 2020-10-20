@@ -15,7 +15,7 @@ fn main() {
     println!("");
     println!("/// This is a static translation table for decoding Huffman sequence by reading");
     println!("/// {}-bit(s) at at time.", speed);
-    println!("pub const DECODE_TABLE: [[(Option<usize>, Option<usize>, usize); {}]; {}] = [ // (next_id, ascii, leftover)", targets_len, table_len);
+    println!("pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); {}]; {}] = [ // (next_id, ascii, leftover)", targets_len, table_len);
     for (i, transitions) in table.iter().enumerate() {
         println!("    [ // {}", i);
 
