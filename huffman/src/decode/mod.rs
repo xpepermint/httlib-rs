@@ -1,18 +1,73 @@
 //! This module provides an implementation of the [canonical Huffman] decoder.
 //! 
-//! When the web server receives a header, for which it determines that it
-//! contains content encoded with the [canonical Huffman] algorithm, it has to
-//! decode this content in the shortest possible time with as few resources as
+//! When an entity receives a header, for which it determines that it contains
+//! content encoded with the [canonical Huffman] algorithm, it has to decode
+//! this content in the shortest possible time with as few resources as
 //! possible. The execution speed of this “simple“ task will contribute
-//! significantly to the server’s response time, and this time must be as short
-//! as possible.
+//! significantly to the response time, and this time must be as short as
+//! possible.
 //! 
 //! Reading and decoding a sequence bit by bit appears to be inadequate
 //! performance-wise. Reading in buffered chunks outperforms reading bit by bit.
 //! The trick of fast Huffman decoding is reading N-bits at a time. Since we
 //! cannot determine how the seemingly “random” Huffman sequence corresponds to
-//! actual data, the solution is to use flattened Huffman tree as a matrix that
-//! enables decoding of N-bits at a time.
+//! actual data, we use flattened Huffman tree matrix that enables decoding of
+//! N-bits at a time. This matrix is created by the `flatten` module.
+//! 
+//! Let's learn the decoded mechanics based on a simple matrix that allowsfor
+//! reading 2 bits at a time.
+//!  
+//! | Path | ID | SYM | LFT | 00 | 01 | 10 | 11
+//! |-|-|-|-|-|-|-|-
+//! | // | 0 | - | - | 1 | 2 | 3 | 6
+//! | //00 | 1 | A | 0 | - | - | - | -
+//! | //01 | 2 | B | 0 | - | - | - | -
+//! | //10 | 2 | B | 0 | - | - | - | -
+//! | //10 | 3 | - | - | 4 | 4 | 5 | 5
+//! | //100X | 4 | C | 1 | - | - | - | -
+//! | //101X | 5 | D | 1 | - | - | - | -
+//! | //11 | 6 | E | 0 | - | - | - | -
+//!  
+//! We'll be using a sequence of characters: A, D, and B. 
+//!  
+//! ```txt
+//! ADE = 0010101
+//! ```
+//! 
+//! The Huffman sequence will be decoded by reading 2 bits at a time. Every
+//! reading begins at the root symbol `//`. First, we read the first two bits
+//! `00`. In line one of the matrix at `ID=0`, we need to check where this code
+//! leads, or if it corresponds to any of the characters. Read bits lead to the
+//! second line with `ID=1` and they represent the letter A. 
+//!  
+//! The process is repeated for the next 2 bits `10`. This code leads us to the
+//! line with `ID=3` which doesn’t represent a character, so we continue the
+//! process for the next 2 bits `10`. This code then leads us to line 5,
+//! representing the letter D. Here we can see that the value of the column
+//! `LFT=1`, meaning that there is a leftover 1. This means that in order to
+//! continue reading bits we have to shift to one bit back and continue the
+//! process there. 
+//!  
+//! We position ourselves back to the root position while keeping the last bit
+//! `0`, and keep reading until we reach the sum of 2 bits. This means that we
+//! need to read only 1 bit `1`. Code `01` corresponds with character B and with
+//! this we conclude the decoding process. 
+//! 
+//! ```txt
+//! 00XXXXX => A
+//! XX10XXX => continue
+//! XXXX10X => D
+//! XXXXX01 => B
+//! ```
+//!  
+//! With the use of the translation matrix we successfully decoded the Huffman
+//! sequence back into readable characters. This is how the decoder decodes
+//! literal values. The process is optimal, while it is best for web servers to
+//! read more bits at a time. Considering that the shortest Huffman code for an
+//! individual character is 5 bits long, it’s optimal, for the best ratio
+//! between speed and used resources, to read 4 bits at a time. More bits at a
+//! time mean faster decoding but at the same time a larger translation table
+//! and with it a higher memory footprint.
 //! 
 //! [canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
 
@@ -32,8 +87,9 @@ pub mod table5;
 pub use error::*;
 use reader::*;
 
-/// Decodes Huffman's sequence from the provided table. The table design
-/// explains how many bits should be read at the time.
+/// Decodes Huffman's `src` sequence into `dst` vector of bytes. The `speed`
+/// parameter is used to tell the encoder how many bits should be read and
+/// decoded at a time.
 /// 
 /// ```rs
 /// use httlib_huffman::decode;
