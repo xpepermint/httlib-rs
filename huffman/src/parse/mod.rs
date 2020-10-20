@@ -1,13 +1,13 @@
 //! This module provides features for parsing [Huffman code] table provided by
 //! the [HPACK] documentation.
 //! 
-//! [HPACK] compression provides a pre-created [Huffman code] table for encoding
-//! [ASCII] characters to the Huffman sequence. This Huffman code was generated
-//! from statistics obtained on a large sample of HTTP headers.
+//! [HPACK] provides a pre-created [Huffman code] table for encoding [ASCII]
+//! characters to the Huffman sequence. This Huffman code was generated from
+//! statistics obtained on a large sample of HTTP headers.
 //! 
 //! The parser module is responsible for parsing the [Huffman code] table into
 //! the static Rust source code. This module was used to create the ENCODE_TABLE
-//! constant which can be found in the crate::encode::table module.
+//! constant which can be found in the `encode::table` module.
 //! 
 //! You will probably never use this module while developing applications thus
 //! you have to enable by specifying the "parse" feature.

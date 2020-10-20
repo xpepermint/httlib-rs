@@ -1,5 +1,5 @@
 //! This module provides features for flattening Huffman tree and generating
-//! translation matrixs.
+//! translation matrix.
 //! 
 //! [HPACK] documentation provides an already prepared and for the web optimized
 //! Huffman code for all [ASCII] characters. To implement the Huffman algorithm

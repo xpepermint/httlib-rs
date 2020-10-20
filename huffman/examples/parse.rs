@@ -1,5 +1,5 @@
 //! The example will print out the source code for the ENCODE_TABLE constant
-//! which is provided by this crate through the crate::encode::table module.
+//! which is provided by this crate through the `encode::table` module.
 
 extern crate httlib_huffman;
 
