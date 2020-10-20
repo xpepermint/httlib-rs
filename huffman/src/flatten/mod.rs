@@ -1,13 +1,130 @@
-//! This module provides features for flattening [Huffman tree] and generating
+//! This module provides features for flattening Huffman tree and generating
 //! translation matrixs.
 //! 
-//! [Huffman tree]: https://en.wikipedia.org/wiki/Huffman_coding
+//! [HPACK] documentation provides an already prepared and for the web optimized
+//! Huffman code for all [ASCII] characters. To implement the Huffman algorithm
+//! for [HPACK] we have to first flatten this table to a two-dimensional matrix.
+//! 
+//! Let’s learn how to do this on a very simple example. Our algorithm will
+//! enable the conversion of letters A, B, C, D, and E into a Huffman sequence.
+//! The Huffman code for each letter is shown in the table below.
+//! 
+//! | Character | Huffman code
+//! |-|-
+//! | A | 00
+//! | B | 01
+//! | C | 100
+//! | D | 101
+//! | E | 11
+//! 
+//! We have decided to flatten the Huffman table into a matrix, enabling the
+//! decoder to read Huffman bit-sequence 2-bits at a time. The illustration
+//! below shows the table structure we need to fill in. 
+//! 
+//! | PATH | ID | SYM | LFT | 00 | 01 | 10 | 11
+//! |-|-|-|-|-|-|-|-
+//! | // | 0 | - | - | - | - | - | -
+//! 
+//! The first column PATH will serve for our notes in which we’ll store read
+//! bits so we will know what sequence refers to what table row. Reading of each
+//! character’s code always starts in the root row marked with `//`. The column
+//! `ID` will store the unique name of the row. The first row is marked with
+//! `0`. The column `SYM` will store characters (e.g. A). Field `LFT` will store
+//! the information about the leftover bits. A leftover bit is a number of bits,
+//! missing to reach the full bit chunk (in our case 2 bits). For example,
+//! letter C and D have a leftover of 1, because to reach a round number of
+//! bits, which is in our case 2 bits * N, 1 bit remains. Letters A, B, and E
+//! have no leftover. The remaining columns represent the read chunk of 2 bits
+//! for all its possible values ranging from `00` (0) to `11` (3). 
+//! 
+//! The table above will now be filled with data of sample Huffman coding. As
+//! mentioned previously, we are reading the Hoffman code 2-bits at a time.
+//! Let’s see how to insert data to the table for the first letter A.  
+//! 
+//! Letter A is represented with code `00`. Since there is no path `//00` for
+//! this code in the first column, we create a new line with a new `ID`. There
+//! is no leftover, and in the root line to column `00` we write the `ID` of the
+//! newly established line. Since we read all the bits for the letter A, we also
+//! write character A in the `SYM` column. 
+//! 
+//! | Path | ID | SYM | LFT | 00 | 01 | 10 | 11
+//! |-|-|-|-|-|-|-|-
+//! | // | 0 | - | - | 1 | - | - | -
+//! | //00 | 1 | A | 0 | - | - | - | -
+//! 
+//! We then repeat this process for the letter B. The letter B is represented
+//! with code `01`. Since there is no path `//01` for this code, we create a
+//! new line with a new `ID`. There is no leftover, and in the root line in
+//! column `01` we write the `ID` of the newly established line. Since we read
+//! all the bits for the letter B, we also write character B to the `SYM`
+//! column.
+//! 
+//! | Path | ID | SYM | LFT | 00 | 01 | 10 | 11
+//! |-|-|-|-|-|-|-|-
+//! | // | 0 | - | - | 1 | 2 | - | -
+//! | //00 | 1 | A | 0 | - | - | - | -
+//! | //01 | 2 | B | 0 | - | - | - | -
+//! 
+//! The process for the letter C is somewhat different since its number of bits
+//! doesn’t correspond to 2-bits * N. The final bit is therefore missing, so we
+//! claim that it has a leftover of 1. First, we read the first 2 bits and
+//! insert them in the table following the same process as before. After that,
+//! we read the remaining bit, while assuming that all the possible variations
+//! of the missing bit exist. This is marked with `X`. Since one bit is missing,
+//! we note this in the column `LFT`. 
+//! 
+//! | Path | ID | SYM | LFT | 00 | 01 | 10 | 11
+//! |-|-|-|-|-|-|-|-
+//! | // | 0 | - | - | 1 | 2 | 3 | -
+//! | //00 | 1 | A | 0 | - | - | - | -
+//! | //01 | 2 | B | 0 | - | - | - | -
+//! | //10 | 2 | B | 0 | - | - | - | -
+//! | //10 | 3 | - | - | 4 | 4 | - | -
+//! | //100X | 4 | C | 1 | - | - | - | -
+//! 
+//! We repeat the process for letters D and E. The final table should look like
+//! this: 
+//! 
+//! | Path | ID | SYM | LFT | 00 | 01 | 10 | 11
+//! |-|-|-|-|-|-|-|-
+//! | // | 0 | - | - | 1 | 2 | 3 | 6
+//! | //00 | 1 | A | 0 | - | - | - | -
+//! | //01 | 2 | B | 0 | - | - | - | -
+//! | //10 | 2 | B | 0 | - | - | - | -
+//! | //10 | 3 | - | - | 4 | 4 | 5 | 5
+//! | //100X | 4 | C | 1 | - | - | - | -
+//! | //101X | 5 | D | 1 | - | - | - | -
+//! | //11 | 6 | E | 0 | - | - | - | -
+//! 
+//! Note that it would be correct to replace the variants marked with X with
+//! actual possible paths.
+//! 
+//! | Path | ID | SYM | LFT | 00 | 01 | 10 | 11
+//! |-|-|-|-|-|-|-|-
+//! | // | 0 | - | - | 1 | 2 | 3 | 6
+//! | //00 | 1 | A | 0 | - | - | - | -
+//! | //01 | 2 | B | 0 | - | - | - | -
+//! | //10 | 2 | B | 0 | - | - | - | -
+//! | //10 | 3 | - | - | 4 | 4 | 5 | 5
+//! | //1000 | 4 | C | 1 | - | - | - | -
+//! | //1001 | 4 | C | 1 | - | - | - | -
+//! | //1010 | 5 | D | 1 | - | - | - | -
+//! | //1011 | 5 | D | 1 | - | - | - | -
+//! | //11 | 6 | E | 0 | - | - | - | -
+//! 
+//! The flattened form of the Huffman tree] in the form of a matrix plays a
+//! crucial role in the process of decoding. We now have an idea of what the
+//! process of decoding looks like, using this matrix. This module uses this
+//! exact technic for creating N-bits translation matrix. 
+//! 
+//! [HPACK]: https://tools.ietf.org/html/rfc7541
+//! [ASCII]: https://en.wikipedia.org/wiki/ASCII
 
-/// Generates a translation matrix that can be used to decode a decoded content.
-/// The function expects the `speed` attribute which represents the number of
-/// bits that the decoder will read at a time when decoding an encoded sequence. 
-/// The speed attribute can be between 1 bit and 5 bits. The higher number will
-/// have a positive effect on performance but a higher more footprint.
+/// Generates a translation matrix that can be used to decode an encoded
+/// content. The function expects the `speed` attribute which represents the
+/// number of bits that the decoder will read at a time when processing bytes.
+/// The speed attribute can be between 1 and 5 bits. The higher number will
+/// have a positive effect on performance but possibly a higher memory usage.
 /// 
 /// ```rs
 /// use httlib_huffman::encode::table::ENCODE_TABLE;
@@ -181,13 +298,14 @@ mod test {
 
     #[test]
     fn generates_coding_paths() {
-        assert_eq!(generate_coding_paths(&(14, 12345), 4), vec![ // code=11000000|111001XX, len=14
+        let speed = 4;
+        assert_eq!(generate_coding_paths(&(14, 12345), speed), vec![ // code=11000000|111001XX, len=14
             vec![12, 0, 14, 4], // [1100, 0000, 1110, 0100]
             vec![12, 0, 14, 5], // [1100, 0000, 1110, 0101]
             vec![12, 0, 14, 6], // [1100, 0000, 1110, 0110]
             vec![12, 0, 14, 7], // [1100, 0000, 1110, 0111]
         ]);
-        assert_eq!(generate_coding_paths(&(13, 2616), 4), vec![ // code=01010001|11000XXX, let=13
+        assert_eq!(generate_coding_paths(&(13, 2616), speed), vec![ // code=01010001|11000XXX, let=13
             vec![5, 1, 12, 0], // [0101, 0000, 1110, 0000]
             vec![5, 1, 12, 1], // [0101, 0000, 1110, 0001]
             vec![5, 1, 12, 2], // [0101, 0000, 1110, 0010]

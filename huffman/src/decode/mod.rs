@@ -1,5 +1,19 @@
 //! This module provides an implementation of the [canonical Huffman] decoder.
 //! 
+//! When the web server receives a header, for which it determines that it
+//! contains content encoded with the [canonical Huffman] algorithm, it has to
+//! decode this content in the shortest possible time with as few resources as
+//! possible. The execution speed of this “simple“ task will contribute
+//! significantly to the server’s response time, and this time must be as short
+//! as possible.
+//! 
+//! Reading and decoding a sequence bit by bit appears to be inadequate
+//! performance-wise. Reading in buffered chunks outperforms reading bit by bit.
+//! The trick of fast Huffman decoding is reading N-bits at a time. Since we
+//! cannot determine how the seemingly “random” Huffman sequence corresponds to
+//! actual data, the solution is to use flattened Huffman tree as a matrix that
+//! enables decoding of N-bits at a time.
+//! 
 //! [canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
 
 mod error;
