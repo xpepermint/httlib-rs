@@ -15,8 +15,10 @@ $ cargo publish
 ## Notes
 
 ```bash
-# Builds the ENCODE_TABLE.
+# Build ENCODE_TABLE
 $ cargo run --example parse
-# Builds the DECODE_TABLE.
+# Build DECODE_TABLE
 $ cargo run --example flatten
+# Generate documentation (./target/doc/httlib_huffman)
+$ cargo doc --all-features
 ```
