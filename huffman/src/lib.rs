@@ -57,26 +57,6 @@
 //! decode(&sequence, &mut text, speed).unwrap();
 //! ```
 //! 
-//! ## Features
-//! 
-//! This crate splits functionalities into features so you can manually enable
-//! or disable them as needed.
-//! 
-//! * `encode`: Enables encoding features (default).
-//! * `decode1`: Enables decoding features for reading 1 bit at a time.
-//! * `decode2`: Enables decoding features for reading 2 bits at a time.
-//! * `decode3`: Enables decoding features for reading 3 bits at a time.
-//! * `decode4`: Enables decoding features for reading 4 bits at a time (default).
-//! * `decode5`: Enables decoding features for reading 5 bits at a time.
-//! * `flatten`: Enables features for flattening Huffman table (default).
-//! * `parse`: Enables features for parsing Huffman table (default).
-//! 
-//! ```toml
-//! [dependencies.httlib-huffman]
-//! default-features = false
-//! features = ["encode", "decode4"]
-//! ```
-//! 
 //! ## Articles
 //! 
 //! * [HPACK: Huffman encoder](https://kristijansedlak.medium.com/hpack-huffman-encoder-explained-61102edd6ecc)
@@ -90,17 +70,11 @@
 //! [canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
 
 pub mod decode;
-#[cfg(feature = "encode")]
 pub mod encode;
-#[cfg(feature = "flatten")]
 pub mod flatten;
-#[cfg(feature = "parse")]
 pub mod parse;
 
 pub use decode::*;
-#[cfg(feature = "encode")]
 pub use encode::*;
-#[cfg(feature = "flatten")]
 pub use flatten::*;
-#[cfg(feature = "parse")]
 pub use parse::*;

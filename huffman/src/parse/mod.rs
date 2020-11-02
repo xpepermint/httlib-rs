@@ -9,8 +9,7 @@
 //! the static Rust source code. This module was used to create the ENCODE_TABLE
 //! constant which can be found in the `encode::table` module.
 //! 
-//! You will probably never use this module while developing applications thus
-//! you have to enable by specifying the "parse" feature.
+//! You will probably never use this module while developing applications.
 //! 
 //! [ASCII]: https://en.wikipedia.org/wiki/ASCII
 //! [HPACK]: https://tools.ietf.org/html/rfc7541

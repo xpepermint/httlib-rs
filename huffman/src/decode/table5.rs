@@ -1,6 +1,5 @@
 /// This is a static translation table for decoding Huffman sequence by reading
 /// 5-bit(s) at at time.
-#[cfg(feature = "decode5")]
 pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 32]; 61] = [ // (next_id, ascii, leftover)
     [ // 0
         (None, Some(48), 0),

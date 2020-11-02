@@ -130,7 +130,6 @@ impl DecodeReader {
     /// Returns the translation target tuple based on reader speed.
     fn find_target(&self, key: usize) -> Result<(Option<u8>, Option<u16>, u8), DecoderError> {
         match self.speed {
-            #[cfg(feature = "decode1")]
             1 => {
                 match crate::decode::table1::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
@@ -140,7 +139,6 @@ impl DecodeReader {
                     None => Err(DecoderError::InvalidInput),
                 }
             },
-            #[cfg(feature = "decode2")]
             2 => {
                 match crate::decode::table2::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
@@ -150,7 +148,6 @@ impl DecodeReader {
                     None => Err(DecoderError::InvalidInput),
                 }
             },
-            #[cfg(feature = "decode3")]
             3 => {
                 match crate::decode::table3::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
@@ -160,7 +157,6 @@ impl DecodeReader {
                     None => Err(DecoderError::InvalidInput),
                 }
             },
-            #[cfg(feature = "decode4")]
             4 => {
                 match crate::decode::table4::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
@@ -170,7 +166,6 @@ impl DecodeReader {
                     None => Err(DecoderError::InvalidInput),
                 }
             },
-            #[cfg(feature = "decode5")]
             5 => {
                 match crate::decode::table5::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {

@@ -73,15 +73,10 @@
 
 mod error;
 mod reader;
-#[cfg(feature = "decode1")]
 pub mod table1;
-#[cfg(feature = "decode2")]
 pub mod table2;
-#[cfg(feature = "decode3")]
 pub mod table3;
-#[cfg(feature = "decode4")]
 pub mod table4;
-#[cfg(feature = "decode5")]
 pub mod table5;
 
 pub use error::*;
@@ -473,15 +468,10 @@ mod test {
     #[test]
     fn decodes_characters() {
         let mut speeds = vec![];
-        #[cfg(feature = "decode1")]
         speeds.push(1);
-        #[cfg(feature = "decode2")]
         speeds.push(2);
-        #[cfg(feature = "decode3")]
         speeds.push(3);
-        #[cfg(feature = "decode4")]
         speeds.push(4);
-        #[cfg(feature = "decode5")]
         speeds.push(5);
 
         for speed in speeds {
@@ -496,15 +486,10 @@ mod test {
     #[test]
     fn decodes_literals() { 
         let mut speeds = vec![];
-        #[cfg(feature = "decode1")]
         speeds.push(1);
-        #[cfg(feature = "decode2")]
         speeds.push(2);
-        #[cfg(feature = "decode3")]
         speeds.push(3);
-        #[cfg(feature = "decode4")]
         speeds.push(4);
-        #[cfg(feature = "decode5")]
         speeds.push(5);
 
         for speed in speeds {

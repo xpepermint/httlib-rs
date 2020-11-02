@@ -5,7 +5,7 @@ $ cd <project>
 # Regenerate readme
 $ cargo readme > README.md
 # Run tests
-$ cargo test --all-features
+$ cargo test
 # Try to publich
 $ cargo publish --dry-run
 # Publish
@@ -20,5 +20,5 @@ $ cargo run --example parse
 # Build DECODE_TABLE
 $ cargo run --example flatten
 # Generate documentation (./target/doc/httlib_huffman)
-$ cargo doc --all-features
+$ cargo doc
 ```
