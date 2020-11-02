@@ -465,6 +465,9 @@ mod test {
         ]
     }
 
+    /// Should be able to decode ASCII characters encoded into Huffman formatted
+    /// sequence. The decoder should be able to decode the sequence by reading
+    /// 1, 2, 3, 4 or 5 bits at a time.
     #[test]
     fn decodes_characters() {
         let mut speeds = vec![];
@@ -483,6 +486,9 @@ mod test {
         // error because it doesn't fit into the type u8.
     }
 
+    /// Should be able to decode ASCII string literals encoded into Huffman
+    /// formatted sequence. The decoder should be able to decode the sequence by
+    /// reading 1, 2, 3, 4 or 5 bits at a time.
     #[test]
     fn decodes_literals() { 
         let mut speeds = vec![];

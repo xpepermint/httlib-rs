@@ -147,6 +147,7 @@ pub fn encode(src: &[u8], dst: &mut Vec<u8>) -> Result<(), EncodeError> {
 mod test {
     use super::*;
 
+    /// Should encode ASCII character into Huffman format.
     #[test]
     fn encodes_bytes() { 
         let mut dst = Vec::new();

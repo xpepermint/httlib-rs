@@ -66,6 +66,8 @@ mod tests {
     use std::path::Path;
     use super::*;
 
+    /// Should read the text file `assets/hpack-huffman.txt` and parse the 
+    /// content into 2-dimensional table that can be used in Rust code. 
     #[test]
     fn parses_huffman_table() { 
         let path = Path::new("assets/hpack-huffman.txt");

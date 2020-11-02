@@ -241,6 +241,8 @@ mod test {
         ]
     }
     
+    /// Should generate a translation matrix that allows for decoding Huffman
+    /// sequence by reading 1 bit at a time.
     #[test]
     fn flattens_1bits() { 
         let table = flatten(&sample_encoding_table(), 1);
@@ -252,6 +254,8 @@ mod test {
         assert_eq!(target.2, 0);
     }
 
+    /// Should generate a translation matrix that allows for decoding Huffman
+    /// sequence by reading 2 bits at a time.
     #[test]
     fn flattens_2bits() { 
         let table = flatten(&sample_encoding_table(), 2);
@@ -263,6 +267,8 @@ mod test {
         assert_eq!(target.2, 0);
     }
 
+    /// Should generate a translation matrix that allows for decoding Huffman
+    /// sequence by reading 3 bits at a time.
     #[test]
     fn flattens_3bits() { 
         let table = flatten(&sample_encoding_table(), 3);
@@ -274,6 +280,8 @@ mod test {
         assert_eq!(target.2, 0);
     }
 
+    /// Should generate a translation matrix that allows for decoding Huffman
+    /// sequence by reading 4 bits at a time.
     #[test]
     fn flattens_4bits() { 
         let table = flatten(&sample_encoding_table(), 4);
@@ -285,6 +293,8 @@ mod test {
         assert_eq!(target.2, 0);
     }
 
+    /// Should generate a translation matrix that allows for decoding Huffman
+    /// sequence by reading 5 bits at a time.
     #[test]
     fn flattens_5bits() { 
         let table = flatten(&sample_encoding_table(), 5);
@@ -296,6 +306,7 @@ mod test {
         assert_eq!(target.2, 0);
     }
 
+    /// Should generate all key paths variants for the codings with leftover.
     #[test]
     fn generates_coding_paths() {
         let speed = 4;
