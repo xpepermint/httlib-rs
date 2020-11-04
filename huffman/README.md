@@ -61,9 +61,9 @@ decode(&src, &mut dst, speed)?;
 
 ### Articles
 
-* [HPACK: Huffman encoder](https://kristijansedlak.medium.com/hpack-huffman-encoder-explained-61102edd6ecc)
-* [HPACK: Huffman translation matrix](https://kristijansedlak.medium.com/hpack-huffman-translation-matrix-f3cae44bfe8c)
-* [HPACK: Huffman decoder](https://medium.com/@kristijansedlak/hpack-huffman-decoder-72d215788130)
+* [HPACK: Huffman encoder](https://dev.to/xpepermint/hpack-huffman-encoder-3i7c)
+* [HPACK: Huffman translation matrix](https://dev.to/xpepermint/hpack-huffman-translation-matrix-64c)
+* [HPACK: Huffman decoder](https://dev.to/xpepermint/hpack-huffman-decoder-52el)
 
 [ASCII]: https://en.wikipedia.org/wiki/ASCII
 [HPACK]: https://tools.ietf.org/html/rfc7541
