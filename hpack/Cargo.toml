@@ -13,7 +13,7 @@ categories = ["algorithms", "encoding"]
 readme = "README.md"
 
 [dependencies]
-httlib-huffman = "^0.2.0"
+httlib-huffman = "^0.2.2"
 
 # [badges]
 # travis-ci = { repository = "https://github.com/xpepermint/httlib-rs", branch = "master" }
