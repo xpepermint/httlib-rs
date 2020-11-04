@@ -152,7 +152,7 @@ mod test {
         let mut tbl = Table::default();
         tbl.insert(b"a0".to_vec(), b"b0".to_vec());
         let iter = tbl.iter();
-        assert_eq!(iter.count(), 63);
+        assert_eq!(iter.count(), 62); // 61 static + 1 dynamic
         let last = iter.last().unwrap();
         assert_eq!(vec![last.0, last.1], vec![b"a0", b"b0"]);
     }
