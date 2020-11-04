@@ -29,7 +29,7 @@ impl<'a> Table<'a> {
     /// Returns the total number of headers. The result includes the sum of all
     /// entries of the static and the dynamic table combined.
     pub fn len(&self) -> usize {
-        self.static_table.len() + 1 + self.dynamic_table.len()
+        self.static_table.len() + self.dynamic_table.len()
     }
 
     /// Returns the total number of entries stored in the dynamic table.
@@ -132,15 +132,15 @@ mod test {
     #[test]
     fn inserts_new_headers() {
         let mut tbl = Table::default();
-        assert_eq!(tbl.len(), 62);
+        assert_eq!(tbl.len(), 61);
         assert_eq!(tbl.dynamic_len(), 0);
         assert_eq!(tbl.dynamic_size(), 0);
         tbl.insert(b"a0".to_vec(), b"b0".to_vec());
-        assert_eq!(tbl.len(), 63);
+        assert_eq!(tbl.len(), 62);
         assert_eq!(tbl.dynamic_len(), 1);
         assert_eq!(tbl.dynamic_size(), 36);
         tbl.insert(b"a1".to_vec(), b"b1".to_vec());
-        assert_eq!(tbl.len(), 64);
+        assert_eq!(tbl.len(), 63);
         assert_eq!(tbl.dynamic_len(), 2);
         assert_eq!(tbl.dynamic_size(), 72);
     }
