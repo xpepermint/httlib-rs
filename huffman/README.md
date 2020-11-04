@@ -43,9 +43,9 @@ Encoding:
 ```rs
 use httlib_huffman::encode;
 
-let mut sequence = Vec::new();
+let mut dst = Vec::new();
 let text = "Hello world!".as_bytes();
-match encode(&text, &mut sequence)?;
+encode(&text, &mut dst)?;
 ```
 
 Decoding:
@@ -53,10 +53,10 @@ Decoding:
 ```rs
 use httlib_huffman::decode;
 
-let mut text = Vec::new();
 let speed = 3;
-let sequence = vec![168, 209, ...];
-decode(&sequence, &mut text, speed).unwrap();
+let mut dst = Vec::new();
+let src = vec![168, 209, ...];
+decode(&src, &mut dst, speed)?;
 ```
 
 ### Articles
