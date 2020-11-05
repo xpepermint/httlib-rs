@@ -113,7 +113,7 @@ pub use error::*;
 /// let text = "Hello world!".as_bytes();
 /// match encode(&text, &mut sequence)?;
 /// ```
-pub fn encode(src: &[u8], dst: &mut Vec<u8>) -> Result<(), EncodeError> {
+pub fn encode(src: &[u8], dst: &mut Vec<u8>) -> Result<(), EncoderError> {
     let mut bits: u64 = 0;
     let mut bits_left = 40;
     let codings = self::table::ENCODE_TABLE; // parsed huffman table
@@ -121,7 +121,7 @@ pub fn encode(src: &[u8], dst: &mut Vec<u8>) -> Result<(), EncodeError> {
     for &byte in src {
         let (code_len, code) = match codings.get(byte as usize) {
             Some(coding) => coding,
-            None => return Err(EncodeError::InvalidInput),
+            None => return Err(EncoderError::InvalidInput),
         };
 
         bits |= (*code as u64) << (bits_left - code_len); // shift and add old and new numbers
