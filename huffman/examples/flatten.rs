@@ -3,18 +3,18 @@
 
 extern crate httlib_huffman;
 
-use httlib_huffman::{flatten};
-use httlib_huffman::encode::table::ENCODE_TABLE;
+use httlib_huffman::{flatten, DecodeSpeed};
+use httlib_huffman::encoder::table::ENCODE_TABLE;
 
 fn main() {
-    let speed = 4;
+    let speed = DecodeSpeed::FourBits;
     let table = flatten(&ENCODE_TABLE, speed);
     let table_len = table.len();
     let targets_len = table[0].len();
 
     println!("");
     println!("/// This is a static translation table for decoding Huffman sequence by reading");
-    println!("/// {}-bit(s) at at time.", speed);
+    println!("/// {:?}-bit(s) at at time.", speed);
     println!("pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); {}]; {}] = [ // (next_id, ascii, leftover)", targets_len, table_len);
     for (i, transitions) in table.iter().enumerate() {
         println!("    [ // {}", i);

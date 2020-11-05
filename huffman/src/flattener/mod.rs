@@ -120,6 +120,8 @@
 //! [HPACK]: https://tools.ietf.org/html/rfc7541
 //! [ASCII]: https://en.wikipedia.org/wiki/ASCII
 
+use crate::DecodeSpeed;
+
 /// Generates a translation matrix that can be used to decode an encoded
 /// content. The function expects the `speed` attribute which represents the
 /// number of bits that the decoder will read at a time when processing bytes.
@@ -127,12 +129,13 @@
 /// have a positive effect on performance but possibly a higher memory usage.
 /// 
 /// ```rs
-/// use httlib_huffman::encode::table::ENCODE_TABLE;
+/// use httlib_huffman::encoder::table::ENCODE_TABLE;
 /// 
-/// let speed = 4; // decoder will read 4 bits at a time
+/// let speed = DecodeSpeed::FourBits; // decoder will read 4 bits at a time
 /// let table = flatten(&ENCODE_TABLE, speed);
 /// ```
-pub fn flatten(codings: &[(u8, u32)], speed: usize) -> Vec<Vec<(Option<u8>, Option<u16>, u8)>> { // next_id, ascii, leftover
+pub fn flatten(codings: &[(u8, u32)], speed: DecodeSpeed) -> Vec<Vec<(Option<u8>, Option<u16>, u8)>> { // next_id, ascii, leftover
+    let speed = speed as usize;
     let blank_transition = generate_blank_transition(speed);
 
     let mut table: Vec<Vec<(Option<u8>, Option<u16>, u8)>> = Vec::new();
@@ -245,7 +248,7 @@ mod test {
     /// sequence by reading 1 bit at a time.
     #[test]
     fn flattens_1bits() { 
-        let table = flatten(&sample_encoding_table(), 1);
+        let table = flatten(&sample_encoding_table(), DecodeSpeed::OneBit);
         assert_eq!(table.len(), 41);
 
         let target = &table[2][1];
@@ -258,7 +261,7 @@ mod test {
     /// sequence by reading 2 bits at a time.
     #[test]
     fn flattens_2bits() { 
-        let table = flatten(&sample_encoding_table(), 2);
+        let table = flatten(&sample_encoding_table(), DecodeSpeed::TwoBits);
         assert_eq!(table.len(), 20);
 
         let target = &table[1][3];
@@ -271,7 +274,7 @@ mod test {
     /// sequence by reading 3 bits at a time.
     #[test]
     fn flattens_3bits() { 
-        let table = flatten(&sample_encoding_table(), 3);
+        let table = flatten(&sample_encoding_table(), DecodeSpeed::ThreeBits);
         assert_eq!(table.len(), 16);
 
         let target = &table[1][7];
@@ -284,7 +287,7 @@ mod test {
     /// sequence by reading 4 bits at a time.
     #[test]
     fn flattens_4bits() { 
-        let table = flatten(&sample_encoding_table(), 4);
+        let table = flatten(&sample_encoding_table(), DecodeSpeed::FourBits);
         assert_eq!(table.len(), 9);
 
         let target = &table[1][15];
@@ -297,7 +300,7 @@ mod test {
     /// sequence by reading 5 bits at a time.
     #[test]
     fn flattens_5bits() { 
-        let table = flatten(&sample_encoding_table(), 5);
+        let table = flatten(&sample_encoding_table(), DecodeSpeed::FiveBits);
         assert_eq!(table.len(), 8);
 
         let target = &table[1][31];
@@ -309,14 +312,13 @@ mod test {
     /// Should generate all key paths variants for the codings with leftover.
     #[test]
     fn generates_coding_paths() {
-        let speed = 4;
-        assert_eq!(generate_coding_paths(&(14, 12345), speed), vec![ // code=11000000|111001XX, len=14
+        assert_eq!(generate_coding_paths(&(14, 12345), 4), vec![ // code=11000000|111001XX, len=14
             vec![12, 0, 14, 4], // [1100, 0000, 1110, 0100]
             vec![12, 0, 14, 5], // [1100, 0000, 1110, 0101]
             vec![12, 0, 14, 6], // [1100, 0000, 1110, 0110]
             vec![12, 0, 14, 7], // [1100, 0000, 1110, 0111]
         ]);
-        assert_eq!(generate_coding_paths(&(13, 2616), speed), vec![ // code=01010001|11000XXX, let=13
+        assert_eq!(generate_coding_paths(&(13, 2616), 4), vec![ // code=01010001|11000XXX, let=13
             vec![5, 1, 12, 0], // [0101, 0000, 1110, 0000]
             vec![5, 1, 12, 1], // [0101, 0000, 1110, 0001]
             vec![5, 1, 12, 2], // [0101, 0000, 1110, 0010]

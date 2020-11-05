@@ -53,7 +53,7 @@ Decoding:
 ```rs
 use httlib_huffman::decode;
 
-let speed = 3;
+let speed = DecodeSpeed::ThreeBits;
 let mut dst = Vec::new();
 let src = vec![168, 209, ...];
 decode(&src, &mut dst, speed)?;

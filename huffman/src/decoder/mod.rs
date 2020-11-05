@@ -73,6 +73,7 @@
 
 mod error;
 mod reader;
+mod speed;
 pub mod table1;
 pub mod table2;
 pub mod table3;
@@ -80,6 +81,7 @@ pub mod table4;
 pub mod table5;
 
 pub use error::*;
+pub use speed::*;
 use reader::*;
 
 /// Decodes Huffman's `src` sequence into `dst` vector of bytes. The `speed`
@@ -87,15 +89,15 @@ use reader::*;
 /// decoded at a time.
 /// 
 /// ```rs
-/// use httlib_huffman::decode;
+/// use httlib_huffman::{decode, DecoderSpeed};
 ///
 /// let mut text = Vec::new();
-/// let speed = 3;
+/// let speed = DecoderSpeed::ThreeBits;
 /// let sequence = vec![168, 209, ...];
 /// decode(&sequence, &mut text, speed).unwrap();
 /// ```
-pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: u8) -> Result<(), DecoderError> {
-    let mut reader = DecodeReader::new(speed);
+pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: DecodeSpeed) -> Result<(), DecoderError> {
+    let mut reader = DecodeReader::new(speed as usize);
 
     for byte in src {
         reader.decode(*byte, dst)?;
@@ -109,7 +111,7 @@ pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: u8) -> Result<(), DecoderErr
 mod test {
     use super::*;
 
-    fn decode(bytes: &[u8], speed: u8) -> Result<Vec<u8>, DecoderError> {
+    fn decode(bytes: &[u8], speed: DecodeSpeed) -> Result<Vec<u8>, DecoderError> {
         let mut dst = Vec::new();
         super::decode(&bytes, &mut dst, speed)?;
         Ok(dst)
@@ -466,18 +468,11 @@ mod test {
     }
 
     /// Should be able to decode ASCII characters encoded into Huffman formatted
-    /// sequence. The decoder should be able to decode the sequence by reading
-    /// 1, 2, 3, 4 or 5 bits at a time.
+    /// sequence. The decoder should be able to decode the sequence by using any
+    /// valid decoding speed.
     #[test]
     fn decodes_characters() {
-        let mut speeds = vec![];
-        speeds.push(1);
-        speeds.push(2);
-        speeds.push(3);
-        speeds.push(4);
-        speeds.push(5);
-
-        for speed in speeds {
+        for speed in DecodeSpeed::known() {
             for (data, code) in valid_characters() { // passes
                 assert_eq!(data, decode(&code, speed).unwrap());
             }
@@ -488,17 +483,10 @@ mod test {
 
     /// Should be able to decode ASCII string literals encoded into Huffman
     /// formatted sequence. The decoder should be able to decode the sequence by
-    /// reading 1, 2, 3, 4 or 5 bits at a time.
+    /// using any valid decoding speed.
     #[test]
     fn decodes_literals() { 
-        let mut speeds = vec![];
-        speeds.push(1);
-        speeds.push(2);
-        speeds.push(3);
-        speeds.push(4);
-        speeds.push(5);
-
-        for speed in speeds {
+        for speed in DecodeSpeed::known() {
             for (data, code) in valid_literals() { // passes
                 assert_eq!(data, decode(&code, speed).unwrap());
             }

@@ -51,7 +51,7 @@
 //! ```rs
 //! use httlib_huffman::decode;
 //!
-//! let speed = 3;
+//! let speed = DecodeSpeed::ThreeBits;
 //! let mut dst = Vec::new();
 //! let src = vec![168, 209, ...];
 //! decode(&src, &mut dst, speed)?;
@@ -69,12 +69,12 @@
 //! [Huffman code]: https://en.wikipedia.org/wiki/Huffman_coding
 //! [canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
 
-pub mod decode;
-pub mod encode;
-pub mod flatten;
-pub mod parse;
+pub mod decoder;
+pub mod encoder;
+pub mod flattener;
+pub mod parser;
 
-pub use decode::*;
-pub use encode::*;
-pub use flatten::*;
-pub use parse::*;
+pub use decoder::*;
+pub use encoder::*;
+pub use flattener::*;
+pub use parser::*;

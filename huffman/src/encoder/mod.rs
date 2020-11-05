@@ -121,7 +121,7 @@ pub fn encode(src: &[u8], dst: &mut Vec<u8>) -> Result<(), EncodeError> {
     for &byte in src {
         let (code_len, code) = match codings.get(byte as usize) {
             Some(coding) => coding,
-            None => return Err(EncodeError::InvalidCharacter),
+            None => return Err(EncodeError::InvalidInput),
         };
 
         bits |= (*code as u64) << (bits_left - code_len); // shift and add old and new numbers

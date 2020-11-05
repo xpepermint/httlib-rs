@@ -1,4 +1,4 @@
-use crate::DecoderError;
+use super::{DecoderError};
 
 /// An object for decoding Huffman sequence back to the original form.
 pub(crate) struct DecodeReader {
@@ -26,9 +26,9 @@ pub(crate) struct DecodeReader {
 
 impl DecodeReader {
     /// Returns a new reader instance.
-    pub fn new(speed: u8) -> Self {
+    pub fn new(speed: usize) -> Self {
         Self {
-            speed: speed as usize,
+            speed,
             id: 0,
             buf: 0,
             buf_size: 0,
@@ -130,17 +130,8 @@ impl DecodeReader {
     /// Returns the translation target tuple based on reader speed.
     fn find_target(&self, key: usize) -> Result<(Option<u8>, Option<u16>, u8), DecoderError> {
         match self.speed {
-            1 => {
-                match crate::decode::table1::DECODE_TABLE.get(self.id) {
-                    Some(transitions) => match transitions.get(key as usize) {
-                        Some(target) => Ok(*target),
-                        None => Err(DecoderError::InvalidInput),
-                    },
-                    None => Err(DecoderError::InvalidInput),
-                }
-            },
             2 => {
-                match crate::decode::table2::DECODE_TABLE.get(self.id) {
+                match crate::decoder::table2::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
                         None => Err(DecoderError::InvalidInput),
@@ -149,7 +140,7 @@ impl DecodeReader {
                 }
             },
             3 => {
-                match crate::decode::table3::DECODE_TABLE.get(self.id) {
+                match crate::decoder::table3::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
                         None => Err(DecoderError::InvalidInput),
@@ -158,7 +149,7 @@ impl DecodeReader {
                 }
             },
             4 => {
-                match crate::decode::table4::DECODE_TABLE.get(self.id) {
+                match crate::decoder::table4::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
                         None => Err(DecoderError::InvalidInput),
@@ -167,7 +158,7 @@ impl DecodeReader {
                 }
             },
             5 => {
-                match crate::decode::table5::DECODE_TABLE.get(self.id) {
+                match crate::decoder::table5::DECODE_TABLE.get(self.id) {
                     Some(transitions) => match transitions.get(key as usize) {
                         Some(target) => Ok(*target),
                         None => Err(DecoderError::InvalidInput),
@@ -176,7 +167,13 @@ impl DecodeReader {
                 }
             },
             _ => {
-                Err(DecoderError::InvalidSpeed)
+                match crate::decoder::table1::DECODE_TABLE.get(self.id) {
+                    Some(transitions) => match transitions.get(key as usize) {
+                        Some(target) => Ok(*target),
+                        None => Err(DecoderError::InvalidInput),
+                    },
+                    None => Err(DecoderError::InvalidInput),
+                }
             }
         }
     }
