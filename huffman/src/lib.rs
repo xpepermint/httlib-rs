@@ -51,7 +51,7 @@
 //! ```rs
 //! use httlib_huffman::decode;
 //!
-//! let speed = DecodeSpeed::ThreeBits;
+//! let speed = DecoderSpeed::ThreeBits;
 //! let mut dst = Vec::new();
 //! let src = vec![168, 209, ...];
 //! decode(&src, &mut dst, speed)?;

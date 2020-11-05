@@ -96,7 +96,7 @@ use reader::*;
 /// let sequence = vec![168, 209, ...];
 /// decode(&sequence, &mut text, speed).unwrap();
 /// ```
-pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: DecodeSpeed) -> Result<(), DecoderError> {
+pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: DecoderSpeed) -> Result<(), DecoderError> {
     let mut reader = DecodeReader::new(speed as usize);
 
     for byte in src {
@@ -111,7 +111,7 @@ pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: DecodeSpeed) -> Result<(), D
 mod test {
     use super::*;
 
-    fn decode(bytes: &[u8], speed: DecodeSpeed) -> Result<Vec<u8>, DecoderError> {
+    fn decode(bytes: &[u8], speed: DecoderSpeed) -> Result<Vec<u8>, DecoderError> {
         let mut dst = Vec::new();
         super::decode(&bytes, &mut dst, speed)?;
         Ok(dst)
@@ -472,7 +472,7 @@ mod test {
     /// valid decoding speed.
     #[test]
     fn decodes_characters() {
-        for speed in DecodeSpeed::known() {
+        for speed in DecoderSpeed::known() {
             for (data, code) in valid_characters() { // passes
                 assert_eq!(data, decode(&code, speed).unwrap());
             }
@@ -486,7 +486,7 @@ mod test {
     /// using any valid decoding speed.
     #[test]
     fn decodes_literals() { 
-        for speed in DecodeSpeed::known() {
+        for speed in DecoderSpeed::known() {
             for (data, code) in valid_literals() { // passes
                 assert_eq!(data, decode(&code, speed).unwrap());
             }

@@ -3,11 +3,11 @@
 
 extern crate httlib_huffman;
 
-use httlib_huffman::{flatten, DecodeSpeed};
+use httlib_huffman::{flatten, DecoderSpeed};
 use httlib_huffman::encoder::table::ENCODE_TABLE;
 
 fn main() {
-    let speed = DecodeSpeed::FourBits;
+    let speed = DecoderSpeed::FourBits;
     let table = flatten(&ENCODE_TABLE, speed);
     let table_len = table.len();
     let targets_len = table[0].len();
