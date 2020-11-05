@@ -50,9 +50,7 @@ pub fn encode_integer(value: u32, flags: u8, prefix_size: u8, dst: &mut Vec<u8>)
 pub fn encode_string(data: Vec<u8>, huffman: bool, dst: &mut Vec<u8>) -> Result<(), EncoderError> {
     let (flags, bytes) = if huffman {
         let mut dst = Vec::new();
-        if let Err(e) = httlib_huffman::encode(&data, &mut dst) {
-            return Err(EncoderError::Huffman(e));
-        }
+        httlib_huffman::encode(&data, &mut dst)?;
         (0x80, dst) // set MSB to 1 indicating Huffman encoded literal
     } else {
         (0, data.to_vec()) // set MSB to 0 indicating plain text

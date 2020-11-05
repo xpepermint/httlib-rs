@@ -177,17 +177,17 @@ impl<'a> Default for Encoder<'a> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use httlib_huffman;
+    use httlib_huffman::{decode, DecoderSpeed};
 
     fn decode_huffman(src: &[u8]) -> Vec<u8> {
         let mut bytes = Vec::new();
-        httlib_huffman::decode(&src, &mut bytes, 1).unwrap();
+        decode(&src, &mut bytes, DecoderSpeed::FourBits).unwrap();
         bytes
     }
 
     fn decode_string(src: &[u8]) -> Vec<u8> {
         let mut bytes = Vec::new();
-        crate::decoder::decode_string(&mut src.to_vec(), &mut bytes).unwrap();
+        crate::decoder::decode_string(&mut src.to_vec(), DecoderSpeed::FourBits, &mut bytes).unwrap();
         bytes
     }
 
