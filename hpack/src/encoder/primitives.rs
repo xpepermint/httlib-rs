@@ -16,8 +16,37 @@ use super::*;
 /// between 1 and 8 bits. An integer starting at an octet boundary will have an
 /// 8-bit prefix.
 /// 
-/// [5.1]: https://tools.ietf.org/html/rfc7541#section-5.1
-pub fn encode_integer(value: u32, flags: u8, prefix_size: u8, dst: &mut Vec<u8>) -> Result<(), EncoderError> {
+/// **Integer value encoded within the 5-bit prefix ([5.1.], figure 2)**
+/// 
+/// ```txt
+///   0   1   2   3   4   5   6   7
+/// +---+---+---+---+---+---+---+---+
+/// | ? | ? | ? |       value       |
+/// +---+---+---+-------------------+
+/// ```
+/// 
+/// **Integer value encoded after the 5-bit prefix ([5.1.], figure 3)**
+/// 
+/// ```txt
+///   0   1   2   3   4   5   6   7
+/// +---+---+---+---+---+---+---+---+
+/// | ? | ? | ? | 1   1   1   1   1 |
+/// +---+---+---+-------------------+
+/// | 1 |    Value-(2^N-1) LSB      |
+/// +---+---------------------------+
+///                ...
+/// +---+---------------------------+
+/// | 0 |    Value-(2^N-1) MSB      |
+/// +---+---------------------------+
+/// ```
+/// 
+/// [5.1.]: https://tools.ietf.org/html/rfc7541#section-5.1
+pub fn encode_integer(
+    value: u32,
+    flags: u8,
+    prefix_size: u8,
+    dst: &mut Vec<u8>,
+) -> Result<(), EncoderError> {
     if prefix_size < 1 || prefix_size > 8 {
         return Err(EncoderError::InvalidPrefix);
     }
@@ -40,14 +69,29 @@ pub fn encode_integer(value: u32, flags: u8, prefix_size: u8, dst: &mut Vec<u8>)
     Ok(())
 }
 
-/// Encodes a string to the string representation defined by HPACK ([5.2]).
+/// Encodes a string to the string representation defined by HPACK.
 /// 
 /// When `huffman` is 'false' then the encoded data is the raw octets of the
 /// string literal and when `huffman` is 'true', then the encoded data is the
 /// Huffman encoding of the string literal.
 /// 
-/// [5.2]: https://tools.ietf.org/html/rfc7541#section-5.1
-pub fn encode_string(data: Vec<u8>, huffman: bool, dst: &mut Vec<u8>) -> Result<(), EncoderError> {
+/// **String literal representation ([5.2.], figure 4):**
+/// 
+/// ```txt
+///   0   1   2   3   4   5   6   7
+/// +---+---+---+---+---+---+---+---+
+/// | H |    String Length (7+)     |
+/// +---+---------------------------+
+/// |  String Data (Length octets)  |
+/// +-------------------------------+
+/// ```
+/// 
+/// [5.2.]: https://tools.ietf.org/html/rfc7541#section-5.2
+pub fn encode_string(
+    data: Vec<u8>,
+    huffman: bool,
+    dst: &mut Vec<u8>,
+) -> Result<(), EncoderError> {
     let (flags, bytes) = if huffman {
         let mut dst = Vec::new();
         httlib_huffman::encode(&data, &mut dst)?;
@@ -71,6 +115,10 @@ pub fn encode_string(data: Vec<u8>, huffman: bool, dst: &mut Vec<u8>) -> Result<
 mod test {
     use super::*;
 
+    /// Should encode an integer into the integer representation defined by
+    /// HPACK ([5.1]).
+    /// 
+    /// [5.1.]: https://tools.ietf.org/html/rfc7541#section-5.1
     #[test]
     fn encodes_integer() {
         let examples = vec![
@@ -95,6 +143,10 @@ mod test {
         }
     }
 
+    /// Should encode a string into the string representation defined by HPACK
+    /// ([5.2.]).
+    /// 
+    /// [5.2.]: https://tools.ietf.org/html/rfc7541#section-5.2
     #[test]
     fn encodes_string() {
         let examples = vec![

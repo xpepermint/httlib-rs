@@ -21,6 +21,22 @@ pub struct Encoder<'a> {
 }
 
 impl<'a> Encoder<'a> {
+    /// A flag indicating to encode header name with Huffman algorithm (`0x1`).
+    pub const HUFFMAN_NAME: u8 = 0x1;
+
+    /// A flag indicating to encode header value with Huffman algorithm (`0x2`).
+    pub const HUFFMAN_VALUE: u8 = 0x2;
+
+    /// A flag indicating to index literal header field (`0x4`).
+    pub const WITH_INDEXING: u8 = 0x4;
+
+    /// A flag indicating to never index literal header field (`0x8`).
+    pub const NEVER_INDEXED: u8 = 0x8;
+
+    /// A flag indicating to find the best literal representation by searching
+    /// the indexing table (`0x10`).
+    pub const BEST_FORMAT: u8 = 0x10;
+
     /// Returns a new encoder instance with the provided maximum allowed size of
     /// the dynamic table.
     pub fn with_dynamic_size(max_dynamic_size: u32) -> Self {
@@ -28,7 +44,12 @@ impl<'a> Encoder<'a> {
             table: Table::with_dynamic_size(max_dynamic_size),
         }
     }
-   
+    
+    /// Returns the maximum allowed size of the dynamic table.
+    pub fn max_dynamic_size(&mut self) -> u32 {
+        self.table.max_dynamic_size()
+    }
+    
     /// Encodes headers into the HPACK's header field representation format.
     /// 
     /// By default headers are represented without indexing and Huffman encoding
@@ -47,34 +68,41 @@ impl<'a> Encoder<'a> {
     /// let mut encoder = Encoder::default();
     /// let mut dst = Vec::new();
     /// let flags = 0x2 | 0x4 | 0x10;
-    /// encoder.write((b":method", b"PATCH", flags), &mut dst)?;
+    /// encoder.encode((b":method", b"PATCH", flags), &mut dst)?;
     /// ```
-    pub fn write<F>(&mut self, field: F, dst: &mut Vec<u8>) -> Result<(), EncoderError>
-        where
+    /// 
+    /// [6.2.1.]: https://tools.ietf.org/html/rfc7541#section-6.2.1
+    /// [6.2.3.]: https://tools.ietf.org/html/rfc7541#section-6.2.3
+    pub fn encode<F>(
+        &mut self,
+        field: F,
+        dst: &mut Vec<u8>,
+    ) -> Result<(), EncoderError>
+    where
         F: Into<EncoderInput>,
     {
         match field.into() {
             EncoderInput::Indexed(index) => {
-                self.write_indexed(index, dst)
+                self.encode_indexed(index, dst)
             },
             EncoderInput::IndexedName(index, value, flags) => {
-                self.write_indexed_name(index, value, flags, dst)
+                self.encode_indexed_name(index, value, flags, dst)
             },
             EncoderInput::Literal(name, value, flags) => {
                 if flags & 0x10 == 0x10 {
                     match self.table.find(&name, &value) {
                         Some((index, true)) => {
-                            self.write_indexed(index as u32, dst)
+                            self.encode_indexed(index as u32, dst)
                         },
                         Some((index, false)) => {
-                            self.write_indexed_name(index as u32, value, flags, dst)
+                            self.encode_indexed_name(index as u32, value, flags, dst)
                         },
                         None => {
-                            self.write_literal(name, value, flags, dst)
+                            self.encode_literal(name, value, flags, dst)
                         },
                     }
                 } else {
-                    self.write_literal(name, value, flags, dst)
+                    self.encode_literal(name, value, flags, dst)
                 }
             },
         }
@@ -95,7 +123,12 @@ impl<'a> Encoder<'a> {
     /// ```
     /// 
     /// [6.1.]: https://tools.ietf.org/html/rfc7541#section-6.1
-    fn write_indexed(&self, index: u32, dst: &mut Vec<u8>) -> Result<(), EncoderError> {
+    pub fn encode_indexed(
+        &self,
+        index: u32,
+        dst: &mut Vec<u8>,
+    ) -> Result<(), EncoderError> {
+
         if self.table.get(index).is_none() {
             return Err(EncoderError::InvalidIndex);
         }
@@ -156,10 +189,17 @@ impl<'a> Encoder<'a> {
     /// * `0x4`: Literal header field with incremental indexing ([6.2.1.]).
     /// * `0x8`: Literal header field never indexed ([6.2.3.]).
     /// 
-    /// [6.2.1]: https://tools.ietf.org/html/rfc7541#section-6.2.1
-    /// [6.2.2]: https://tools.ietf.org/html/rfc7541#section-6.2.2
-    /// [6.2.3]: https://tools.ietf.org/html/rfc7541#section-6.2.3
-    fn write_indexed_name(&mut self, index: u32, value: Vec<u8>, flags: u8, dst: &mut Vec<u8>) -> Result<(), EncoderError> {
+    /// [6.2.1.]: https://tools.ietf.org/html/rfc7541#section-6.2.1
+    /// [6.2.2.]: https://tools.ietf.org/html/rfc7541#section-6.2.2
+    /// [6.2.3.]: https://tools.ietf.org/html/rfc7541#section-6.2.3
+    pub fn encode_indexed_name(
+        &mut self,
+        index: u32,
+        value: Vec<u8>,
+        flags: u8,
+        dst: &mut Vec<u8>,
+    ) -> Result<(), EncoderError> {
+
         let name = if let Some(entry) = self.table.get(index) {
             entry.0.to_vec()
         } else {
@@ -246,7 +286,14 @@ impl<'a> Encoder<'a> {
     /// [6.2.1]: https://tools.ietf.org/html/rfc7541#section-6.2.1
     /// [6.2.2]: https://tools.ietf.org/html/rfc7541#section-6.2.2
     /// [6.2.3]: https://tools.ietf.org/html/rfc7541#section-6.2.3
-    fn write_literal(&mut self, name: Vec<u8>, value: Vec<u8>, flags: u8, dst: &mut Vec<u8>) -> Result<(), EncoderError> {
+    pub fn encode_literal(
+        &mut self,
+        name: Vec<u8>,
+        value: Vec<u8>,
+        flags: u8,
+        dst: &mut Vec<u8>,
+    ) -> Result<(), EncoderError> {
+
         if flags & 0x4 == 0x4 {
             dst.push(0x40);
             self.table.insert(name.clone(), value.clone());
@@ -260,24 +307,33 @@ impl<'a> Encoder<'a> {
         encode_string(value, flags & 0x2 == 0x2, dst)
     }
 
-
-
-
-
-
-    /// Handles processing the `SizeUpdate` HPACK block: updates the maximum
-    /// size of the underlying dynamic table, possibly causing a number of
-    /// headers to be evicted from it ([6.3]).
+    /// Updates the maximum size of the dynamic table and encodes the new size
+    /// into a dynamic table size signal.
     /// 
-    /// Ta funkcija se mora poklicat na zacetku bloka!
+    /// The new maximum size MUST be lower than or equal to the limit determined
+    /// by the protocol using HPACK. In HTTP/2, this limit is the last value of
+    /// the `SETTINGS_HEADER_TABLE_SIZE` received from the decoder and
+    /// acknowledged by the encoder. This means that a decoder can send a table
+    /// size request through a `SETTINGS` frame to the encoder, the encoder
+    /// updates the size on its size and sends the acknowledgment signal back to
+    /// the decoder. When the decoder receives the acknowledgment from the
+    /// encoder, the new size is assigned to the decoder as well.
     /// 
+    /// **Maximum Dynamic table size change ([6.3.], figure 12):**
+    /// 
+    /// ```txt
     ///   0   1   2   3   4   5   6   7
     /// +---+---+---+---+---+---+---+---+
     /// | 0 | 0 | 1 |   Max size (5+)   |
     /// +---+---------------------------+
+    /// ```
     /// 
     /// [6.3]: https://tools.ietf.org/html/rfc7541#section-6.3
-    pub fn write_size_update(&mut self, size: u32, dst: &mut Vec<u8>) -> Result<(), EncoderError> {
+    pub fn update_max_dynamic_size(
+        &mut self,
+        size: u32,
+        dst: &mut Vec<u8>,
+    ) -> Result<(), EncoderError> {
         self.table.update_max_dynamic_size(size);
         encode_integer(size, 0b00100000, 5, dst)
     }
@@ -311,7 +367,7 @@ mod test {
         ];
         for (index, res) in fields {
             let mut dst = Vec::new();
-            encoder.write(index, &mut dst).unwrap();
+            encoder.encode(index, &mut dst).unwrap();
             assert_eq!(dst, res);
         }
         assert_eq!(encoder.table.len(), 62); // only one header in dynamic table
@@ -331,9 +387,9 @@ mod test {
             b"PATCH".to_vec(),
             0x2 | 0x4,
         );
-        encoder.write(field, &mut dst).unwrap(); // (:method, PATCH), Huffman
-        assert_eq!(dst[0], 0b01000000 | 2); // with incremental indexing
-        assert_eq!(dst[1], 0x80 | 5); // value encoded with Huffman
+        encoder.encode(field, &mut dst).unwrap(); // (:method, PATCH), Huffman
+        assert_eq!(dst[0] & 0b01000000, 64); // with incremental indexing
+        assert_eq!(dst[1] & 0b10000000, 128); // value encoded with Huffman
         assert_eq!(&dst[2..], vec![215, 14, 251, 216, 255]); // value as huffman sequence
         assert_eq!(encoder.table.len(), 62); // inserted into indexing table
         let entry = encoder.table.get(62).unwrap();
@@ -355,7 +411,7 @@ mod test {
             b"bar".to_vec(),
             0x4 | 0x1 | 0x2,
         );
-        encoder.write(field, &mut dst).unwrap(); // (huffman(foo), huffman(bar))
+        encoder.encode(field, &mut dst).unwrap(); // (huffman(foo), huffman(bar))
         assert_eq!(dst[0], 0b01000000); // with incremental indexing
         assert_eq!(&dst[1..4], vec![130, 148, 231]); // name as huffman sequence
         assert_eq!(&dst[4..], vec![131, 140, 118, 127]); // value as huffman sequence
@@ -376,7 +432,7 @@ mod test {
         let mut encoder = Encoder::default();
         let mut dst = Vec::new();
         let field = (13, b"PATCH".to_vec(), 0x0);
-        encoder.write(field, &mut dst).unwrap(); // (:status, PATCH)
+        encoder.encode(field, &mut dst).unwrap(); // (:status, PATCH)
         assert_eq!(dst[0], 13); // without indexing (matches index value)
         assert_eq!(&dst[1..], vec![5, 80, 65, 84, 67, 72]); // value as string
         assert_eq!(encoder.table.len(), 61); // table not altered
@@ -392,7 +448,7 @@ mod test {
         let mut encoder = Encoder::default();
         let mut dst = Vec::new();
         let field = (b"foo".to_vec(), b"bar".to_vec(), 0x1);
-        encoder.write(field, &mut dst).unwrap(); // (huffman(foo), bar)
+        encoder.encode(field, &mut dst).unwrap(); // (huffman(foo), bar)
         assert_eq!(dst[0], 0); // without indexing
         assert_eq!(&dst[2..4], vec![148, 231]); // name as string
         assert_eq!(&dst[4..], vec![3, 98, 97, 114]); // value as string
@@ -410,8 +466,8 @@ mod test {
         let mut encoder = Encoder::default();
         let mut dst = Vec::new();
         let field = (13, b"PATCH".to_vec(), 0x8);
-        encoder.write(field, &mut dst).unwrap(); // (:status, 501)
-        assert_eq!(dst[0], dst[0] | 0b00010000); // never indexed
+        encoder.encode(field, &mut dst).unwrap(); // (:status, 501)
+        assert_eq!(dst[0] & 0b00010000, 16); // never indexed
         assert_eq!(&dst[1..], vec![5, 80, 65, 84, 67, 72]); // value as string
         assert_eq!(encoder.table.len(), 61); // table not altered
     }
@@ -426,7 +482,7 @@ mod test {
         let mut encoder = Encoder::default();
         let mut dst = Vec::new();
         let field = (b"foo".to_vec(), b"bar".to_vec(), 0x8);
-        encoder.write(field, &mut dst).unwrap(); // (foo, bar)
+        encoder.encode(field, &mut dst).unwrap(); // (foo, bar)
         assert_eq!(dst[0], 0b00010000); // never indexed
         assert_eq!(&dst[1..5], vec![3, 102, 111, 111]); // name as string
         assert_eq!(&dst[5..], vec![3, 98, 97, 114]); // value as string
@@ -445,9 +501,22 @@ mod test {
         ];
         for (field, res) in fields {
             let mut dst = Vec::new();
-            encoder.write(field, &mut dst).unwrap();
+            encoder.encode(field, &mut dst).unwrap();
             assert_eq!(dst, res);
         }
         assert_eq!(encoder.table.len(), 62); // table altered only once
+    }
+
+    /// Should encode a dynamic table size update signal.
+    #[test]
+    fn updates_max_dynamic_size() {
+        let mut encoder = Encoder::with_dynamic_size(70);
+        encoder.table.insert(b"a".to_vec(), b"a".to_vec()); // size: +34
+        encoder.table.insert(b"b".to_vec(), b"b".to_vec()); // size: +34
+        let mut dst = Vec::new();
+        encoder.update_max_dynamic_size(50, &mut dst).unwrap();
+        assert_eq!(dst[0] & 0b00100000, 32); // size update
+        assert_eq!(dst, vec![63, 19]); // encoded size
+        assert_eq!(encoder.table.dynamic_len(), 1); // 1 header evicted
     }
 }

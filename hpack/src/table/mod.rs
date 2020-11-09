@@ -1,3 +1,5 @@
+//! TODO
+
 mod dynamic;
 mod iter;
 mod r#static;
@@ -45,7 +47,7 @@ impl<'a> Table<'a> {
     }
 
     /// Returns the maximum allowed size of the dynamic table.
-    pub fn max_dynamic_size(&mut self) -> u32 {
+    pub fn max_dynamic_size(&self) -> u32 {
         self.dynamic_table.max_size()
     }
     

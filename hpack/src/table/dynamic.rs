@@ -44,7 +44,7 @@ impl DynamicTable {
     }
 
     /// Returns the maximum allowed table size.
-    pub fn max_size(&mut self) -> u32 {
+    pub fn max_size(&self) -> u32 {
         self.max_size
     }
 

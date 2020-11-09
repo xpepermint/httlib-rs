@@ -12,9 +12,12 @@
 //! ```rs
 //! use httlib_hpack::Encoder;
 //! 
-//! let mut sequence = Vec::new();
 //! let mut encoder = Encoder::default();
-//! encoder.encode(b":method", b"GET")?;
+//! let mut dst = Vec::new();
+//! let name = b":method";
+//! let value = b"PATCH";
+//! let flags = Encoder::HUFFMAN_VALUE | Encoder::WITH_INDEXING | Encoder::BEST_FORMAT;
+//! encoder.encode((name, value, flags), &mut dst)?;
 //! ```
 //! 
 //! **Decoding example:**
@@ -22,10 +25,17 @@
 //! ```rs
 //! use httlib_hpack::Decoder;
 //!
-//! let mut dst = Vec::new();
-//! let mut src = vec![168, 209, ...];
 //! let mut decoder = Decoder::default();
-//! decoder.decode(&mut src, &mut dst)?;
+//! let mut buf = vec![...];
+//! let mut dst = Vec::new();
+//! decoder.decode(&mut buf, &mut dst)?;
+//! let (name, value, flags) = dst;
+//! 
+//! if flags & Decoder::NEVER_INDEXED == Decoder::NEVER_INDEXED {
+//!     // sensitive header
+//! } else {
+//!     // common header
+//! }
 //! ```
 //! 
 //! ## Articles
