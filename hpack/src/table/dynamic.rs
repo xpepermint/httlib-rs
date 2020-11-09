@@ -4,6 +4,7 @@ use std::collections::VecDeque;
 /// first-out order.
 /// 
 /// [dynamic table]: https://tools.ietf.org/html/rfc7541#section-2.3.2
+#[derive(Debug)]
 pub struct DynamicTable {
     /// A sequential list of dynamic headers where the newest entry in at the
     /// lowest index. It can contain duplicate entries.

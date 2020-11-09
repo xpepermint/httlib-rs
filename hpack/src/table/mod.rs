@@ -8,6 +8,7 @@ use r#static::{StaticTable, STATIC_TABLE};
 
 /// This table represents a single index address space for headers where the 
 /// static and the dynamic table are combined.
+#[derive(Debug)]
 pub struct Table<'a> {
     /// THe static table with predefined headers.
     static_table: StaticTable<'a>,

@@ -7,7 +7,7 @@
 //! 
 //! ## Usage
 //!
-//! Encoding:
+//! **Encoding example:**
 //! 
 //! ```rs
 //! use httlib_hpack::Encoder;
@@ -17,7 +17,7 @@
 //! encoder.encode(b":method", b"GET")?;
 //! ```
 //! 
-//! Decoding:
+//! **Decoding example:**
 //! 
 //! ```rs
 //! use httlib_hpack::Decoder;
