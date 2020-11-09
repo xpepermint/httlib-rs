@@ -74,11 +74,50 @@ impl<'a> Decoder<'a> {
     /// let mut buf = vec![...];
     /// decoder.decode(&mut buf, &mut dst)?;
     /// ```
-    pub fn decode(&mut self, buf: &mut Vec<u8>, dst: &mut Vec<(Vec<u8>, Vec<u8>, u8)>) -> Result<usize, DecoderError> {
+    pub fn decode(
+        &mut self,
+        buf: &mut Vec<u8>,
+        dst: &mut Vec<(Vec<u8>, Vec<u8>, u8)>,
+    ) -> Result<usize, DecoderError> {
         let mut total = 0;
         loop {
             if buf.is_empty() {
                 return Ok(total);
+            }
+            let mut data = Vec::with_capacity(1);
+            total += self.decode_exact(buf, &mut data)?;
+            dst.append(&mut data);
+        }
+    }
+
+    /// Decodes the exact number of headers from the provided HPACK's sequence,
+    /// based on the available vector capacity.
+    /// 
+    /// The functions consumes the `buf` of bytes and writes header results to 
+    /// `dst`. Each item contains header name, value and flags. The decoder will
+    /// not index fields unless `0x4` flag is returned. When the `0x8` flag is
+    /// present, the header field should be treated with caution.
+    /// 
+    /// **Example:**
+    /// 
+    /// ```rs
+    /// let mut decoder = Decoder::default();
+    /// let mut dst = Vec::with_capacity(2);
+    /// let mut buf = vec![...];
+    /// decoder.decode_exact(&mut buf, &mut dst)?;
+    /// ```
+    pub fn decode_exact(
+        &mut self,
+        buf: &mut Vec<u8>,
+        dst: &mut Vec<(Vec<u8>, Vec<u8>, u8)>,
+    ) -> Result<usize, DecoderError> {
+        let mut total = 0;
+        let mut limit = dst.capacity();
+        loop {
+            if buf.is_empty() || limit == 0 {
+                return Ok(total);
+            } else {
+                limit -= 1;
             }
 
             let octet = buf[0];
@@ -111,7 +150,11 @@ impl<'a> Decoder<'a> {
     /// ```
     /// 
     /// [6.1.]: https://tools.ietf.org/html/rfc7541#section-6.1
-    pub fn decode_indexed(&self, buf: &mut Vec<u8>, dst: &mut Vec<(Vec<u8>, Vec<u8>, u8)>) -> Result<usize, DecoderError> {
+    pub fn decode_indexed(
+        &self,
+        buf: &mut Vec<u8>,
+        dst: &mut Vec<(Vec<u8>, Vec<u8>, u8)>,
+    ) -> Result<usize, DecoderError> {
         let mut index = 0;
         let total = decode_integer(buf, &mut index, 7)?;
 
@@ -226,7 +269,11 @@ impl<'a> Decoder<'a> {
     /// [6.2.1]: https://tools.ietf.org/html/rfc7541#section-6.2.1
     /// [6.2.2]: https://tools.ietf.org/html/rfc7541#section-6.2.2
     /// [6.2.3]: https://tools.ietf.org/html/rfc7541#section-6.2.3
-    fn decode_literal(&mut self, bytes: &mut Vec<u8>, dst: &mut Vec<(Vec<u8>, Vec<u8>, u8)>) -> Result<usize, DecoderError> {
+    fn decode_literal(
+        &mut self,
+        bytes: &mut Vec<u8>,
+        dst: &mut Vec<(Vec<u8>, Vec<u8>, u8)>,
+    ) -> Result<usize, DecoderError> {
         let mut total = 0;
         let octet = bytes[0];
 
@@ -280,7 +327,10 @@ impl<'a> Decoder<'a> {
     /// ```
     /// 
     /// [6.3]: https://tools.ietf.org/html/rfc7541#section-6.3
-    fn update_max_dynamic_size(&mut self, bytes: &mut Vec<u8>) -> Result<usize, DecoderError> {
+    fn update_max_dynamic_size(
+        &mut self,
+        bytes: &mut Vec<u8>,
+    ) -> Result<usize, DecoderError> {
         let mut new_size = 0;
         let total = decode_integer(bytes, &mut new_size, 5)?;
 
@@ -453,6 +503,19 @@ mod test {
             (b"foo1".to_vec(), b"bar1".to_vec(), 0x8), // never indexed flag
         ]);
         assert_eq!(decoder.table.len(), 61); // table not altered
+    }
+
+    /// Should decode the exact number of headers based on vector capacity.
+    #[test]
+    fn decodes_exact() {
+        let mut decoder = Decoder::default();
+        let mut dst = Vec::with_capacity(1);
+        let mut buf = vec![
+            0x80 | 2, // index 2
+            0x80 | 14, // index 14
+        ];
+        decoder.decode_exact(&mut buf, &mut dst).unwrap();
+        assert_eq!(dst.len(), 1);
     }
 
     /// Should decode a dynamic table size update signal and set the new size
