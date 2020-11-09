@@ -106,6 +106,8 @@ pub use error::*;
 /// Encodes the provided `src` bytes and populates the `dst` with the sequance
 /// of Huffman codes.
 /// 
+/// **Example:**
+/// 
 /// ```rs
 /// use httlib_huffman::encode;
 /// 

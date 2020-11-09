@@ -88,6 +88,8 @@ use reader::*;
 /// parameter is used to tell the encoder how many bits should be read and
 /// decoded at a time.
 /// 
+/// **Example:**
+/// 
 /// ```rs
 /// use httlib_huffman::{decode, DecoderSpeed};
 ///

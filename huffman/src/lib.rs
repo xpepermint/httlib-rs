@@ -36,7 +36,7 @@
 //! 
 //! ## Usage
 //!
-//! Encoding:
+//! **Encoding example:**
 //! 
 //! ```rs
 //! use httlib_huffman::encode;
@@ -46,7 +46,7 @@
 //! encode(&text, &mut dst)?;
 //! ```
 //! 
-//! Decoding:
+//! **Decoding example:**
 //! 
 //! ```rs
 //! use httlib_huffman::decode;

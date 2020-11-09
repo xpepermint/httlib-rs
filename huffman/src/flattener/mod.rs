@@ -128,6 +128,8 @@ use crate::DecoderSpeed;
 /// The speed attribute can be between 1 and 5 bits. The higher number will
 /// have a positive effect on performance but possibly a higher memory usage.
 /// 
+/// **Example:**
+/// 
 /// ```rs
 /// use httlib_huffman::encoder::table::ENCODE_TABLE;
 /// 

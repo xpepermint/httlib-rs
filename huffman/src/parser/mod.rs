@@ -18,6 +18,8 @@
 /// Parses the HPACK's static Huffman table. The function expects data to be in
 /// format as provided by the spec (7.2).
 /// 
+/// **Example:**
+/// 
 /// ```rs
 /// use std::fs;
 /// use std::path::Path;
