@@ -287,9 +287,9 @@ impl<'a> Encoder<'a> {
     /// * `0x4`: Literal header field with incremental indexing ([6.2.1.]).
     /// * `0x8`: Literal header field never indexed ([6.2.3.]).
     /// 
-    /// [6.2.1]: https://tools.ietf.org/html/rfc7541#section-6.2.1
-    /// [6.2.2]: https://tools.ietf.org/html/rfc7541#section-6.2.2
-    /// [6.2.3]: https://tools.ietf.org/html/rfc7541#section-6.2.3
+    /// [6.2.1.]: https://tools.ietf.org/html/rfc7541#section-6.2.1
+    /// [6.2.2.]: https://tools.ietf.org/html/rfc7541#section-6.2.2
+    /// [6.2.3.]: https://tools.ietf.org/html/rfc7541#section-6.2.3
     pub fn encode_literal(
         &mut self,
         name: Vec<u8>,

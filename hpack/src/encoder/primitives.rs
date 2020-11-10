@@ -1,7 +1,7 @@
 use super::*;
 
 /// Encode an integer number to the integer representation defined by HPACK
-/// based on the pseudocode provided by the HPACK specification ([5.1]).
+/// based on the pseudocode provided by the HPACK specification ([5.1.]).
 /// 
 /// This is a generic function which is used in multiple places in the code
 /// where a numeric value needs to be encoded into the HPACK format. The HPACK
@@ -116,7 +116,7 @@ mod test {
     use super::*;
 
     /// Should encode an integer into the integer representation defined by
-    /// HPACK ([5.1]).
+    /// HPACK ([5.1.]).
     /// 
     /// [5.1.]: https://tools.ietf.org/html/rfc7541#section-5.1
     #[test]

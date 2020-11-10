@@ -270,9 +270,9 @@ impl<'a> Decoder<'a> {
     /// +-------------------------------+
     /// ```
     /// 
-    /// [6.2.1]: https://tools.ietf.org/html/rfc7541#section-6.2.1
-    /// [6.2.2]: https://tools.ietf.org/html/rfc7541#section-6.2.2
-    /// [6.2.3]: https://tools.ietf.org/html/rfc7541#section-6.2.3
+    /// [6.2.1.]: https://tools.ietf.org/html/rfc7541#section-6.2.1
+    /// [6.2.2.]: https://tools.ietf.org/html/rfc7541#section-6.2.2
+    /// [6.2.3.]: https://tools.ietf.org/html/rfc7541#section-6.2.3
     fn decode_literal(
         &mut self,
         bytes: &mut Vec<u8>,

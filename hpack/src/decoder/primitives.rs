@@ -1,7 +1,7 @@
 use super::*;
 
 /// Decodes an integer number encoded with a given prefix size (in bits) based
-/// on the pseudocode provided by the HPACK specification ([5.1]).
+/// on the pseudocode provided by the HPACK specification ([5.1.]).
 /// 
 /// The method assumes that the buffer `buf` contains the integer to be decoded,
 /// with the first byte representing the octet that contains the prefix. The
@@ -86,7 +86,7 @@ pub fn decode_integer(buf: &mut Vec<u8>, val: &mut u32, prefix_size: u8) -> Resu
     }
 }
 
-/// Decodes HPACK encoded string to plain test ([5.2]).
+/// Decodes HPACK encoded string to plain test ([5.2.]).
 /// 
 /// The function uses the Huffman decoder which can decode a buffer with the
 /// provided `speed`. More bits at a time mean faster decoding but at the same
