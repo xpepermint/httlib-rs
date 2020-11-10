@@ -7,27 +7,28 @@
 //! 
 //! ## About
 //! 
-//! [HPACK] introduces a completely new approach to the header packaging and
-//! management. Websites today require dozens or hundreds of requests and the
-//! redundant header fields in these requests consume bandwidth unnecessarily.
-//! Therefore, [HPACK] is a compressor, which's main function is to eliminate
-//! redundant header fields. 
+//! [HPACK] is a compression format that eliminates redundant header fields in
+//! requests and responses. This is one of the features based on which the
+//! [HTTP/2] protocol significantly reduces the amount of transferred data from
+//! one entity to another.
 //! 
-//! The specification is rather short, but as it goes for other [HTTP/2] related
-//! specifications, this one is also often unclear and ambiguous, creating
-//! numerous issues and uncertainty for implementers. It is also written with an
-//! experienced developer in mind and focuses primarily on the decoder
-//! functioning and assumes that the implementor will be knowledgeable enough to
-//! add all details as he sees are needed for the working product. 
-//! 
-//! On top of that, a significant shift in thinking is required from the
-//! implementer of the [HTTP/2] protocol. A connection in [HTTP/2] is not a
-//! single request/response. We can start multiple simultaneous streams in one
+//! A significant shift in thinking is required from the implementer of the
+//! [HTTP/2] protocol. A connection in [HTTP/2] does not represent a single
+//! request/response session. We can start multiple simultaneous streams in one
 //! connection, representing multiple request/response sessions, which was not
 //! possible in the previous versions of the HTTP protocol. The [HPACK]
 //! compressor uses this characteristic of [HTTP/2] by indexing headers
-//! considering the whole connection and not per stream, which might seem
-//! somewhat unusual.
+//! considering the whole connection and not per stream.
+//! 
+//! The implementation of [HPACK] contains three main parts of the process:
+//! 
+//! * `Indexing table` is a list, to which the HPACK saves the commonly used
+//! headers. Each entity indexes headers per connection, separately for incoming
+//! (decoding) and for outgoing (encoding) data ([2.3.]).
+//! 
+//! * `Encoder` TODO!!!!!
+//! 
+//! * `Decoder` TODO!!!!!
 //! 
 //! ## Usage
 //!
@@ -68,6 +69,7 @@
 //! 
 //! [HPACK]: https://tools.ietf.org/html/rfc7541
 //! [HTTP/2]: https://tools.ietf.org/html/rfc7540
+//! [2.3.]: https://tools.ietf.org/html/rfc7541#section-2.3
 
 mod decoder;
 mod encoder;

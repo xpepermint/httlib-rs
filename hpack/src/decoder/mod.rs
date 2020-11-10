@@ -315,7 +315,9 @@ impl<'a> Decoder<'a> {
     /// the dynamic table.
     /// 
     /// The new maximum size MUST be lower than or equal to the limit determined
-    /// by the protocol using HPACK.
+    /// by the protocol using HPACK. In HTTP/2, this limit is the last value of
+    /// the `SETTINGS_HEADER_TABLE_SIZE` received from the decoder and
+    /// acknowledged by the encoder.
     /// 
     /// **Maximum Dynamic table size change ([6.3.], figure 12):**
     /// 

@@ -313,11 +313,7 @@ impl<'a> Encoder<'a> {
     /// The new maximum size MUST be lower than or equal to the limit determined
     /// by the protocol using HPACK. In HTTP/2, this limit is the last value of
     /// the `SETTINGS_HEADER_TABLE_SIZE` received from the decoder and
-    /// acknowledged by the encoder. This means that a decoder can send a table
-    /// size request through a `SETTINGS` frame to the encoder, the encoder
-    /// updates the size on its size and sends the acknowledgment signal back to
-    /// the decoder. When the decoder receives the acknowledgment from the
-    /// encoder, the new size is assigned to the decoder as well.
+    /// acknowledged by the encoder.
     /// 
     /// **Maximum Dynamic table size change ([6.3.], figure 12):**
     /// 

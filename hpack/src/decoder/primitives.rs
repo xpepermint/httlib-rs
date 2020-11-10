@@ -20,7 +20,7 @@ use super::*;
 /// must be between 1 and 8 bits. An integer starting at an octet boundary will
 /// have an 8-bit prefix.
 /// 
-/// **Integer value encoded within the 5-bit prefix ([5.1.], figure 2)**
+/// **Integer value encoded within the 5-bit prefix ([5.1.], figure 2):**
 /// 
 /// ```txt
 ///   0   1   2   3   4   5   6   7
@@ -29,7 +29,7 @@ use super::*;
 /// +---+---+---+-------------------+
 /// ```
 /// 
-/// **Integer value encoded after the 5-bit prefix ([5.1.], figure 3)**
+/// **Integer value encoded after the 5-bit prefix ([5.1.], figure 3):**
 /// 
 /// ```txt
 ///   0   1   2   3   4   5   6   7
