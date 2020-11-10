@@ -38,7 +38,7 @@ to learn more.
 
 ### Usage
 
-Encoding:
+**Encoding example:**
 
 ```rs
 use httlib_huffman::encode;
@@ -48,7 +48,7 @@ let text = "Hello world!".as_bytes();
 encode(&text, &mut dst)?;
 ```
 
-Decoding:
+**Decoding example:**
 
 ```rs
 use httlib_huffman::decode;
