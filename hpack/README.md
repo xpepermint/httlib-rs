@@ -36,32 +36,33 @@ headers. Each entity indexes headers per connection, separately for incoming
 
 **Encoding example:**
 
-```rs
+```rust
 use httlib_hpack::Encoder;
 
 let mut encoder = Encoder::default();
 let mut dst = Vec::new();
-let name = b":method";
-let value = b"PATCH";
+let name = b":method".to_vec();
+let value = b"PATCH".to_vec();
 let flags = Encoder::HUFFMAN_VALUE | Encoder::WITH_INDEXING | Encoder::BEST_FORMAT;
-encoder.encode((name, value, flags), &mut dst)?;
+encoder.encode((name, value, flags), &mut dst).unwrap();
 ```
 
 **Decoding example:**
 
-```rs
+```rust
 use httlib_hpack::Decoder;
 
 let mut decoder = Decoder::default();
-let mut buf = vec![...];
+let mut buf = vec![0x80 | 2];
 let mut dst = Vec::new();
-decoder.decode(&mut buf, &mut dst)?;
-let (name, value, flags) = dst;
+decoder.decode(&mut buf, &mut dst).unwrap();
 
-if flags & Decoder::NEVER_INDEXED == Decoder::NEVER_INDEXED {
-    // sensitive header
-} else {
-    // common header
+for (name, value, flags) in dst {
+    if flags & Decoder::NEVER_INDEXED == Decoder::NEVER_INDEXED {
+        // sensitive header
+    } else {
+        // common header
+    }
 }
 ```
 

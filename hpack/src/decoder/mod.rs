@@ -68,11 +68,13 @@ impl<'a> Decoder<'a> {
     /// 
     /// **Example:**
     /// 
-    /// ```rs
+    /// ```rust
+    /// use httlib_hpack::Decoder;
+    /// 
     /// let mut decoder = Decoder::default();
     /// let mut dst = Vec::new();
-    /// let mut buf = vec![...];
-    /// decoder.decode(&mut buf, &mut dst)?;
+    /// let mut buf = vec![0x80 | 2];
+    /// decoder.decode(&mut buf, &mut dst).unwrap();
     /// ```
     pub fn decode(
         &mut self,
@@ -100,11 +102,13 @@ impl<'a> Decoder<'a> {
     /// 
     /// **Example:**
     /// 
-    /// ```rs
+    /// ```rust
+    /// use httlib_hpack::Decoder;
+    /// 
     /// let mut decoder = Decoder::default();
     /// let mut dst = Vec::with_capacity(2);
-    /// let mut buf = vec![...];
-    /// decoder.decode_exact(&mut buf, &mut dst)?;
+    /// let mut buf = vec![0x80 | 2, 0x80 | 3];
+    /// decoder.decode_exact(&mut buf, &mut dst).unwrap();
     /// ```
     pub fn decode_exact(
         &mut self,

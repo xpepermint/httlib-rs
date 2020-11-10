@@ -130,7 +130,8 @@ use crate::DecoderSpeed;
 /// 
 /// **Example:**
 /// 
-/// ```rs
+/// ```rust
+/// use httlib_huffman::{DecoderSpeed, flatten};
 /// use httlib_huffman::encoder::table::ENCODE_TABLE;
 /// 
 /// let speed = DecoderSpeed::FourBits; // decoder will read 4 bits at a time

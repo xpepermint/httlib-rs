@@ -108,12 +108,12 @@ pub use error::*;
 /// 
 /// **Example:**
 /// 
-/// ```rs
+/// ```rust
 /// use httlib_huffman::encode;
 /// 
 /// let mut sequence = Vec::new();
 /// let text = "Hello world!".as_bytes();
-/// match encode(&text, &mut sequence)?;
+/// encode(&text, &mut sequence).unwrap();
 /// ```
 pub fn encode(src: &[u8], dst: &mut Vec<u8>) -> Result<(), EncoderError> {
     let mut bits: u64 = 0;

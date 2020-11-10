@@ -90,13 +90,13 @@ use reader::*;
 /// 
 /// **Example:**
 /// 
-/// ```rs
-/// use httlib_huffman::{decode, DecoderSpeed};
+/// ```rust
+/// use httlib_huffman::{DecoderSpeed, decode};
 ///
-/// let mut text = Vec::new();
 /// let speed = DecoderSpeed::ThreeBits;
-/// let sequence = vec![168, 209, ...];
-/// decode(&sequence, &mut text, speed).unwrap();
+/// let mut dst = Vec::new();
+/// let src = vec![135];
+/// decode(&src, &mut dst, speed).unwrap();
 /// ```
 pub fn decode(
     src: &[u8],

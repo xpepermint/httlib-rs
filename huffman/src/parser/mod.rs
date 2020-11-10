@@ -20,7 +20,7 @@
 /// 
 /// **Example:**
 /// 
-/// ```rs
+/// ```rust
 /// use std::fs;
 /// use std::path::Path;
 /// use httlib_huffman::{parse};

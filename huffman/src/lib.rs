@@ -38,23 +38,23 @@
 //!
 //! **Encoding example:**
 //! 
-//! ```rs
+//! ```rust
 //! use httlib_huffman::encode;
 //! 
 //! let mut dst = Vec::new();
 //! let text = "Hello world!".as_bytes();
-//! encode(&text, &mut dst)?;
+//! encode(&text, &mut dst).unwrap();
 //! ```
 //! 
 //! **Decoding example:**
 //! 
-//! ```rs
-//! use httlib_huffman::decode;
+//! ```rust
+//! use httlib_huffman::{DecoderSpeed, decode};
 //!
 //! let speed = DecoderSpeed::ThreeBits;
 //! let mut dst = Vec::new();
-//! let src = vec![168, 209, ...];
-//! decode(&src, &mut dst, speed)?;
+//! let src = vec![135];
+//! decode(&src, &mut dst, speed).unwrap();
 //! ```
 //! 
 //! ## Articles

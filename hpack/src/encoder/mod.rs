@@ -64,11 +64,15 @@ impl<'a> Encoder<'a> {
     /// 
     /// **Example:**
     /// 
-    /// ```rs
+    /// ```rust
+    /// use httlib_hpack::Encoder;
+    /// 
     /// let mut encoder = Encoder::default();
     /// let mut dst = Vec::new();
+    /// let name = b":method".to_vec();
+    /// let value = b"PATCH".to_vec();
     /// let flags = 0x2 | 0x4 | 0x10;
-    /// encoder.encode((b":method", b"PATCH", flags), &mut dst)?;
+    /// encoder.encode((name, value, flags), &mut dst).unwrap();
     /// ```
     /// 
     /// [6.2.1.]: https://tools.ietf.org/html/rfc7541#section-6.2.1
