@@ -1,8 +1,8 @@
 [package]
 name = "httlib-hpack"
-description = "HPACK format implementing for HTTP/2."
+description = "HPACK format implementation for HTTP/2."
 license = "MIT"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Kristijan Sedlak <xpepermint@gmail.com>"]
 edition = "2018"
 documentation = "https://docs.rs/httlib-hpack"
@@ -13,7 +13,7 @@ categories = ["algorithms", "encoding"]
 readme = "README.md"
 
 [dependencies]
-httlib-huffman = "^0.3.2"
+httlib-huffman = "^0.3.3"
 
 # [badges]
 # travis-ci = { repository = "https://github.com/xpepermint/httlib-rs", branch = "master" }
