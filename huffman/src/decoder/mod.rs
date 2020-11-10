@@ -98,7 +98,11 @@ use reader::*;
 /// let sequence = vec![168, 209, ...];
 /// decode(&sequence, &mut text, speed).unwrap();
 /// ```
-pub fn decode(src: &[u8], dst: &mut Vec<u8>, speed: DecoderSpeed) -> Result<(), DecoderError> {
+pub fn decode(
+    src: &[u8],
+    dst: &mut Vec<u8>,
+    speed: DecoderSpeed,
+) -> Result<(), DecoderError> {
     let mut reader = DecodeReader::new(speed as usize);
 
     for byte in src {

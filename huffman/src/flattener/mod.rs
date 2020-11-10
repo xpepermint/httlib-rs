@@ -136,7 +136,10 @@ use crate::DecoderSpeed;
 /// let speed = DecoderSpeed::FourBits; // decoder will read 4 bits at a time
 /// let table = flatten(&ENCODE_TABLE, speed);
 /// ```
-pub fn flatten(codings: &[(u8, u32)], speed: DecoderSpeed) -> Vec<Vec<(Option<u8>, Option<u16>, u8)>> { // next_id, ascii, leftover
+pub fn flatten(
+    codings: &[(u8, u32)],
+    speed: DecoderSpeed,
+) -> Vec<Vec<(Option<u8>, Option<u16>, u8)>> { // next_id, ascii, leftover
     let speed = speed as usize;
     let blank_transition = generate_blank_transition(speed);
 
