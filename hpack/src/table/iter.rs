@@ -1,8 +1,9 @@
 use super::Table;
 
-/// An iterator through all the entries in the table. This iterator will first
-/// walk through entries of the static table and then through entries of the
-/// dynamic table.
+/// Represents an iterator through all the entries in the table.
+/// 
+/// This iterator will first walk through entries of the static table and then
+/// through entries of the dynamic table.
 #[derive(Clone, Copy)]
 pub struct TableIter<'a> {
     pub index: u32,

@@ -1,5 +1,5 @@
-//! This module provides features for parsing [Huffman code] table provided by
-//! the [HPACK] documentation.
+//! Provides features for parsing [Huffman code] table provided by the [HPACK]
+//! documentation.
 //! 
 //! [HPACK] provides a pre-created [Huffman code] table for encoding [ASCII]
 //! characters to the Huffman sequence. This Huffman code was generated from
@@ -23,7 +23,7 @@
 /// ```rust
 /// use std::fs;
 /// use std::path::Path;
-/// use httlib_huffman::{parse};
+/// use httlib_huffman::parser::parse;
 /// 
 /// let path = Path::new("assets/hpack-huffman.txt");
 /// let data = fs::read_to_string(path).expect("Can't read file.");

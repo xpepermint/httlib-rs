@@ -3,7 +3,8 @@
 
 extern crate httlib_huffman;
 
-use httlib_huffman::{flatten, DecoderSpeed};
+use httlib_huffman::DecoderSpeed;
+use httlib_huffman::flattener::flatten;
 use httlib_huffman::encoder::table::ENCODE_TABLE;
 
 fn main() {

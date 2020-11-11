@@ -1,5 +1,5 @@
-//! This module provides features for flattening Huffman tree and generating
-//! translation matrix.
+//! Provides features for flattening Huffman tree and generating translation
+//! matrix.
 //! 
 //! [HPACK] documentation provides an already prepared and for the web optimized
 //! Huffman code for all [ASCII] characters. To implement the Huffman algorithm
@@ -131,7 +131,8 @@ use crate::DecoderSpeed;
 /// **Example:**
 /// 
 /// ```rust
-/// use httlib_huffman::{DecoderSpeed, flatten};
+/// use httlib_huffman::DecoderSpeed;
+/// use httlib_huffman::flattener::flatten;
 /// use httlib_huffman::encoder::table::ENCODE_TABLE;
 /// 
 /// let speed = DecoderSpeed::FourBits; // decoder will read 4 bits at a time

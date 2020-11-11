@@ -1,5 +1,5 @@
-/// This is a static translation table for decoding Huffman sequence by reading
-/// 2-bit(s) at at time.
+/// Represents a static translation table for decoding Huffman sequence by
+/// reading 2-bits at at time.
 pub const DECODE_TABLE: [[(Option<u8>, Option<u16>, u8); 4]; 126] = [ // (next_id, ascii, leftover)
     [ // 0
         (Some(36), None, 0),

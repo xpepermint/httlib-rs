@@ -1,5 +1,5 @@
-/// All the decoding speed options which represent the number of bits that the
-/// decoder can read at a time.
+/// Provides available decoding speed options which represent the number of bits
+/// that the decoder can read at a time.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum DecoderSpeed {
     OneBit = 1,

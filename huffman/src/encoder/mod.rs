@@ -1,4 +1,4 @@
-//! This module provides an implementation of the [canonical Huffman] encoder.
+//! Provides an implementation of the [canonical Huffman] encoder.
 //! 
 //! Encoding is relatively easy since we are replacing the individual characters
 //! with the Huffman code. We add an EOS sign at the end to always fill the

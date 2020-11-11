@@ -1,4 +1,65 @@
-//! TODO
+//! Provides an implementation of the [HPACK] encoder.
+//! 
+//! The encoder performs the task of data compression. It converts the data from
+//! its original readable form into an optimized byte sequence by applying the
+//! rules defined in the [HPACK] specification.
+//! 
+//! The HPACK encoding has specific rules for representing integer and string
+//! primitive types.
+//! 
+//! * [Integer representation] defines the rules for encoding integer numbers.
+//! Integers are used to represent name indexes, header field indexes, or
+//! character string lengths.
+//! 
+//! * [String literal representation] defines the rules for encoding string
+//! literals. With these, we encode the header name and value literals. The
+//! content of these rules can be written in plain text format or encoded with
+//! the [Huffman algorithm]. 
+//! 
+//! With these basic rules, HPACK defines the binary formats for the
+//! representation of the actual headers. 
+//! 
+//! * [Indexed header field representation] represents fully indexed headers.
+//! These are the headers that are stored in the indexing table under specific
+//! index numbers. Since both the header name and value are stored in the
+//! indexing table, only this index number is encoded. Such headers are really
+//! minimal and therefore optimal in terms of performance. 
+//! 
+//! * [Literal header field representation] defines headers that are not or
+//! only partially indexed. If the header field name matches the header field
+//! name of an entry stored in the static or dynamic table, the header field
+//! name can be displayed using the index of this entry. Otherwise, the header
+//! field name is displayed as a string literal. Header values are always
+//! displayed as a string literal. Such headers can be marked as "index", "do
+//! not index" or  "never index". The latter tells us that the data is
+//! sensitive and that the entity should handle it with some restrictions
+//! (e.g.: protect it with a password). 
+//! 
+//! HPACK is designed as a single-standing mechanism that can also be used
+//! outside the HTTP/2 protocol. For this reason, the specification provides a
+//! rule for signaling changes related to the allowed size of the dynamic table. 
+//! 
+//! * [Dynamic table size update] defines the rule for signaling changes in the
+//! size of the dynamic table. Such a change is signaled by the encoder, while
+//! the limit must be less than or equal to the limit determined by the protocol
+//! using HPACK. In HTTP/2 this limit is the last value of the
+//! [SETTINGS_HEADER_TABLE_SIZE] received by the decoder and acknowledged by the
+//! encoder. Encoder and decoder use the HTTP/2 protocol to communicate the
+//! change in table size and if the change is accepted at both ends, the encoder
+//! applies the change and reports it to the decoder using the HPACK mechanism.
+//! 
+//! These five rules, with some additional conditional rules described by the
+//! HPACK specification, define the HPACK encoder. 
+//! 
+//! [HPACK]: https://tools.ietf.org/html/rfc7541
+//! [HTTP/2]: https://tools.ietf.org/html/rfc7540
+//! [Integer representation]: https://tools.ietf.org/html/rfc7541#section-5.1
+//! [String literal representation]: https://tools.ietf.org/html/rfc7541#section-5.2
+//! [Indexed header field representation]: https://tools.ietf.org/html/rfc7541#section-6.1
+//! [Literal header field representation]: https://tools.ietf.org/html/rfc7541#section-6.2
+//! [Dynamic table size update]: https://tools.ietf.org/html/rfc7541#section-6.3
+//! [SETTINGS_HEADER_TABLE_SIZE]: https://tools.ietf.org/html/rfc7540#section-6.5.2
+//! [Huffman algorithm]: https://dev.to/xpepermint/hpack-huffman-encoder-3i7c
 
 mod error;
 mod input;
@@ -9,7 +70,7 @@ pub use input::*;
 use primitives::*;
 use crate::table::Table;
 
-/// An object for encoding HTTP/2 headers.
+/// Provides the encoding engine for HTTP/2 headers.
 /// 
 /// Since headers in HPACK can be encoded in multiple ways, the encoder provides
 /// multiple methods for encoding headers. A developer is responsible to

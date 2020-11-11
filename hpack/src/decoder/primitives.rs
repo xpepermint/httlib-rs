@@ -45,7 +45,7 @@ use super::*;
 /// ```
 /// 
 /// [5.1.]: https://tools.ietf.org/html/rfc7541#section-5.1
-pub fn decode_integer(buf: &mut Vec<u8>, val: &mut u32, prefix_size: u8) -> Result<usize, DecoderError> {
+pub(crate) fn decode_integer(buf: &mut Vec<u8>, val: &mut u32, prefix_size: u8) -> Result<usize, DecoderError> {
     if prefix_size < 1 || prefix_size > 8 { // invalid prefix
         return Err(DecoderError::InvalidPrefix);
     }
@@ -104,7 +104,7 @@ pub fn decode_integer(buf: &mut Vec<u8>, val: &mut u32, prefix_size: u8) -> Resu
 /// ```
 /// 
 /// [5.2.]: https://tools.ietf.org/html/rfc7541#section-5.2
-pub fn decode_string(buf: &mut Vec<u8>, speed: DecoderSpeed, dst: &mut Vec<u8>) -> Result<usize, DecoderError> {
+pub(crate) fn decode_string(buf: &mut Vec<u8>, speed: DecoderSpeed, dst: &mut Vec<u8>) -> Result<usize, DecoderError> {
     let huffman = buf[0] & 128 == 128;
 
     let mut len = 0;

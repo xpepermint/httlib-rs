@@ -1,7 +1,8 @@
 use std::error;
 use std::fmt;
 
-/// An object returned by the decode function when an error occurs.
+/// Contains error options that can be encountered while performing the decoding
+/// operations.
 #[derive(Debug, PartialEq)]
 pub enum DecoderError {
     /// Indicates that the decoder received an invalid Huffman code. This should

@@ -1,10 +1,10 @@
-/// A type representing the static table.
+/// Represents a static table.
 pub type StaticTable<'a> = &'a [(&'a [u8], &'a [u8])];
 
-/// A predefined and unchangeable list of header fields defined by the HPACK
-/// specification ([Appendix A]). The static table was created from the most
-/// frequent header fields used by popular web sites, with the addition of
-/// HTTP/2-specific [pseudo-header] fields.
+/// Represents a predefined and unchangeable list of header fields defined by
+/// the HPACK specification ([Appendix A]). The static table was created from
+/// the most frequent header fields used by popular web sites, with the addition
+/// of HTTP/2-specific [pseudo-header] fields.
 /// 
 /// [Appendix A]: https://tools.ietf.org/html/rfc7541#appendix-A
 /// [pseudo-header]: https://tools.ietf.org/html/rfc7540#section-8.1.2.1

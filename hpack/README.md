@@ -26,11 +26,15 @@ The implementation of [HPACK] contains three main parts of the process:
 
 * `Indexing table` is a list, to which the HPACK saves the commonly used
 headers. Each entity indexes headers per connection, separately for incoming
-(decoding) and for outgoing (encoding) data ([2.3.]).
+(decoding) and for outgoing (encoding) data.
 
-* `Encoder` TODO!!!!!
+* `Encoder` performs the task of data compression. It converts the data from
+its original readable form into an optimized byte sequence by applying the
+rules defined in the HPACK specification.
 
-* `Decoder` TODO!!!!!
+* `Decoder` takes over the task of the decompressor. It executes the
+commands inversely to the encoder. It converts the data back into its
+readable form.
 
 ### Usage
 
@@ -40,10 +44,12 @@ headers. Each entity indexes headers per connection, separately for incoming
 use httlib_hpack::Encoder;
 
 let mut encoder = Encoder::default();
-let mut dst = Vec::new();
+
 let name = b":method".to_vec();
 let value = b"PATCH".to_vec();
 let flags = Encoder::HUFFMAN_VALUE | Encoder::WITH_INDEXING | Encoder::BEST_FORMAT;
+
+let mut dst = Vec::new();
 encoder.encode((name, value, flags), &mut dst).unwrap();
 ```
 
@@ -54,6 +60,7 @@ use httlib_hpack::Decoder;
 
 let mut decoder = Decoder::default();
 let mut buf = vec![0x80 | 2];
+
 let mut dst = Vec::new();
 decoder.decode(&mut buf, &mut dst).unwrap();
 
@@ -68,10 +75,9 @@ for (name, value, flags) in dst {
 
 ### Articles
 
-* [HPACK: The secret ingredient of HTTP/2](TODO)
+* [HPACK: The secret ingredient of HTTP/2](https://dev.to/xpepermint/hpack-the-secret-ingredient-of-http-2-4np6)
 
 [HPACK]: https://tools.ietf.org/html/rfc7541
 [HTTP/2]: https://tools.ietf.org/html/rfc7540
-[2.3.]: https://tools.ietf.org/html/rfc7541#section-2.3
 
 License: MIT

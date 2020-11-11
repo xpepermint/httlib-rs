@@ -1,6 +1,7 @@
 use super::{DecoderError};
 
-/// An object for decoding Huffman sequence back to the original form.
+/// Provides a mechanics for decoding Huffman sequence back to the original
+/// form.
 pub(crate) struct DecodeReader {
     /// The number of bits that the reader should read at a time.
     speed: usize,
@@ -56,6 +57,8 @@ impl DecodeReader {
         Ok(())
     }
 
+    /// Decodes the last buffer chunk.
+    /// 
     /// When an application receives the last byte this method should be called
     /// to adjust the remaining bits in the internal buffer. When needed, the
     /// buffer size is extended to the remaining speed size so the last chunk

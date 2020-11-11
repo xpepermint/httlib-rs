@@ -1,7 +1,8 @@
 use std::error;
 use std::fmt;
 
-/// An object returned by the encode function when an error occurs.
+/// Contains error options that can be encountered while performing the encoding
+/// operations.
 #[derive(Debug, PartialEq)]
 pub enum EncoderError {
     /// Indicates that the encoder received an invalid ASCII character. Note

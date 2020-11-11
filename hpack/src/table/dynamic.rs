@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-/// The [dynamic table] holding a list of header fields maintained in first-in,
+/// Represents a [dynamic table] with header fields maintained in first-in,
 /// first-out order.
 /// 
 /// [dynamic table]: https://tools.ietf.org/html/rfc7541#section-2.3.2
@@ -23,7 +23,7 @@ pub struct DynamicTable {
 }
 
 impl DynamicTable {
-    /// Return a new instance of the dynamic table. The function expects a
+    /// Returns a new instance of the dynamic table. The function expects a
     /// parameter which will set the maximum allowed table size.
     pub fn with_size(max_size: u32) -> Self {
         Self {

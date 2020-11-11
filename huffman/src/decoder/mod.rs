@@ -1,4 +1,4 @@
-//! This module provides an implementation of the [canonical Huffman] decoder.
+//! Provides an implementation of the [canonical Huffman] decoder.
 //! 
 //! When an entity receives a header, for which it determines that it contains
 //! content encoded with the [canonical Huffman] algorithm, it has to decode

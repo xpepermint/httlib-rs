@@ -1,4 +1,4 @@
-/// An enum representing encoder input formats.
+/// Provides encoder input format options.
 #[derive(Debug)]
 pub enum EncoderInput {
     /// Represents a fully indexed header field.

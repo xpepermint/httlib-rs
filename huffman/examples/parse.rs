@@ -5,7 +5,7 @@ extern crate httlib_huffman;
 
 use std::fs;
 use std::path::Path;
-use httlib_huffman::{parse};
+use httlib_huffman::parser::parse;
 
 fn main() {
     let path = Path::new("assets/hpack-huffman.txt");

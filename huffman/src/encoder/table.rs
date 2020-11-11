@@ -1,4 +1,4 @@
-/// This is a static Huffman table built from the codes found in the official
+/// Represents a static Huffman table built from the codes found in the official
 /// HPACK specification ([Appendix B]).
 /// 
 /// [Appendix B]: https://tools.ietf.org/html/rfc7541#appendix-B

@@ -1,6 +1,6 @@
 use super::*;
 
-/// Encode an integer number to the integer representation defined by HPACK
+/// Encodes an integer number to the integer representation defined by HPACK
 /// based on the pseudocode provided by the HPACK specification ([5.1.]).
 /// 
 /// This is a generic function which is used in multiple places in the code
@@ -41,7 +41,7 @@ use super::*;
 /// ```
 /// 
 /// [5.1.]: https://tools.ietf.org/html/rfc7541#section-5.1
-pub fn encode_integer(
+pub(crate) fn encode_integer(
     value: u32,
     flags: u8,
     prefix_size: u8,
@@ -87,7 +87,7 @@ pub fn encode_integer(
 /// ```
 /// 
 /// [5.2.]: https://tools.ietf.org/html/rfc7541#section-5.2
-pub fn encode_string(
+pub(crate) fn encode_string(
     data: Vec<u8>,
     huffman: bool,
     dst: &mut Vec<u8>,

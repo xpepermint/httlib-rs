@@ -1,14 +1,32 @@
-//! TODO
+//! Provides an implementation of the [HPACK] decoder.
+//! 
+//! The decoder takes over the task of the decompressor, i.e. it executes the
+//! commands inversely to the encoder. It converts the data back into its
+//! readable form, ensuring that the indexing table is identical to that on the
+//! encoder side. 
+//! 
+//! The decoder is usually the one that determines how many resources can be
+//! used for the purposes of HPACK compression, among others. The decoder
+//! signals this to the encoder in the [HTTP/2] protocol with the parameter
+//! [SETTINGS_HEADER_TABLE_SIZE] using the 'SETTINGS' frame. This change is
+//! made when the settings are confirmed by both sides in a way that the HTTP/2
+//! protocol requires. In fact, the encoder is the one that actually requires a
+//! change in the size of the dynamic table to meet the requirements of the
+//! values agreed upon via the HTTP/2 protocol.
+//! 
+//! [HPACK]: https://tools.ietf.org/html/rfc7541
+//! [HTTP/2]: https://tools.ietf.org/html/rfc7540
+//! [SETTINGS_HEADER_TABLE_SIZE]: https://tools.ietf.org/html/rfc7540#section-6.5.2
 
 mod error;
 mod primitives;
 
 pub use error::*;
-pub use primitives::*;
+use primitives::*;
 pub use httlib_huffman::DecoderSpeed;
 use super::Table;
 
-/// An object for decoding HTTP/2 headers.
+/// Provides the decoding engine for HTTP/2 headers.
 #[derive(Debug)]
 pub struct Decoder<'a> {
     /// The number of bits to read at a time while decoding Huffman sequence.

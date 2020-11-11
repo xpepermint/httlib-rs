@@ -1,4 +1,4 @@
-//! This module provides an implementation of the HPACK [indexing tables].
+//! Provides an implementation of the  HPACK [indexing tables].
 //! 
 //! Indexing table is a list, to which the [HPACK] saves the commonly used
 //! headers. Each entity indexes headers per connection, separately for incoming
@@ -41,7 +41,6 @@
 //! potentially also its value, should be indexed. The table for outgoing
 //! headers on the client's side would thus look something like this: 
 //! 
-//! ```txt
 //! | Index | Name | Value
 //! |-|-|-
 //! | 01 | :authority | 
@@ -49,7 +48,6 @@
 //! | .. | ... | ...
 //! | 62 | name1 | value1
 //! | 63 | value2 | value2
-//! ```
 //! 
 //! On the server’s side, when it reads the headers it would create a table that
 //! would look exactly the same. If the next client request would send the same
@@ -76,7 +74,7 @@ pub use iter::TableIter;
 use dynamic::DynamicTable;
 use r#static::{StaticTable, STATIC_TABLE};
 
-/// This table represents a single index address space for headers where the 
+/// A table representing a single index address space for headers where the 
 /// static and the dynamic table are combined.
 #[derive(Debug)]
 pub struct Table<'a> {
@@ -155,10 +153,11 @@ impl<'a> Table<'a> {
         }
     }
 
-    /// Searches the static and the dynamic tables for the provided header. It
-    /// tries to match both the header name and value to one of the headers in
-    /// the table. If no such header exists, then it falls back to the one that
-    /// matched only the name. The returned match contains the index of the
+    /// Searches the static and the dynamic tables for the provided header.
+    /// 
+    /// It tries to match both the header name and value to one of the headers
+    /// in the table. If no such header exists, then it falls back to the one
+    /// that matched only the name. The returned match contains the index of the
     /// header in the table and a boolean indicating whether the value of the
     /// header also matched.
     pub fn find(&self, name: &[u8], value: &[u8]) -> Option<(usize, bool)> {
