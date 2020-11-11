@@ -4,7 +4,7 @@ use std::io::BufReader;
 use serde_json::{Value};
 use httlib_hpack::{Decoder};
 
-/// Should decodes stories provided by the [HTTP/2 Japan Community].
+/// Should decode stories provided by the [HTTP/2 Japan Community].
 /// 
 /// [HTTP/2 Japan Community]: https://github.com/http2jp/hpack-test-case
 #[test]
