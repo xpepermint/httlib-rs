@@ -199,8 +199,8 @@ fn encodes_and_decodes_requests() {
             let mut dst1 = Vec::new();
             decoder.decode(&mut dst0, &mut dst1).unwrap();
             for (i, h) in dst1.iter().enumerate() {
-                assert_eq!(fields[i].0, dst1[i].0);
-                assert_eq!(fields[i].1, dst1[i].1);
+                assert_eq!(fields[i].0, h.0);
+                assert_eq!(fields[i].1, h.1);
             }
         }
     }
