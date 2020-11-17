@@ -94,6 +94,9 @@ impl<'a> Decoder<'a> {
     /// let mut buf = vec![0x80 | 2];
     /// decoder.decode(&mut buf, &mut dst).unwrap();
     /// ```
+    /// 
+    /// This function consumes the buffer only if the decoding succeeds. The
+    /// provided vector will stay untouched in case of an error.
     pub fn decode(
         &mut self,
         buf: &mut Vec<u8>,
@@ -104,6 +107,7 @@ impl<'a> Decoder<'a> {
             if buf.is_empty() {
                 return Ok(total);
             }
+
             let mut data = Vec::with_capacity(1);
             total += self.decode_exact(buf, &mut data)?;
             dst.append(&mut data);
@@ -128,6 +132,9 @@ impl<'a> Decoder<'a> {
     /// let mut buf = vec![0x80 | 2, 0x80 | 3];
     /// decoder.decode_exact(&mut buf, &mut dst).unwrap();
     /// ```
+    /// 
+    /// This function consumes the buffer only if the decoding succeeds. The
+    /// provided vector will stay untouched in case of an error.
     pub fn decode_exact(
         &mut self,
         buf: &mut Vec<u8>,
@@ -171,8 +178,11 @@ impl<'a> Decoder<'a> {
     /// +---+---------------------------+
     /// ```
     /// 
+    /// This function consumes the buffer only if the decoding succeeds. The
+    /// provided vector will stay untouched in case of an error.
+    /// 
     /// [6.1.]: https://tools.ietf.org/html/rfc7541#section-6.1
-    pub fn decode_indexed(
+    fn decode_indexed(
         &self,
         buf: &mut Vec<u8>,
         dst: &mut Vec<(Vec<u8>, Vec<u8>, u8)>,
@@ -186,6 +196,7 @@ impl<'a> Decoder<'a> {
         };
         dst.push((name.to_vec(), value.to_vec(), 0x0));
 
+        buf.drain(0..total);
         Ok(total)
     }
 
@@ -288,16 +299,19 @@ impl<'a> Decoder<'a> {
     /// +-------------------------------+
     /// ```
     /// 
+    /// This function consumes the buffer only if the decoding succeeds. The
+    /// provided vector will stay untouched in case of an error.
+    /// 
     /// [6.2.1.]: https://tools.ietf.org/html/rfc7541#section-6.2.1
     /// [6.2.2.]: https://tools.ietf.org/html/rfc7541#section-6.2.2
     /// [6.2.3.]: https://tools.ietf.org/html/rfc7541#section-6.2.3
     fn decode_literal(
         &mut self,
-        bytes: &mut Vec<u8>,
+        buf: &mut Vec<u8>,
         dst: &mut Vec<(Vec<u8>, Vec<u8>, u8)>,
     ) -> Result<usize, DecoderError> {
         let mut total = 0;
-        let octet = bytes[0];
+        let octet = buf[0];
 
         let prefix = if octet & 64 == 64 { // with indexing
             6
@@ -306,11 +320,11 @@ impl<'a> Decoder<'a> {
         };
 
         let mut index = 0;
-        total += decode_integer(bytes, &mut index, prefix)?;
+        total += decode_integer(&buf[total..], &mut index, prefix)?;
 
         let name = if index == 0 {
             let mut name = Vec::new();
-            total += decode_string(bytes, self.speed, &mut name)?;
+            total += decode_string(&buf[total..], self.speed, &mut name)?;
             name
         } else if let Some(h) = self.table.get(index) {
             h.0.to_vec()
@@ -319,7 +333,7 @@ impl<'a> Decoder<'a> {
         };
 
         let mut value = Vec::new();
-        total += decode_string(bytes, self.speed, &mut value)?;
+        total += decode_string(&buf[total..], self.speed, &mut value)?;
 
         if octet & 64 == 64 {
             self.table.insert(name.clone(), value.clone());        
@@ -330,6 +344,7 @@ impl<'a> Decoder<'a> {
             dst.push((name, value, 0x0));
         }
 
+        buf.drain(0..total);
         Ok(total)
     }
 
@@ -350,20 +365,25 @@ impl<'a> Decoder<'a> {
     /// +---+---------------------------+
     /// ```
     /// 
+    /// This function consumes the buffer only if the decoding succeeds. The
+    /// provided vector will stay untouched in case of an error.
+    /// 
     /// [6.3]: https://tools.ietf.org/html/rfc7541#section-6.3
     fn update_max_dynamic_size(
         &mut self,
-        bytes: &mut Vec<u8>,
+        buf: &mut Vec<u8>,
     ) -> Result<usize, DecoderError> {
         let mut new_size = 0;
-        let total = decode_integer(bytes, &mut new_size, 5)?;
+        let total = decode_integer(buf, &mut new_size, 5)?;
 
         if new_size > self.max_dynamic_size {
-            Err(DecoderError::InvalidMaxDynamicSize)
+            return Err(DecoderError::InvalidMaxDynamicSize)
         } else {
             self.table.update_max_dynamic_size(new_size);
-            Ok(total)
         }
+
+        buf.drain(0..total);
+        Ok(total)
     }
 }
 

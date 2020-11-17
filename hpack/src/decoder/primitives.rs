@@ -45,17 +45,17 @@ use super::*;
 /// ```
 /// 
 /// [5.1.]: https://tools.ietf.org/html/rfc7541#section-5.1
-pub(crate) fn decode_integer(buf: &mut Vec<u8>, val: &mut u32, prefix_size: u8) -> Result<usize, DecoderError> {
+pub(crate) fn decode_integer(buf: &[u8], val: &mut u32, prefix_size: u8) -> Result<usize, DecoderError> {
     if prefix_size < 1 || prefix_size > 8 { // invalid prefix
         return Err(DecoderError::InvalidPrefix);
     }
-    
-    let mut total = 0; // once octet already read
+
+    let mut total = 0;
     let byte = if buf.is_empty() {
         return Err(DecoderError::IntegerUnderflow);
     } else {
         total += 1;
-        buf.remove(0)
+        buf[total - 1]
     };
 
     let mask = ((1 << prefix_size) - 1) as u8; // max possible value of the first byte
@@ -71,7 +71,7 @@ pub(crate) fn decode_integer(buf: &mut Vec<u8>, val: &mut u32, prefix_size: u8) 
             return Err(DecoderError::IntegerUnderflow);
         } else {
             total += 1;
-            buf.remove(0)
+            buf[total - 1]
         };
         
         value += ((byte & 0b01111111) as u32) << shift;
@@ -104,24 +104,25 @@ pub(crate) fn decode_integer(buf: &mut Vec<u8>, val: &mut u32, prefix_size: u8) 
 /// ```
 /// 
 /// [5.2.]: https://tools.ietf.org/html/rfc7541#section-5.2
-pub(crate) fn decode_string(buf: &mut Vec<u8>, speed: DecoderSpeed, dst: &mut Vec<u8>) -> Result<usize, DecoderError> {
+pub(crate) fn decode_string(buf: &[u8], speed: DecoderSpeed, dst: &mut Vec<u8>) -> Result<usize, DecoderError> {
     let huffman = buf[0] & 128 == 128;
 
     let mut len = 0;
-    decode_integer(buf, &mut len, 7)?;
+    let mut total = decode_integer(buf, &mut len, 7)?;
 
-    if len as usize > buf.len() {
+    if len as usize > buf.len() - total {
         return Err(DecoderError::IntegerUnderflow);
     }
 
-    let mut buf: Vec<u8> = buf.drain(0..len as usize).collect();
+    let mut buf: Vec<u8> = buf[total..total + len as usize].to_vec();
+    total += len as usize;
     if huffman { // Huffman encoded (MSB is set to 1)
         httlib_huffman::decode(&buf, dst, speed)?;
     } else { // Plain text (MSB is set to 0)
         dst.append(&mut buf);
     }
 
-    Ok(1 + len as usize)
+    Ok(total)
 }
 
 #[cfg(test)]
@@ -148,9 +149,9 @@ mod test {
             (vec![127, 128, 1], 7, 255,  3),
             (vec![0xFF, 0xFF, 0xFF, 0xFF, 0xFF - 128], 8, 268435710, 5), // the largest allowed integer (2^28)
         ];
-        for (mut value, prefix, res, size) in examples {
+        for (value, prefix, res, size) in examples {
             let mut dst = 0;
-            let total = decode_integer(&mut value, &mut dst, prefix).unwrap();
+            let total = decode_integer(&value, &mut dst, prefix).unwrap();
             assert_eq!(dst, res);
             assert_eq!(total, size);
         }
@@ -165,9 +166,9 @@ mod test {
             (b"foo", vec![3, 102, 111, 111]), // plain test
             (b"foo", vec![130, 148, 231]), // Huffman encoded
         ];
-        for (value, mut bytes) in examples {
+        for (value, bytes) in examples {
             let mut dst = Vec::new();
-            decode_string(&mut bytes, DecoderSpeed::FourBits, &mut dst).unwrap();
+            decode_string(&bytes, DecoderSpeed::FourBits, &mut dst).unwrap();
             assert_eq!(dst, value);
         }
     }
