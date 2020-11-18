@@ -54,7 +54,7 @@
 //! headers, it could simply send a header block including only header indexes:
 //! 
 //! ```txt
-//! 62 63 64
+//! 62 63
 //! ```
 //! 
 //! The server will then look up and expand into the full headers what those
