@@ -575,4 +575,20 @@ mod test {
         assert_eq!(decoder.table.max_dynamic_size(), 50); // new dynamic size is 50
         assert_eq!(decoder.table.dynamic_len(), 1); // 1 header evicted
     }
+
+    /// Should decode an incomplete encoded sequence to simulate the HTTP/2
+    /// continuation frame.
+    #[test]
+    fn decodes_incomplete_block() {
+        let mut decoder = Decoder::default();
+        let mut dst = Vec::new();
+        let mut buf = vec![
+            16, 4, 102, 111, 111, 48, 4, 98, 97, 114, 48,  // (foo0, bar0)
+            16, 4, 102, 111, 111,   // incomplete
+        ];
+        let res = decoder.decode(&mut buf, &mut dst);
+        assert!(res.is_err());
+        assert_eq!(dst.len(), 1);
+        assert_eq!(buf, vec![16, 4, 102, 111, 111]);
+    }
 }
