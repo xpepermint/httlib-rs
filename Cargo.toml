@@ -1,10 +1,12 @@
 [workspace]
 
 members = [
+    "./h2",
     "./hpack",
     "./huffman",
 ]
 
 [patch.crates-io]
+httlib-h2 = { path = "./h2" }
 httlib-hpack = { path = "./hpack" }
 httlib-huffman = { path = "./huffman" }
