@@ -45,7 +45,7 @@ use super::*;
 /// ```
 /// 
 /// [5.1.]: https://tools.ietf.org/html/rfc7541#section-5.1
-pub(crate) fn decode_integer(buf: &[u8], val: &mut u32, prefix_size: u8) -> Result<usize, DecoderError> {
+pub(crate) fn decode_integer(buf: &[u8], dst: &mut u32, prefix_size: u8) -> Result<usize, DecoderError> {
     if prefix_size < 1 || prefix_size > 8 { // invalid prefix
         return Err(DecoderError::InvalidPrefix);
     }
@@ -61,7 +61,7 @@ pub(crate) fn decode_integer(buf: &[u8], val: &mut u32, prefix_size: u8) -> Resu
     let mask = ((1 << prefix_size) - 1) as u8; // max possible value of the first byte
     let mut value = (byte & mask) as u32;
     if value < (mask as u32) { // value fits in the prefix bits.
-        *val = value;
+        *dst = value;
         return Ok(total);
     }
 
@@ -78,7 +78,7 @@ pub(crate) fn decode_integer(buf: &[u8], val: &mut u32, prefix_size: u8) -> Resu
         shift += 7;
 
         if byte & 0b10000000 == 0 { // most significant bit is set (continuation)
-            *val = value;
+            *dst = value;
             return Ok(total);
         } else if total == 5 { // chosen limit of supported octet
             return Err(DecoderError::IntegerOverflow);
