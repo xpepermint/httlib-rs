@@ -1,0 +1,16 @@
+[package]
+name = "httlib-protos"
+description = "Protocol Buffers binary format implementation."
+license = "MIT"
+version = "0.1.0"
+authors = ["Kristijan Sedlak <xpepermint@gmail.com>"]
+edition = "2018"
+documentation = "https://docs.rs/httlib-protos"
+homepage = "https://github.com/xpepermint/httlib-rs/tree/main/protos"
+repository = "https://github.com/xpepermint/httlib-rs"
+keywords = ["protos", "protobuf", "proto3", "wire", "http"]
+categories = ["algorithms", "encoding"]
+readme = "README.md"
+
+# [badges]
+# travis-ci = { repository = "https://github.com/xpepermint/httlib-rs", branch = "master" }
