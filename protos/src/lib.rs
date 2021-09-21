@@ -69,7 +69,7 @@
 //! 
 //! ## Articles
 //! 
-//! * [Deep dive into the binary algorithm of Protocol Buffers](https://dev.to/xpepermint/binary-algorithm-in-protocol-buffers-4gl6-temp-slug-7466404)
+//! * [Deep dive into the binary algorithm of Protocol Buffers](https://dev.to/xpepermint/deep-dive-into-the-binary-algorithm-of-protocol-buffers-7j2)
 //! 
 //! [Protocol Buffers]: https://en.wikipedia.org/wiki/Protocol_Buffers
 //! [gRPC]: https://grpc.io/
