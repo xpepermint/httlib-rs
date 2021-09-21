@@ -34,7 +34,7 @@ pub struct Decoder {
     /// A key with tag number and wire type of the currently decoding field.
     key: (u32, Typ),
 
-    /// The number of bytes that needs to be read for the currently decoding
+    /// The number of bytes that need to be read for the currently decoding
     /// length-delimited field.
     ld_len: Option<u64>,
 }
@@ -44,7 +44,7 @@ impl Decoder {
     /// result into `dst`.
     /// 
     /// The returned fields are tuples of format `(tag, type, bytes)` where the
-    /// returned bytes represent the encoded value. The developer should wrap
+    /// returned `bytes` represent the encoded value. The developer should wrap
     /// each value into the desired `DecoderLit` and call `parse` on it. 
     /// 
     /// ```rust

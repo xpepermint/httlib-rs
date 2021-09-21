@@ -19,7 +19,7 @@ pub enum DecoderError {
     InputUnderflow,
 
     /// Indicates that the decoder encountered an invalid tag number of a key. 
-    /// A tag number must be unique per message and the value can be between `0`
+    /// A tag number must be unique per message and the value can be between `1`
     /// and `2^29 - 1`.
     InvalidTag,
 }
@@ -33,9 +33,9 @@ impl From<io::Error> for DecoderError {
 impl fmt::Display for DecoderError {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Self::InputUnderflow => write!(fmt, "Not enough bytes."),
-            Self::Interrupted => write!(fmt, "Read operation interrupted."),
             Self::InvalidInput => write!(fmt, "Invalid byte stream."),
+            Self::Interrupted => write!(fmt, "Read operation interrupted."),
+            Self::InputUnderflow => write!(fmt, "Not enough bytes."),
             Self::InvalidTag => write!(fmt, "Found tag with invalid number."),
         }
     }

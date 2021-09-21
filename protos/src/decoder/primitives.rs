@@ -351,14 +351,14 @@ pub fn decode_sint64_list(
 /// Decodes an encoded `fixed32` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
 /// 
-/// Such format represents an encoded 32-bit number with wire types `5`. Fixed
-/// size number format is represented by bytes in little-endian byte order
+/// Such format represents an encoded 32-bit number with wire types `5`.
+/// Fixed-size number format is represented by bytes in little-endian byte order
 /// (reversed order).
 /// 
 /// ```txt
 /// value = 12345 (signed 32-bit)
 /// 
-/// Fixed size decoding:
+/// Fixed-size decoding:
 ///    00111001 00110000 00000000 00000000 ... Encoded value in (little-endian) order.
 ///    00000000 00000000 00110000 00111001 ... Value in (big-endian) bytes.
 /// ```
@@ -402,8 +402,8 @@ pub fn decode_fixed32_list(
 /// Decodes an encoded `fixed64` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
 /// 
-/// Such format represents an encoded 64-bit number with wire types `1`. Fixed
-/// size number format is represented by bytes in little-endian byte order
+/// Such format represents an encoded 64-bit number with wire types `1`.
+/// Fixed-size number format is represented by bytes in little-endian byte order
 /// (reversed order).
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
@@ -445,8 +445,8 @@ pub fn decode_fixed64_list(
 /// Decodes an encoded `sfixed32` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
 /// 
-/// Such format represents an encoded 32-bit number with wire types `5`. Fixed
-/// size number format is represented by bytes in little-endian byte order
+/// Such format represents an encoded 32-bit number with wire types `5`.
+/// Fixed-size number format is represented by bytes in little-endian byte order
 /// (reversed order).
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
@@ -488,8 +488,8 @@ pub fn decode_sfixed32_list(
 /// Decodes an encoded `sfixed64` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
 /// 
-/// Such format represents an encoded 64-bit number with wire types `1`. Fixed
-/// size number format is represented by bytes in little-endian byte order
+/// Such format represents an encoded 64-bit number with wire types `1`.
+/// Fixed-size number format is represented by bytes in little-endian byte order
 /// (reversed order).
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
@@ -531,7 +531,7 @@ pub fn decode_sfixed64_list(
 /// Decodes an encoded `float` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
 /// 
-/// Float is encoded as a 32-bit number with wire types `5`. Fixed size number
+/// Float is encoded as a 32-bit number with wire types `5`. Fixed-size number
 /// format is represented by bytes in little-endian byte order (reversed order).
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
@@ -570,7 +570,7 @@ pub fn decode_float_list(
 /// Decodes an encoded `double` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
 /// 
-/// Double is encoded as a 64-bit number with wire types `1`. Fixed size number
+/// Double is encoded as a 64-bit number with wire types `1`. Fixed-size number
 /// format is represented by bytes in little-endian byte order (reversed order).
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 

@@ -1,8 +1,8 @@
 use super::{DecoderError, DecoderLit};
 use super::primitives::*;
 
-/// Provides implementation interface for Rust data types to support conversion
-/// to `DecoderLit` instance.
+/// Provides an implementation interface for Rust data types to support
+/// conversion to `DecoderLit` instance.
 pub trait FromDecoderLit {
     /// Creates a new instance from the `DecoderLit` instance.
     fn from_decoder_lit(lit: DecoderLit) -> Result<Self, DecoderError>

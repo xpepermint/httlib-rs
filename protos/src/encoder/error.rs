@@ -15,7 +15,7 @@ pub enum EncoderError {
     
     /// Indicates that the encoder was unable to proceed due to the key's
     /// invalid tag number. A tag number must be unique per message and the
-    /// value can be between `0` and `2^29 - 1`.
+    /// value can be between `1` and `2^29 - 1`.
     InvalidTag,
 }
 
