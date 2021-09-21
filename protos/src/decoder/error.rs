@@ -18,7 +18,7 @@ pub enum DecoderError {
     /// does not contain enough octets to complete the decoding.
     InputUnderflow,
 
-    /// Indicates that the decoder encountered and invalid tag number of a key. 
+    /// Indicates that the decoder encountered an invalid tag number of a key. 
     /// A tag number must be unique per message and the value can be between `0`
     /// and `2^29 - 1`.
     InvalidTag,

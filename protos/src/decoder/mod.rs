@@ -2,6 +2,21 @@
 //! 
 //! The decoder performs the task of translating encoded binary data into actual
 //! data fields.
+//! 
+//! ```txt
+//! +-------------------+------------------+-------------------+
+//! +      1. JSON      +   2. Transform   +     3. Encode     + ENCODER
+//! +-------------------+------------------+-------------------+
+//! + {                 +                  +                   +
+//! +   "name": "John", + 1, John          + 0a 04 4a 6f 68 6e +
+//! +   "age": 35       + 2, 35            + 10 23             +
+//! + }                 +                  +                   +
+//! +-------------------+------------------+-------------------+
+//! +      6. JSON      +    5. Rebuild    +     4. Decode     + DECODER
+//! +-------------------+------------------+-------------------+
+//! ```
+//! 
+//! The decoder decodes a binary stream back to the original message.
 
 mod error;
 mod from_lit;
@@ -50,11 +65,11 @@ impl Decoder {
     /// ```
     /// 
     /// This function consumes the buffer only if the decoding succeeds. The
-    /// provided vector will stay untouched in case of an error or insuficioent
+    /// provided vector will stay untouched in case of an error or insufficient
     /// data.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
-    /// thrown.
+    /// On success, the number of written bytes is returned otherwise an error
+    /// is thrown.
     pub fn decode(
         &mut self,
         buf: &mut Vec<u8>,
@@ -91,11 +106,11 @@ impl Decoder {
     /// Decodes an encoded field key from the provided `buf`.
     /// 
     /// This function consumes the buffer only if the decoding succeeds. The
-    /// provided vector will stay untouched in case of an error or insuficioent
+    /// provided vector will stay untouched in case of an error or insufficient
     /// data.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
-    /// thrown.
+    /// On success, the number of written bytes is returned otherwise an error
+    /// is thrown.
     fn decode_key(&mut self, buf: &mut Vec<u8>) -> Result<usize, DecoderError> {
         let size = match decode_key(&buf, &mut self.key) {
             Ok(size) => size,
@@ -110,11 +125,11 @@ impl Decoder {
     /// writes the resulting bytes into `dst`.
     /// 
     /// This function consumes the buffer only if the decoding succeeds. The
-    /// provided vector will stay untouched in case of an error or insuficioent
+    /// provided vector will stay untouched in case of an error or insufficient
     /// data.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
-    /// thrown.
+    /// On success, the number of written bytes is returned otherwise an error
+    /// is thrown.
     fn extract_varint(
         &mut self,
         buf: &mut Vec<u8>,
@@ -136,11 +151,11 @@ impl Decoder {
     /// writes the resulting bytes into `dst`.
     /// 
     /// This function consumes the buffer only if the decoding succeeds. The
-    /// provided vector will stay untouched in case of an error or insuficioent
+    /// provided vector will stay untouched in case of an error or insufficient
     /// data.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
-    /// thrown.
+    /// On success, the number of written bytes is returned otherwise an error
+    /// is thrown.
     fn extract_bit32(
         &mut self,
         buf: &mut Vec<u8>,
@@ -162,11 +177,11 @@ impl Decoder {
     /// writes the resulting bytes into `dst`.
     /// 
     /// This function consumes the buffer only if the decoding succeeds. The
-    /// provided vector will stay untouched in case of an error or insuficioent
+    /// provided vector will stay untouched in case of an error or insufficient
     /// data.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
-    /// thrown.
+    /// On success, the number of written bytes is returned otherwise an error
+    /// is thrown.
     fn extract_bit64(
         &mut self,
         buf: &mut Vec<u8>,
@@ -188,11 +203,11 @@ impl Decoder {
     /// writes the resulting bytes into `dst`.
     /// 
     /// This function consumes the buffer only if the decoding succeeds. The
-    /// provided vector will stay untouched in case of an error or insuficioent
+    /// provided vector will stay untouched in case of an error or insufficient
     /// data.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
-    /// thrown.
+    /// On success, the number of written bytes is returned otherwise an error
+    /// is thrown.
     fn extract_ld(
         &mut self,
         buf: &mut Vec<u8>,
@@ -209,11 +224,11 @@ impl Decoder {
     /// field from the provided `buf`.
     /// 
     /// This function consumes the buffer only if the decoding succeeds. The
-    /// provided vector will stay untouched in case of an error or insuficioent
+    /// provided vector will stay untouched in case of an error or insufficient
     /// data.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
-    /// thrown.
+    /// On success, the number of written bytes is returned otherwise an error
+    /// is thrown.
     fn decode_ld_len(
         &mut self,
         buf: &mut Vec<u8>,
@@ -233,11 +248,11 @@ impl Decoder {
     /// provided `buf` and writes the resulting bytes into `dst`.
     /// 
     /// This function consumes the buffer only if the decoding succeeds. The
-    /// provided vector will stay untouched in case of an error or insuficioent
+    /// provided vector will stay untouched in case of an error or insufficient
     /// data.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
-    /// thrown.
+    /// On success, the number of written bytes is returned otherwise an error
+    /// is thrown.
     fn extract_ld_bytes(
         &mut self,
         buf: &mut Vec<u8>,

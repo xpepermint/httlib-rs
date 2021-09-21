@@ -2,8 +2,8 @@
 
 This crate implements [Protocol Buffers] binary protocol `v3` (`proto3`),
 for encoding and decoding typed messages to and from the wire format. The
-protocol deals in depth with optimizing the representation of data types on
-the wire so that as little data as possible is transmitted between client
+protocol deals in-depth with optimizing the representation of data types on
+the wire so that as little data as possible is transmitted between the client
 and server.
 
 [![Documentation](https://img.shields.io/badge/-Documentation-blue?style=for-the-badge&logo=Rust)](https://docs.rs/httlib-protos)
@@ -31,11 +31,10 @@ user-friendly, but highly suboptimal at the network level.
 Protocol Buffers addresses this issue and is one of the most optimized
 protocols which is also growing in popularity.
 
-This is not a fully featured Protocol Buffers library for generating code
-for the client and the server. The crate focuses on the low-level data
-compression and decompression for transmiting typed objects over the wire
-and offers a full implementation of the Protocol Buffer's binary protocol.
-The library can in such be used for different use cases.
+This library is not meant for generating code for the client and the server.
+The crate focuses on the low-level data compression and decompression for
+transmitting typed objects over the wire. It offers the full implementation
+of the Protocol Buffer's binary protocol.
 
 ### Usage
 

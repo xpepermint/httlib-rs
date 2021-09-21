@@ -25,7 +25,7 @@ use crate::{Typ, Encoder};
 ///    XXXXXXXX 10010110 ... Merge bits together (number 150 in bytes).
 /// ```
 /// 
-/// On success the number of read bytes is returned otherwise en error is
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
 pub fn decode_varint(buf: &[u8], dst: &mut u64) -> Result<usize, DecoderError> {
     let mut value: u64 = 0;
@@ -60,7 +60,7 @@ pub fn decode_varint(buf: &[u8], dst: &mut u64) -> Result<usize, DecoderError> {
 /// C = Contiunation, X = Number, T = Type
 /// ```
 /// 
-/// On success the number of read bytes is returned otherwise en error is
+/// On success, the number of read bytes is returned otherwise an error is
 /// thrown.
 pub fn decode_key(
     buf: &[u8],
@@ -87,7 +87,7 @@ pub fn decode_key(
 /// Decodes an encoded `bool` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_bool(buf: &[u8], dst: &mut bool) -> Result<usize, DecoderError> {
     let mut val = 0;
@@ -99,7 +99,7 @@ pub fn decode_bool(buf: &[u8], dst: &mut bool) -> Result<usize, DecoderError> {
 /// Decodes a length-delimited encoded repeated `bool` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_bool_list(
     buf: &[u8],
@@ -120,7 +120,7 @@ pub fn decode_bool_list(
 /// Decodes an encoded `int32` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_int32(buf: &[u8], dst: &mut i32) -> Result<usize, DecoderError> {
     let mut val = 0;
@@ -132,7 +132,7 @@ pub fn decode_int32(buf: &[u8], dst: &mut i32) -> Result<usize, DecoderError> {
 /// Decodes a length-delimited encoded repeated `int32` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_int32_list(
     buf: &[u8],
@@ -153,7 +153,7 @@ pub fn decode_int32_list(
 /// Decodes an encoded `int64` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_int64(buf: &[u8], dst: &mut i64) -> Result<usize, DecoderError> {
     let mut val = 0;
@@ -165,7 +165,7 @@ pub fn decode_int64(buf: &[u8], dst: &mut i64) -> Result<usize, DecoderError> {
 /// Decodes a length-delimited encoded repeated `int64` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_int64_list(
     buf: &[u8],
@@ -186,7 +186,7 @@ pub fn decode_int64_list(
 /// Decodes an encoded `uint32` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_uint32(buf: &[u8], dst: &mut u32) -> Result<usize, DecoderError> {
     let mut val = 0;
@@ -198,7 +198,7 @@ pub fn decode_uint32(buf: &[u8], dst: &mut u32) -> Result<usize, DecoderError> {
 /// Decodes a length-delimited encoded repeated `uint32` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_uint32_list(
     buf: &[u8],
@@ -219,7 +219,7 @@ pub fn decode_uint32_list(
 /// Decodes an encoded `uint64` value from the provided `buf` and writes the
 /// resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_uint64(buf: &[u8], dst: &mut u64) -> Result<usize, DecoderError> {
     decode_varint(buf, dst)
@@ -228,7 +228,7 @@ pub fn decode_uint64(buf: &[u8], dst: &mut u64) -> Result<usize, DecoderError> {
 /// Decodes a length-delimited encoded repeated `uint64` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_uint64_list(
     buf: &[u8],
@@ -267,7 +267,7 @@ pub fn decode_uint64_list(
 ///    -12345 ... Unsigned 32-bit integer.
 /// ```
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_sint32(buf: &[u8], dst: &mut i32) -> Result<usize, DecoderError> {
     let mut val = 0;
@@ -279,7 +279,7 @@ pub fn decode_sint32(buf: &[u8], dst: &mut i32) -> Result<usize, DecoderError> {
 /// Decodes a length-delimited encoded repeated `sint32` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_sint32_list(
     buf: &[u8],
@@ -318,7 +318,7 @@ pub fn decode_sint32_list(
 ///    -54321 ... Unsigned 64-bit integer.
 /// ```
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_sint64(buf: &[u8], dst: &mut i64) -> Result<usize, DecoderError> {
     let mut val = 0;
@@ -330,7 +330,7 @@ pub fn decode_sint64(buf: &[u8], dst: &mut i64) -> Result<usize, DecoderError> {
 /// Decodes a length-delimited encoded repeated `sint64` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_sint64_list(
     buf: &[u8],
@@ -363,7 +363,7 @@ pub fn decode_sint64_list(
 ///    00000000 00000000 00110000 00111001 ... Value in (big-endian) bytes.
 /// ```
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_fixed32(
     buf: &[u8],
@@ -381,7 +381,7 @@ pub fn decode_fixed32(
 /// Decodes a length-delimited encoded repeated `fixed32` value from the
 /// provided `buf` and writes the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_fixed32_list(
     buf: &[u8],
@@ -406,7 +406,7 @@ pub fn decode_fixed32_list(
 /// size number format is represented by bytes in little-endian byte order
 /// (reversed order).
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_fixed64(
     buf: &[u8],
@@ -424,7 +424,7 @@ pub fn decode_fixed64(
 /// Decodes a length-delimited encoded repeated `fixed64` value from the
 /// provided `buf` and writes the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_fixed64_list(
     buf: &[u8],
@@ -449,7 +449,7 @@ pub fn decode_fixed64_list(
 /// size number format is represented by bytes in little-endian byte order
 /// (reversed order).
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_sfixed32(
     buf: &[u8],
@@ -467,7 +467,7 @@ pub fn decode_sfixed32(
 /// Decodes a length-delimited encoded repeated `sfixed32` value from the
 /// provided `buf` and writes the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_sfixed32_list(
     buf: &[u8],
@@ -492,7 +492,7 @@ pub fn decode_sfixed32_list(
 /// size number format is represented by bytes in little-endian byte order
 /// (reversed order).
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_sfixed64(
     buf: &[u8],
@@ -510,7 +510,7 @@ pub fn decode_sfixed64(
 /// Decodes a length-delimited encoded repeated `sfixed64` value from the
 /// provided `buf` and writes the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_sfixed64_list(
     buf: &[u8],
@@ -534,7 +534,7 @@ pub fn decode_sfixed64_list(
 /// Float is encoded as a 32-bit number with wire types `5`. Fixed size number
 /// format is represented by bytes in little-endian byte order (reversed order).
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_float(buf: &[u8], dst: &mut f32) -> Result<usize, DecoderError> {
     if buf.len() < 4 {
@@ -549,7 +549,7 @@ pub fn decode_float(buf: &[u8], dst: &mut f32) -> Result<usize, DecoderError> {
 /// Decodes a length-delimited encoded repeated `float` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_float_list(
     buf: &[u8],
@@ -573,7 +573,7 @@ pub fn decode_float_list(
 /// Double is encoded as a 64-bit number with wire types `1`. Fixed size number
 /// format is represented by bytes in little-endian byte order (reversed order).
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_double(buf: &[u8], dst: &mut f64) -> Result<usize, DecoderError> {
     if buf.len() < 8 {
@@ -588,7 +588,7 @@ pub fn decode_double(buf: &[u8], dst: &mut f64) -> Result<usize, DecoderError> {
 /// Decodes a length-delimited encoded repeated `double` value from the provided
 /// `buf` and writes the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn decode_double_list(
     buf: &[u8],
@@ -609,7 +609,7 @@ pub fn decode_double_list(
 /// Reads bytes for value with wire type `0` from the provided `but` and writes
 /// the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn extract_varint(
     buf: &[u8],
@@ -634,7 +634,7 @@ pub fn extract_varint(
 /// Reads bytes for value with wire type `5` from the provided `but` and writes
 /// the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn extract_bit32(
     buf: &[u8],
@@ -650,7 +650,7 @@ pub fn extract_bit32(
 /// Reads bytes for value with wire type `1` from the provided `but` and writes
 /// the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn extract_bit64(
     buf: &[u8],
@@ -666,7 +666,7 @@ pub fn extract_bit64(
 /// Reads bytes for value with wire type `2` from the provided `but` and writes
 /// the resulting bytes into `dst`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
 pub fn extract_ld(
     buf: &[u8],

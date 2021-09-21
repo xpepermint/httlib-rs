@@ -25,7 +25,7 @@ use crate::{Typ, Encoder};
 ///    10010110 00000001 ... Add MSB (1=continuation, 0=last byte).
 /// ```
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_varint<W>(
     mut val: u64,
@@ -63,7 +63,7 @@ where
 /// C = Contiunation, X = Number, T = Type
 /// ```
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_key<W>(
     tag: u32,
@@ -84,7 +84,7 @@ where
 /// Encodes the provided `val` into `bool` format and writes the resulting
 /// bytes into `buf`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_bool<W>(val: bool, buf: &mut W) -> Result<usize, EncoderError>
 where
@@ -97,7 +97,7 @@ where
 /// Encodes the provided `val` into `int32` format and writes the resulting
 /// bytes into `buf`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_int32<W>(val: i32, buf: &mut W) -> Result<usize, EncoderError>
 where
@@ -109,7 +109,7 @@ where
 /// Encodes the provided `val` into `int64` format and writes the resulting
 /// bytes into `buf`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_int64<W>(val: i64, buf: &mut W) -> Result<usize, EncoderError>
 where
@@ -121,7 +121,7 @@ where
 /// Encodes the provided `val` into `uint32` format and writes the resulting
 /// bytes into `buf`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_uint32<W>(val: u32, buf: &mut W) -> Result<usize, EncoderError>
 where
@@ -133,7 +133,7 @@ where
 /// Encodes the provided `val` into `uint64` format and writes the resulting
 /// bytes into `buf`.
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_uint64<W>(val: u64, buf: &mut W) -> Result<usize, EncoderError>
 where
@@ -163,7 +163,7 @@ where
 ///           ... Continue with the standard varint encoding.
 /// ```
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_sint32<W>(val: i32, buf: &mut W) -> Result<usize, EncoderError>
 where
@@ -194,7 +194,7 @@ where
 ///           ... Continue with the standard varint encoding.
 /// ```
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_sint64<W>(val: i64, buf: &mut W) -> Result<usize, EncoderError>
 where
@@ -214,15 +214,15 @@ where
 /// ```txt
 /// value = 12345 (signed 32-bit)
 /// 
-/// Fixed size encoding:
+/// Fixed-size encoding:
 ///    00000000 00000000 00110000 00111001 ... Value in (big-endian) bytes.
 ///    00111001 00110000 00000000 00000000 ... Reverse bytes to little-endian order.
 /// ```
 /// 
-/// Use this format only when data are predictible and you know that the result
-/// will be smaller then when using the "standard" formats. 
+/// Use this format only when data are predictable and you know that the result
+/// will be smaller than when using the "standard" formats. 
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_fixed32<W>(val: u32, buf: &mut W) -> Result<usize, EncoderError>
 where
@@ -239,10 +239,10 @@ where
 /// size number format is represented by bytes in little-endian byte order
 /// (reversed order).
 /// 
-/// Use this format only when data are predictible and you know that the result
-/// will be smaller then when using the "standard" formats. 
+/// Use this format only when data are predictable and you know that the result
+/// will be smaller than when using the "standard" formats. 
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_fixed64<W>(val: u64, buf: &mut W) -> Result<usize, EncoderError>
 where
@@ -259,10 +259,10 @@ where
 /// size number format is represented by bytes in little-endian byte order
 /// (reversed order).
 /// 
-/// Use this format only when data are predictible and you know that the result
-/// will be smaller then when using the "standard" formats. 
+/// Use this format only when data are predictable and you know that the result
+/// will be smaller than when using the "standard" formats. 
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_sfixed32<W>(val: i32, buf: &mut W) -> Result<usize, EncoderError>
 where
@@ -279,10 +279,10 @@ where
 /// size number format is represented by bytes in little-endian byte order
 /// (reversed order).
 /// 
-/// Use this format only when data are predictible and you know that the result
-/// will be smaller then when using the "standard" formats. 
+/// Use this format only when data are predictable and you know that the result
+/// will be smaller than when using the "standard" formats. 
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_sfixed64<W>(val: i64, buf: &mut W) -> Result<usize, EncoderError>
 where
@@ -295,10 +295,10 @@ where
 /// Encodes the provided `val` into `float` format and writes the resulting
 /// bytes into `buf`.
 /// 
-/// Float is encoded as a 32-bit number with wire types `5`. Fixed size number
+/// Float is encoded as a 32-bit number with wire types `5`. Fixed-size number
 /// format is represented by bytes in little-endian byte order (reversed order).
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_float<W>(val: f32, buf: &mut W) -> Result<usize, EncoderError>
 where
@@ -311,10 +311,10 @@ where
 /// Encodes the provided `val` into `double` format and writes the resulting
 /// bytes into `buf`.
 /// 
-/// Double is encoded as a 64-bit number with wire types `1`. Fixed size number
+/// Double is encoded as a 64-bit number with wire types `1`. Fixed-size number
 /// format is represented by bytes in little-endian byte order (reversed order).
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_double<W>(val: f64, buf: &mut W) -> Result<usize, EncoderError>
 where
@@ -341,7 +341,7 @@ where
 ///    00000011 01100110 01101111 01101111 ... Append string (foo) in bytes.
 /// ```
 /// 
-/// On success the number of written bytes is returned otherwise en error is 
+/// On success, the number of written bytes is returned otherwise an error is 
 /// thrown.
 pub fn encode_bytes<W>(
     mut bytes: Vec<u8>,

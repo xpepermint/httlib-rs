@@ -1,8 +1,8 @@
 //! Provides an implementation of the `proto3` encoder.
 //! 
 //! The encoder performs the task of transforming data fields into shrunken
-//! binary format. This sequence of bytes is much smaller then the original
-//! message which allows for much faster data transmition over the wire.
+//! binary format. This sequence of bytes is much smaller than the original
+//! message which allows for much faster data transmission over the wire.
 //! 
 //! Property names are represented in the [Protocol Buffers] by unique numbers
 //! rather than strings. Compared to the raw JSON format, this already has a
@@ -11,18 +11,18 @@
 //! 
 //! ```txt
 //! +-------------------+------------------+-------------------+
-//! +      1. JSON      +   2. Transform   +     3. Encode     + 
+//! +      1. JSON      +   2. Transform   +     3. Encode     + ENCODER
 //! +-------------------+------------------+-------------------+
 //! + {                 +                  +                   +
 //! +   "name": "John", + 1, John          + 0a 04 4a 6f 68 6e +
 //! +   "age": 35       + 2, 35            + 10 23             +
 //! + }                 +                  +                   +
 //! +-------------------+------------------+-------------------+
-//! +      6. JSON      +    5. Rebuild    +     4. Decode     + 
+//! +      6. JSON      +    5. Rebuild    +     4. Decode     + DECODER
 //! +-------------------+------------------+-------------------+
 //! ```
 //! 
-//! The encoder Encodes the message into a binary format. The message is then
+//! The encoder encodes a message into a binary format. The message is then
 //! represented on the wire as a kind of flattened sequence of encoded key-value
 //! properties. The key and the value are encoded separately. Each wire type has
 //! its own rules and therefore its own way of encoding.
