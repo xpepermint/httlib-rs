@@ -98,6 +98,8 @@
 //! [HPACK]: https://tools.ietf.org/html/rfc7541
 //! [HTTP/2]: https://tools.ietf.org/html/rfc7540
 //! [canonical Huffman]: https://en.wikipedia.org/wiki/Canonical_Huffman_code
+//! [ASCII]: https://en.wikipedia.org/wiki/ASCII
+
 mod error;
 pub mod table;
 
