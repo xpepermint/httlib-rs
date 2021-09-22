@@ -219,7 +219,7 @@ where
 ///    00111001 00110000 00000000 00000000 ... Reverse bytes to little-endian order.
 /// ```
 /// 
-/// Use this format only when data are predictable and you know that the result
+/// Use this format only when data is predictable and you know that the result
 /// will be smaller than when using the "standard" formats. 
 /// 
 /// On success, the number of written bytes is returned otherwise an error is 
@@ -239,7 +239,7 @@ where
 /// size number format is represented by bytes in little-endian byte order
 /// (reversed order).
 /// 
-/// Use this format only when data are predictable and you know that the result
+/// Use this format only when data is predictable and you know that the result
 /// will be smaller than when using the "standard" formats. 
 /// 
 /// On success, the number of written bytes is returned otherwise an error is 
@@ -259,7 +259,7 @@ where
 /// size number format is represented by bytes in little-endian byte order
 /// (reversed order).
 /// 
-/// Use this format only when data are predictable and you know that the result
+/// Use this format only when data is predictable and you know that the result
 /// will be smaller than when using the "standard" formats. 
 /// 
 /// On success, the number of written bytes is returned otherwise an error is 
@@ -279,7 +279,7 @@ where
 /// size number format is represented by bytes in little-endian byte order
 /// (reversed order).
 /// 
-/// Use this format only when data are predictable and you know that the result
+/// Use this format only when data is predictable and you know that the result
 /// will be smaller than when using the "standard" formats. 
 /// 
 /// On success, the number of written bytes is returned otherwise an error is 
