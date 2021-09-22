@@ -14,7 +14,7 @@ pub enum DecoderError {
     /// operations can typically be retried.
     Interrupted,
 
-    /// Indicates that the buffer from which an item was supposed to be decode
+    /// Indicates that the buffer from which an item was supposed to be decoded
     /// does not contain enough octets to complete the decoding.
     InputUnderflow,
 
