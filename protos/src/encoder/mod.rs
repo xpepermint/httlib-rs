@@ -68,7 +68,7 @@ impl Encoder {
     /// encoder.encode((2, EncoderLit::SInt32(-150i32)), &mut dst).unwrap();
     /// ```
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode<W, F>(
         &self,
@@ -113,7 +113,7 @@ impl Encoder {
     /// Encodes the provided `val` into `bool` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_bool<W>(
         &self,
@@ -133,7 +133,7 @@ impl Encoder {
     /// Encodes the provided `vals` into `bool` repeated field with a specific
     /// `tag` number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_bool_list<W>(
         &self,
@@ -157,7 +157,7 @@ impl Encoder {
     /// Encodes the provided `val` into `int32` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_int32<W>(
         &self,
@@ -177,7 +177,7 @@ impl Encoder {
     /// Encodes the provided `vals` into `int32` repeated field with a specific
     /// `tag` number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_int32_list<W>(
         &self,
@@ -198,7 +198,7 @@ impl Encoder {
     /// Encodes the provided `val` into `int64` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_int64<W>(
         &self,
@@ -218,7 +218,7 @@ impl Encoder {
     /// Encodes the provided `vals` into `int64` repeated field with a specific
     /// `tag` number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_int64_list<W>(
         &self,
@@ -239,7 +239,7 @@ impl Encoder {
     /// Encodes the provided `val` into `uint32` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_uint32<W>(
         &self,
@@ -259,7 +259,7 @@ impl Encoder {
     /// Encodes the provided `vals` into `uint32` repeated field with a
     /// specific `tag` number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_uint32_list<W>(
         &self,
@@ -280,7 +280,7 @@ impl Encoder {
     /// Encodes the provided `val` into `uint64` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_uint64<W>(
         &self,
@@ -300,7 +300,7 @@ impl Encoder {
     /// Encodes the provided `vals` into `uint64` repeated field with a
     /// specific `tag` number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_uint64_list<W>(
         &self,
@@ -321,7 +321,7 @@ impl Encoder {
     /// Encodes the provided `val` into `float` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_float<W>(
         &self,
@@ -341,7 +341,7 @@ impl Encoder {
     /// Encodes the provided `vals` into `float` repeated field with a specific
     /// `tag` number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_float_list<W>(
         &self,
@@ -362,7 +362,7 @@ impl Encoder {
     /// Encodes the provided `val` into `double` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_double<W>(
         &self,
@@ -382,7 +382,7 @@ impl Encoder {
     /// Encodes the provided `vals` into `double` repeated field with a
     /// specific `tag` number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_double_list<W>(
         &self,
@@ -403,7 +403,7 @@ impl Encoder {
     /// Encodes the provided `val` into `bytes` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_bytes<W>(
         &self,
@@ -423,7 +423,7 @@ impl Encoder {
     /// Encodes the provided `val` into `sint32` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_sint32<W>(
         &self,
@@ -443,7 +443,7 @@ impl Encoder {
     /// Encodes the provided `vals` into `sin32` repeated field with a
     /// specific `tag` number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_sint32_list<W>(
         &self,
@@ -464,7 +464,7 @@ impl Encoder {
     /// Encodes the provided `val` into `sint64` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_sint64<W>(
         &self,
@@ -484,7 +484,7 @@ impl Encoder {
     /// Encodes the provided `vals` into `sin64` repeated field with a
     /// specific `tag` number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_sint64_list<W>(
         &self,
@@ -505,7 +505,7 @@ impl Encoder {
     /// Encodes the provided `val` into `fixed32` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_fixed32<W>(
         &self,
@@ -525,7 +525,7 @@ impl Encoder {
     /// Encodes the provided `vals` into `fixed32` repeated field with a
     /// specific `tag` number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_fixed32_list<W>(
         &self,
@@ -546,7 +546,7 @@ impl Encoder {
     /// Encodes the provided `val` into `fixed64` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_fixed64<W>(
         &self,
@@ -566,7 +566,7 @@ impl Encoder {
     /// Encodes the provided `vals` into `fixed64` repeated field with a
     /// specific `tag` number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_fixed64_list<W>(
         &self,
@@ -587,7 +587,7 @@ impl Encoder {
     /// Encodes the provided `val` into `sfixed32` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_sfixed32<W>(
         &self,
@@ -607,7 +607,7 @@ impl Encoder {
     /// Encodes the provided `vals` into `sfixed32` repeated field with a
     /// specific `tag` number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_sfixed32_list<W>(
         &self,
@@ -628,7 +628,7 @@ impl Encoder {
     /// Encodes the provided `val` into `sfixed64` field with a specific `tag`
     /// number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_sfixed64<W>(
         &self,
@@ -648,7 +648,7 @@ impl Encoder {
     /// Encodes the provided `vals` into `sfixed64` repeated field with a
     /// specific `tag` number and writes the resulting bytes into `dst`.
     /// 
-    /// On success the number of written bytes is returned otherwise en error is 
+    /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
     pub fn encode_sfixed64_list<W>(
         &self,
