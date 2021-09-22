@@ -48,7 +48,7 @@ pub fn decode_varint(buf: &[u8], dst: &mut u64) -> Result<usize, DecoderError> {
 /// resulting bytes into `dst`.
 /// 
 /// The key is encoded as a `uint32` varint type, and in the last `3` bits (`T`)
-/// contain the wire type. The key's field tag can thus be between `1` and
+/// contains the wire type. The key's field tag can thus be between `1` and
 /// `2^29 - 1` = `536,870,911` (`0` is not a valid tag number).
 /// 
 /// ```txt
