@@ -64,7 +64,7 @@ let size = decoder.decode(&mut buf, &mut dst).unwrap();
 
 for (tag, typ, byt)  in dst {
     if tag == 1 {
-        DecoderLit::Int32(byt).parse::<i32>().unwrap();
+        i32::from(DecoderLit::Int32(byt));
     }
 }
 ```

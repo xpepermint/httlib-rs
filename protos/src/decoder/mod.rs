@@ -19,13 +19,11 @@
 //! The decoder decodes a binary stream back to the original message.
 
 mod error;
-mod from_lit;
 mod lit;
 mod primitives;
 
 use crate::Typ;
 pub use error::*;
-pub use from_lit::*;
 pub use lit::*;
 use primitives::*;
 
@@ -59,7 +57,7 @@ impl Decoder {
     /// 
     /// for (tag, typ, byt)  in dst {
     ///     if tag == 1 {
-    ///         DecoderLit::Int32(byt).parse::<i32>().unwrap();
+    ///         i32::from(DecoderLit::Int32(byt));
     ///     }
     /// }
     /// ```
@@ -334,88 +332,88 @@ mod test {
             if index == 1 {
                 assert_eq!(typ, Typ::LengthDelimited);
                 assert_eq!(byt, vec![102, 111, 111]);
-                assert_eq!(DecoderLit::Bytes(byt).parse::<Vec<u8>>(), Ok(vec![102, 111, 111]));
+                assert_eq!(Vec::<u8>::from(DecoderLit::Bytes(byt)), vec![102, 111, 111]);
             } else if index == 2 {
                 assert_eq!(typ, Typ::Varint);
-                assert_eq!(DecoderLit::Bool(byt).parse::<bool>(), Ok(true));
+                assert_eq!(bool::from(DecoderLit::Bool(byt)), true);
             } else if index == 3 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::BoolList(byt).parse::<Vec<bool>>(), Ok(vec![false, true]));
+                assert_eq!(Vec::<bool>::from(DecoderLit::BoolList(byt)), vec![false, true]);
             } else if index == 4 {
                 assert_eq!(typ, Typ::Varint);
-                assert_eq!(DecoderLit::Int32(byt).parse::<i32>(), Ok(1));
+                assert_eq!(i32::from(DecoderLit::Int32(byt)), 1);
             } else if index == 5 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::Int32List(byt).parse::<Vec<i32>>(), Ok(vec![-100i32, 100i32]));
+                assert_eq!(Vec::<i32>::from(DecoderLit::Int32List(byt)), vec![-100i32, 100i32]);
             } else if index == 6 {
                 assert_eq!(typ, Typ::Varint);
-                assert_eq!(DecoderLit::Int64(byt).parse::<i64>(), Ok(1i64));
+                assert_eq!(i64::from(DecoderLit::Int64(byt)), 1i64);
             } else if index == 7 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::Int64List(byt).parse::<Vec<i64>>(), Ok(vec![-100i64, 100i64]));
+                assert_eq!(Vec::<i64>::from(DecoderLit::Int64List(byt)), vec![-100i64, 100i64]);
             } else if index == 8 {
                 assert_eq!(typ, Typ::Varint);
-                assert_eq!(DecoderLit::UInt32(byt).parse::<u32>(), Ok(1u32));
+                assert_eq!(u32::from(DecoderLit::UInt32(byt)), 1u32);
             } else if index == 9 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::UInt32List(byt).parse::<Vec<u32>>(), Ok(vec![1u32, 2u32]));
+                assert_eq!(Vec::<u32>::from(DecoderLit::UInt32List(byt)), vec![1u32, 2u32]);
             } else if index == 10 {
                 assert_eq!(typ, Typ::Varint);
-                assert_eq!(DecoderLit::UInt64(byt).parse::<u64>(), Ok(1u64));
+                assert_eq!(u64::from(DecoderLit::UInt64(byt)), 1u64);
             } else if index == 11 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::UInt64List(byt).parse::<Vec<u64>>(), Ok(vec![1u64, 2u64]));
+                assert_eq!(Vec::<u64>::from(DecoderLit::UInt64List(byt)), vec![1u64, 2u64]);
             } else if index == 12 {
                 assert_eq!(typ, Typ::Bit32);
-                assert_eq!(DecoderLit::Float(byt).parse::<f32>(), Ok(1.0f32));
+                assert_eq!(f32::from(DecoderLit::Float(byt)), 1.0f32);
             } else if index == 13 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::FloatList(byt).parse::<Vec<f32>>(), Ok(vec![1.0f32, 2.0f32]));
+                assert_eq!(Vec::<f32>::from(DecoderLit::FloatList(byt)), vec![1.0f32, 2.0f32]);
             } else if index == 14 {
                 assert_eq!(typ, Typ::Bit64);
-                assert_eq!(DecoderLit::Double(byt).parse::<f64>(), Ok(1.0f64));
+                assert_eq!(f64::from(DecoderLit::Double(byt)), 1.0f64);
             } else if index == 15 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::DoubleList(byt).parse::<Vec<f64>>(), Ok(vec![1.0f64, 2.0f64]));
+                assert_eq!(Vec::<f64>::from(DecoderLit::DoubleList(byt)), vec![1.0f64, 2.0f64]);
             } else if index == 16 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::Bytes(byt).parse::<String>(), Ok(String::from("foo")));
+                assert_eq!(String::from(DecoderLit::Bytes(byt)), String::from("foo"));
             } else if index == 17 {
                 assert_eq!(typ, Typ::Varint);
-                assert_eq!(DecoderLit::SInt32(byt).parse::<i32>(), Ok(-10));
+                assert_eq!(i32::from(DecoderLit::SInt32(byt)), -10);
             } else if index == 18 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::SInt32List(byt).parse::<Vec<i32>>(), Ok(vec![-10i32, 10i32]));
+                assert_eq!(Vec::<i32>::from(DecoderLit::SInt32List(byt)), vec![-10i32, 10i32]);
             } else if index == 19 {
                 assert_eq!(typ, Typ::Varint);
-                assert_eq!(DecoderLit::SInt64(byt).parse::<i64>(), Ok(-10));
+                assert_eq!(i64::from(DecoderLit::SInt64(byt)), -10);
             } else if index == 20 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::SInt64List(byt).parse::<Vec<i64>>(), Ok(vec![-10i64, 10i64]));
+                assert_eq!(Vec::<i64>::from(DecoderLit::SInt64List(byt)), vec![-10i64, 10i64]);
             } else if index == 21 {
                 assert_eq!(typ, Typ::Bit32);
-                assert_eq!(DecoderLit::Fixed32(byt).parse::<u32>(), Ok(10));
+                assert_eq!(u32::from(DecoderLit::Fixed32(byt)), 10);
             } else if index == 22 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::Fixed32List(byt).parse::<Vec<u32>>(), Ok(vec![1u32, 2u32]));
+                assert_eq!(Vec::<u32>::from(DecoderLit::Fixed32List(byt)), vec![1u32, 2u32]);
             } else if index == 23 {
                 assert_eq!(typ, Typ::Bit64);
-                assert_eq!(DecoderLit::Fixed64(byt).parse::<u64>(), Ok(10));
+                assert_eq!(u64::from(DecoderLit::Fixed64(byt)), 10);
             } else if index == 24 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::Fixed64List(byt).parse::<Vec<u64>>(), Ok(vec![1u64, 2u64]));
+                assert_eq!(Vec::<u64>::from(DecoderLit::Fixed64List(byt)), vec![1u64, 2u64]);
             } else if index == 25 {
                 assert_eq!(typ, Typ::Bit32);
-                assert_eq!(DecoderLit::SFixed32(byt).parse::<i32>(), Ok(-10));
+                assert_eq!(i32::from(DecoderLit::SFixed32(byt)), -10);
             } else if index == 26 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::SFixed32List(byt).parse::<Vec<i32>>(), Ok(vec![-10i32, 10i32]));
+                assert_eq!(Vec::<i32>::from(DecoderLit::SFixed32List(byt)), vec![-10i32, 10i32]);
             } else if index == 27 {
                 assert_eq!(typ, Typ::Bit64);
-                assert_eq!(DecoderLit::SFixed64(byt).parse::<i64>(), Ok(-10));
+                assert_eq!(i64::from(DecoderLit::SFixed64(byt)), -10);
             } else if index == 28 {
                 assert_eq!(typ, Typ::LengthDelimited);
-                assert_eq!(DecoderLit::SFixed64List(byt).parse::<Vec<i64>>(), Ok(vec![-10i64, 10i64]));
+                assert_eq!(Vec::<i64>::from(DecoderLit::SFixed64List(byt)), vec![-10i64, 10i64]);
             }
         }
         assert_eq!(size, 209); // read bytes

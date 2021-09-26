@@ -2,7 +2,7 @@
 name = "httlib-protos"
 description = "Protocol Buffers binary format implementation."
 license = "MIT"
-version = "0.1.4"
+version = "0.2.0"
 authors = ["Kristijan Sedlak <xpepermint@gmail.com>"]
 edition = "2018"
 documentation = "https://docs.rs/httlib-protos"

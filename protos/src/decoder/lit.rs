@@ -1,8 +1,13 @@
-use super::{DecoderError, FromDecoderLit};
+use super::primitives::*;
 
 /// Provides decoder output format options.
 /// 
 /// This is a list of all binary formats supported by the decoder.
+/// 
+/// Note that bytes held by each key are considered as "safe", thus we should
+/// pass only valid vectors as a key argument when instantiating this object.
+/// According to this fact, the `std::convert::From` trait is imlemented instead
+/// of `std::convert::TryFrom`.
 #[derive(Debug)]
 pub enum DecoderLit {
     /// Represents `binary` format of wire type `2`.
@@ -88,8 +93,191 @@ pub enum DecoderLit {
     SFixed64List(Vec<u8>),
 }
 
-impl DecoderLit {
-    pub fn parse<T: FromDecoderLit>(self) -> Result<T, DecoderError> {
-        FromDecoderLit::from_decoder_lit(self)
+impl From<DecoderLit> for bool {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = false;
+        match lit {
+            DecoderLit::Bool(byt) => decode_bool(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for Vec<bool> {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = vec![];
+        match lit {
+            DecoderLit::BoolList(byt) => decode_bool_list(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for i32 {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = 0i32;
+        match lit {
+            DecoderLit::Int32(byt) => decode_int32(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SInt32(byt) => decode_sint32(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SFixed32(byt) => decode_sfixed32(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for Vec<i32> {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = vec![];
+        match lit {
+            DecoderLit::Int32List(byt) => decode_int32_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SInt32List(byt) => decode_sint32_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SFixed32List(byt) => decode_sfixed32_list(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for i64 {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = 0i64;
+        match lit {
+            DecoderLit::Int64(byt) => decode_int64(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SInt64(byt) => decode_sint64(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SFixed64(byt) => decode_sfixed64(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for Vec<i64> {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = vec![];
+        match lit {
+            DecoderLit::Int64List(byt) => decode_int64_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SInt64List(byt) => decode_sint64_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SFixed64List(byt) => decode_sfixed64_list(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for u32 {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = 0u32;
+        match lit {
+            DecoderLit::UInt32(byt) => decode_uint32(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::Fixed32(byt) => decode_fixed32(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for Vec<u32> {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = vec![];
+        match lit {
+            DecoderLit::UInt32List(byt) => decode_uint32_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::Fixed32List(byt) => decode_fixed32_list(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for u64 {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = 0u64;
+        match lit {
+            DecoderLit::UInt64(byt) => decode_uint64(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::Fixed64(byt) => decode_fixed64(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for Vec<u64> {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = vec![];
+        match lit {
+            DecoderLit::UInt64List(byt) => decode_uint64_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::Fixed64List(byt) => decode_fixed64_list(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for f32 {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = 0.0f32;
+        match lit {
+            DecoderLit::Float(byt) => decode_float(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for Vec<f32> {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = vec![];
+        match lit {
+            DecoderLit::FloatList(byt) => decode_float_list(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for f64 {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = 0.0f64;
+        match lit {
+            DecoderLit::Double(byt) => decode_double(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for Vec<f64> {
+    fn from(lit: DecoderLit) -> Self {
+        let mut dst = vec![];
+        match lit {
+            DecoderLit::DoubleList(byt) => decode_double_list(&byt, &mut dst).unwrap_or(0),
+            _ => return dst,
+        };
+        dst
+    }
+}
+
+impl From<DecoderLit> for Vec<u8> {
+    fn from(lit: DecoderLit) -> Self {
+        match lit {
+            DecoderLit::Bytes(byt) => byt,
+            _ => Vec::new(),
+        }
+    }
+}
+
+impl From<DecoderLit> for String {
+    fn from(lit: DecoderLit) -> Self {
+        match lit {
+            DecoderLit::Bytes(byt) => {
+                match String::from_utf8(byt) {
+                    Ok(s) => s,
+                    _ => String::new(),
+                }
+            },
+            _ => String::new(),
+        }
     }
 }
