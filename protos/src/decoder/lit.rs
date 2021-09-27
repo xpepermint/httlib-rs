@@ -4,10 +4,11 @@ use super::primitives::*;
 /// 
 /// This is a list of all binary formats supported by the decoder.
 /// 
-/// Note that bytes held by each key are considered as "safe", thus we should
-/// pass only valid vectors as a key argument when instantiating this object.
-/// According to this fact, the `std::convert::From` trait is imlemented instead
-/// of `std::convert::TryFrom`.
+/// Note that bytes held by each key are considered "safe". Therefore, we should
+/// only pass valid vectors as key arguments when instantiating this object.
+/// According to this fact, the 'std::convert::From' property is implemented
+/// instead of 'std::convert::TryFrom'.
+
 #[derive(Debug)]
 pub enum DecoderLit {
     /// Represents `binary` format of wire type `2`.
