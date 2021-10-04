@@ -55,7 +55,7 @@ impl Decoder {
     /// let mut dst = vec![];
     /// let size = decoder.decode(&mut buf, &mut dst).unwrap();
     /// 
-    /// for (tag, typ, byt)  in dst {
+    /// for (tag, typ, byt) in dst {
     ///     if tag == 1 {
     ///         i32::from(DecoderLit::Int32(byt));
     ///     }
