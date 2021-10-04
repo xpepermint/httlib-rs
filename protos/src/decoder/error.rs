@@ -1,6 +1,7 @@
 use std::error;
 use std::fmt;
 use std::io;
+use std::convert;
 
 /// Contains error options that can be encountered while performing the decoding
 /// operations.
@@ -27,6 +28,12 @@ pub enum DecoderError {
 impl From<io::Error> for DecoderError {
     fn from(_err: io::Error) -> Self {
         Self::Interrupted
+    }
+}
+
+impl From<convert::Infallible> for DecoderError { // until solved: https://github.com/rust-lang/rust/issues/64715
+    fn from(_: convert::Infallible) -> Self {
+        unreachable!()
     }
 }
 
