@@ -8,7 +8,6 @@ use super::primitives::*;
 /// only pass valid vectors as key arguments when instantiating this object.
 /// According to this fact, the 'std::convert::From' property is implemented
 /// instead of 'std::convert::TryFrom'.
-
 #[derive(Debug)]
 pub enum DecoderLit {
     /// Represents `binary` format of wire type `2`.

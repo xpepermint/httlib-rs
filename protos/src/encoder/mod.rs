@@ -64,19 +64,19 @@ impl Encoder {
     /// let encoder = Encoder::default();
     /// 
     /// let mut dst = Vec::new();
-    /// encoder.encode((1, 150i32), &mut dst).unwrap();
-    /// encoder.encode((2, EncoderLit::SInt32(-150i32)), &mut dst).unwrap();
+    /// encoder.encode((1, &150i32), &mut dst).unwrap();
+    /// encoder.encode((2, EncoderLit::SInt32(&-150i32)), &mut dst).unwrap();
     /// ```
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode<W, F>(
+    pub fn encode<'a, W, F>(
         &self,
         field: (u32, F),
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
-        F: Into<EncoderLit>,
+        F: Into<EncoderLit<'a>>,
         W: ?Sized + io::Write,
     {
         match field.1.into() {
@@ -118,7 +118,7 @@ impl Encoder {
     pub fn encode_bool<W>(
         &self,
         tag: u32,
-        val: bool,
+        val: &bool,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -126,7 +126,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::Varint, dst)?;
-        size += encode_bool(val, dst)?;
+        size += encode_bool(*val, dst)?;
         Ok(size)
     }
 
@@ -138,7 +138,7 @@ impl Encoder {
     pub fn encode_bool_list<W>(
         &self,
         tag: u32,
-        vals: Vec<bool>,
+        vals: &Vec<bool>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -146,7 +146,7 @@ impl Encoder {
     {
         let mut data = vec![];
         for val in vals {
-            encode_bool(val, &mut data)?;
+            encode_bool(*val, &mut data)?;
         }
         let mut size = 0;
         size += encode_key(tag, Typ::LengthDelimited, dst)?;
@@ -162,7 +162,7 @@ impl Encoder {
     pub fn encode_int32<W>(
         &self,
         tag: u32,
-        val: i32,
+        val: &i32,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -170,7 +170,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::Varint, dst)?;
-        size += encode_int32(val, dst)?;
+        size += encode_int32(*val, dst)?;
         Ok(size)
     }
 
@@ -182,7 +182,7 @@ impl Encoder {
     pub fn encode_int32_list<W>(
         &self,
         tag: u32,
-        vals: Vec<i32>,
+        vals: &Vec<i32>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -190,9 +190,9 @@ impl Encoder {
     {
         let mut data = vec![];
         for val in vals {
-            encode_int32(val, &mut data)?;
+            encode_int32(*val, &mut data)?;
         }
-        self.encode_bytes(tag, data, dst)
+        self.encode_bytes(tag, &data, dst)
     }
 
     /// Encodes the provided `val` into `int64` field with a specific `tag`
@@ -203,7 +203,7 @@ impl Encoder {
     pub fn encode_int64<W>(
         &self,
         tag: u32,
-        val: i64,
+        val: &i64,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -211,7 +211,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::Varint, dst)?;
-        size += encode_int64(val, dst)?;
+        size += encode_int64(*val, dst)?;
         Ok(size)
     }
 
@@ -223,7 +223,7 @@ impl Encoder {
     pub fn encode_int64_list<W>(
         &self,
         tag: u32,
-        vals: Vec<i64>,
+        vals: &Vec<i64>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -231,9 +231,9 @@ impl Encoder {
     {
         let mut data = vec![];
         for val in vals {
-            encode_int64(val, &mut data)?;
+            encode_int64(*val, &mut data)?;
         }
-        self.encode_bytes(tag, data, dst)
+        self.encode_bytes(tag, &data, dst)
     }
 
     /// Encodes the provided `val` into `uint32` field with a specific `tag`
@@ -244,7 +244,7 @@ impl Encoder {
     pub fn encode_uint32<W>(
         &self,
         tag: u32,
-        val: u32,
+        val: &u32,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -252,7 +252,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::Varint, dst)?;
-        size += encode_uint32(val, dst)?;
+        size += encode_uint32(*val, dst)?;
         Ok(size)
     }
 
@@ -264,7 +264,7 @@ impl Encoder {
     pub fn encode_uint32_list<W>(
         &self,
         tag: u32,
-        vals: Vec<u32>,
+        vals: &Vec<u32>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -272,9 +272,9 @@ impl Encoder {
     {
         let mut data = vec![];
         for val in vals {
-            encode_uint32(val, &mut data)?;
+            encode_uint32(*val, &mut data)?;
         }
-        self.encode_bytes(tag, data, dst)
+        self.encode_bytes(tag, &data, dst)
     }
 
     /// Encodes the provided `val` into `uint64` field with a specific `tag`
@@ -285,7 +285,7 @@ impl Encoder {
     pub fn encode_uint64<W>(
         &self,
         tag: u32,
-        val: u64,
+        val: &u64,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -293,7 +293,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::Varint, dst)?;
-        size += encode_uint64(val, dst)?;
+        size += encode_uint64(*val, dst)?;
         Ok(size)
     }
 
@@ -305,7 +305,7 @@ impl Encoder {
     pub fn encode_uint64_list<W>(
         &self,
         tag: u32,
-        vals: Vec<u64>,
+        vals: &Vec<u64>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -313,9 +313,9 @@ impl Encoder {
     {
         let mut data = vec![];
         for val in vals {
-            encode_uint64(val, &mut data)?;
+            encode_uint64(*val, &mut data)?;
         }
-        self.encode_bytes(tag, data, dst)
+        self.encode_bytes(tag, &data, dst)
     }
 
     /// Encodes the provided `val` into `float` field with a specific `tag`
@@ -326,7 +326,7 @@ impl Encoder {
     pub fn encode_float<W>(
         &self,
         tag: u32,
-        val: f32,
+        val: &f32,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -334,7 +334,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::Bit32, dst)?;
-        size += encode_float(val, dst)?;
+        size += encode_float(*val, dst)?;
         Ok(size)
     }
 
@@ -346,7 +346,7 @@ impl Encoder {
     pub fn encode_float_list<W>(
         &self,
         tag: u32,
-        vals: Vec<f32>,
+        vals: &Vec<f32>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -354,9 +354,9 @@ impl Encoder {
     {
         let mut data = vec![];
         for val in vals {
-            encode_float(val, &mut data)?;
+            encode_float(*val, &mut data)?;
         }
-        self.encode_bytes(tag, data, dst)
+        self.encode_bytes(tag, &data, dst)
     }
 
     /// Encodes the provided `val` into `double` field with a specific `tag`
@@ -367,7 +367,7 @@ impl Encoder {
     pub fn encode_double<W>(
         &self,
         tag: u32,
-        val: f64,
+        val: &f64,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -375,7 +375,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::Bit64, dst)?;
-        size += encode_double(val, dst)?;
+        size += encode_double(*val, dst)?;
         Ok(size)
     }
 
@@ -387,7 +387,7 @@ impl Encoder {
     pub fn encode_double_list<W>(
         &self,
         tag: u32,
-        vals: Vec<f64>,
+        vals: &Vec<f64>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -395,9 +395,9 @@ impl Encoder {
     {
         let mut data = vec![];
         for val in vals {
-            encode_double(val, &mut data)?;
+            encode_double(*val, &mut data)?;
         }
-        self.encode_bytes(tag, data, dst)
+        self.encode_bytes(tag, &data, dst)
     }
 
     /// Encodes the provided `val` into `bytes` field with a specific `tag`
@@ -408,7 +408,7 @@ impl Encoder {
     pub fn encode_bytes<W>(
         &self,
         tag: u32,
-        val: Vec<u8>,
+        val: &Vec<u8>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -416,7 +416,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::LengthDelimited, dst)?;
-        size += encode_bytes(val, dst)?;
+        size += encode_bytes(val.clone(), dst)?;
         Ok(size)
     }
 
@@ -428,7 +428,7 @@ impl Encoder {
     pub fn encode_sint32<W>(
         &self,
         tag: u32,
-        val: i32,
+        val: &i32,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -436,7 +436,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::Varint, dst)?;
-        size += encode_sint32(val, dst)?;
+        size += encode_sint32(*val, dst)?;
         Ok(size)
     }
 
@@ -448,7 +448,7 @@ impl Encoder {
     pub fn encode_sint32_list<W>(
         &self,
         tag: u32,
-        vals: Vec<i32>,
+        vals: &Vec<i32>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -456,9 +456,9 @@ impl Encoder {
     {
         let mut data = vec![];
         for val in vals {
-            encode_sint32(val, &mut data)?;
+            encode_sint32(*val, &mut data)?;
         }
-        self.encode_bytes(tag, data, dst)
+        self.encode_bytes(tag, &data, dst)
     }
 
     /// Encodes the provided `val` into `sint64` field with a specific `tag`
@@ -469,7 +469,7 @@ impl Encoder {
     pub fn encode_sint64<W>(
         &self,
         tag: u32,
-        val: i64,
+        val: &i64,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -477,7 +477,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::Varint, dst)?;
-        size += encode_sint64(val, dst)?;
+        size += encode_sint64(*val, dst)?;
         Ok(size)
     }
 
@@ -489,7 +489,7 @@ impl Encoder {
     pub fn encode_sint64_list<W>(
         &self,
         tag: u32,
-        vals: Vec<i64>,
+        vals: &Vec<i64>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -497,9 +497,9 @@ impl Encoder {
     {
         let mut data = vec![];
         for val in vals {
-            encode_sint64(val, &mut data)?;
+            encode_sint64(*val, &mut data)?;
         }
-        self.encode_bytes(tag, data, dst)
+        self.encode_bytes(tag, &data, dst)
     }
     
     /// Encodes the provided `val` into `fixed32` field with a specific `tag`
@@ -510,7 +510,7 @@ impl Encoder {
     pub fn encode_fixed32<W>(
         &self,
         tag: u32,
-        val: u32,
+        val: &u32,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -518,7 +518,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::Bit32, dst)?;
-        size += encode_fixed32(val, dst)?;
+        size += encode_fixed32(*val, dst)?;
         Ok(size)
     }
 
@@ -530,7 +530,7 @@ impl Encoder {
     pub fn encode_fixed32_list<W>(
         &self,
         tag: u32,
-        vals: Vec<u32>,
+        vals: &Vec<u32>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -538,9 +538,9 @@ impl Encoder {
     {
         let mut data = vec![];
         for val in vals {
-            encode_fixed32(val, &mut data)?;
+            encode_fixed32(*val, &mut data)?;
         }
-        self.encode_bytes(tag, data, dst)
+        self.encode_bytes(tag, &data, dst)
     }
 
     /// Encodes the provided `val` into `fixed64` field with a specific `tag`
@@ -551,7 +551,7 @@ impl Encoder {
     pub fn encode_fixed64<W>(
         &self,
         tag: u32,
-        val: u64,
+        val: &u64,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -559,7 +559,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::Bit64, dst)?;
-        size += encode_fixed64(val, dst)?;
+        size += encode_fixed64(*val, dst)?;
         Ok(size)
     }
 
@@ -571,7 +571,7 @@ impl Encoder {
     pub fn encode_fixed64_list<W>(
         &self,
         tag: u32,
-        vals: Vec<u64>,
+        vals: &Vec<u64>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -579,9 +579,9 @@ impl Encoder {
     {
         let mut data = vec![];
         for val in vals {
-            encode_fixed64(val, &mut data)?;
+            encode_fixed64(*val, &mut data)?;
         }
-        self.encode_bytes(tag, data, dst)
+        self.encode_bytes(tag, &data, dst)
     }
 
     /// Encodes the provided `val` into `sfixed32` field with a specific `tag`
@@ -592,7 +592,7 @@ impl Encoder {
     pub fn encode_sfixed32<W>(
         &self,
         tag: u32,
-        val: i32,
+        val: &i32,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -600,7 +600,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::Bit32, dst)?;
-        size += encode_sfixed32(val, dst)?;
+        size += encode_sfixed32(*val, dst)?;
         Ok(size)
     }
 
@@ -612,7 +612,7 @@ impl Encoder {
     pub fn encode_sfixed32_list<W>(
         &self,
         tag: u32,
-        vals: Vec<i32>,
+        vals: &Vec<i32>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -620,9 +620,9 @@ impl Encoder {
     {
         let mut data = vec![];
         for val in vals {
-            encode_sfixed32(val, &mut data)?;
+            encode_sfixed32(*val, &mut data)?;
         }
-        self.encode_bytes(tag, data, dst)
+        self.encode_bytes(tag, &data, dst)
     }
 
     /// Encodes the provided `val` into `sfixed64` field with a specific `tag`
@@ -633,7 +633,7 @@ impl Encoder {
     pub fn encode_sfixed64<W>(
         &self,
         tag: u32,
-        val: i64,
+        val: &i64,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -641,7 +641,7 @@ impl Encoder {
     {
         let mut size = 0;
         size += encode_key(tag, Typ::Bit64, dst)?;
-        size += encode_sfixed64(val, dst)?;
+        size += encode_sfixed64(*val, dst)?;
         Ok(size)
     }
 
@@ -653,7 +653,7 @@ impl Encoder {
     pub fn encode_sfixed64_list<W>(
         &self,
         tag: u32,
-        vals: Vec<i64>,
+        vals: &Vec<i64>,
         dst: &mut W,
     ) -> Result<usize, EncoderError>
     where
@@ -661,9 +661,9 @@ impl Encoder {
     {
         let mut data = vec![];
         for val in vals {
-            encode_sfixed64(val, &mut data)?;
+            encode_sfixed64(*val, &mut data)?;
         }
-        self.encode_bytes(tag, data, dst)
+        self.encode_bytes(tag, &data, dst)
     }
 }
 
@@ -683,34 +683,34 @@ mod test {
         let encoder = Encoder::default();
         let mut dst = vec![];
         let mut size = 0;
-        size += encoder.encode((1, b"foo".to_vec()), &mut dst).unwrap();
-        size += encoder.encode((2, true), &mut dst).unwrap();
-        size += encoder.encode((3, vec![false, true]), &mut dst).unwrap();
-        size += encoder.encode((4, 1i32), &mut dst).unwrap();
-        size += encoder.encode((5, vec![-100i32, 100i32]), &mut dst).unwrap();
-        size += encoder.encode((6, 1i64), &mut dst).unwrap();
-        size += encoder.encode((7, vec![-100i64, 100i64]), &mut dst).unwrap();
-        size += encoder.encode((8, 1u32), &mut dst).unwrap();
-        size += encoder.encode((9, vec![1u32, 2u32]), &mut dst).unwrap();
-        size += encoder.encode((10, 1u64), &mut dst).unwrap();
-        size += encoder.encode((11, vec![1u64, 2u64]), &mut dst).unwrap();
-        size += encoder.encode((12, 1.0f32), &mut dst).unwrap();
-        size += encoder.encode((13, vec![1.0f32, 2.0f32]), &mut dst).unwrap();
-        size += encoder.encode((14, 1.0f64), &mut dst).unwrap();
-        size += encoder.encode((15, vec![1.0f64, 2.0f64]), &mut dst).unwrap();
-        size += encoder.encode((16, b"foo".to_vec()), &mut dst).unwrap();
-        size += encoder.encode((17, EncoderLit::SInt32(-10)), &mut dst).unwrap();
-        size += encoder.encode((18, EncoderLit::SInt32List(vec![-10i32, 10i32])), &mut dst).unwrap();
-        size += encoder.encode((19, EncoderLit::SInt64(-10)), &mut dst).unwrap();
-        size += encoder.encode((20, EncoderLit::SInt64List(vec![-10i64, 10i64])), &mut dst).unwrap();
-        size += encoder.encode((21, EncoderLit::Fixed32(10)), &mut dst).unwrap();
-        size += encoder.encode((22, EncoderLit::Fixed32List(vec![1u32, 2u32])), &mut dst).unwrap();
-        size += encoder.encode((23, EncoderLit::Fixed64(10)), &mut dst).unwrap();
-        size += encoder.encode((24, EncoderLit::Fixed64List(vec![1u64, 2u64])), &mut dst).unwrap();
-        size += encoder.encode((25, EncoderLit::SFixed32(-10)), &mut dst).unwrap();
-        size += encoder.encode((26, EncoderLit::SFixed32List(vec![-10i32, 10i32])), &mut dst).unwrap();
-        size += encoder.encode((27, EncoderLit::SFixed64(-10)), &mut dst).unwrap();
-        size += encoder.encode((28, EncoderLit::SFixed64List(vec![-10i64, 10i64])), &mut dst).unwrap();
+        size += encoder.encode((1, &b"foo".to_vec()), &mut dst).unwrap();
+        size += encoder.encode((2, &true), &mut dst).unwrap();
+        size += encoder.encode((3, &vec![false, true]), &mut dst).unwrap();
+        size += encoder.encode((4, &1i32), &mut dst).unwrap();
+        size += encoder.encode((5, &vec![-100i32, 100i32]), &mut dst).unwrap();
+        size += encoder.encode((6, &1i64), &mut dst).unwrap();
+        size += encoder.encode((7, &vec![-100i64, 100i64]), &mut dst).unwrap();
+        size += encoder.encode((8, &1u32), &mut dst).unwrap();
+        size += encoder.encode((9, &vec![1u32, 2u32]), &mut dst).unwrap();
+        size += encoder.encode((10, &1u64), &mut dst).unwrap();
+        size += encoder.encode((11, &vec![1u64, 2u64]), &mut dst).unwrap();
+        size += encoder.encode((12, &1.0f32), &mut dst).unwrap();
+        size += encoder.encode((13, &vec![1.0f32, 2.0f32]), &mut dst).unwrap();
+        size += encoder.encode((14, &1.0f64), &mut dst).unwrap();
+        size += encoder.encode((15, &vec![1.0f64, 2.0f64]), &mut dst).unwrap();
+        size += encoder.encode((16, &b"foo".to_vec()), &mut dst).unwrap();
+        size += encoder.encode((17, EncoderLit::SInt32(&-10)), &mut dst).unwrap();
+        size += encoder.encode((18, EncoderLit::SInt32List(&vec![-10i32, 10i32])), &mut dst).unwrap();
+        size += encoder.encode((19, EncoderLit::SInt64(&-10)), &mut dst).unwrap();
+        size += encoder.encode((20, EncoderLit::SInt64List(&vec![-10i64, 10i64])), &mut dst).unwrap();
+        size += encoder.encode((21, EncoderLit::Fixed32(&10)), &mut dst).unwrap();
+        size += encoder.encode((22, EncoderLit::Fixed32List(&vec![1u32, 2u32])), &mut dst).unwrap();
+        size += encoder.encode((23, EncoderLit::Fixed64(&10)), &mut dst).unwrap();
+        size += encoder.encode((24, EncoderLit::Fixed64List(&vec![1u64, 2u64])), &mut dst).unwrap();
+        size += encoder.encode((25, EncoderLit::SFixed32(&-10)), &mut dst).unwrap();
+        size += encoder.encode((26, EncoderLit::SFixed32List(&vec![-10i32, 10i32])), &mut dst).unwrap();
+        size += encoder.encode((27, EncoderLit::SFixed64(&-10)), &mut dst).unwrap();
+        size += encoder.encode((28, EncoderLit::SFixed64List(&vec![-10i64, 10i64])), &mut dst).unwrap();
         assert_eq!(dst, vec![
             10, 3, 102, 111, 111,
             16, 1,

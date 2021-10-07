@@ -2,177 +2,177 @@
 /// 
 /// This is a list of all binary formats supported by the encoder.
 #[derive(Debug)]
-pub enum EncoderLit {
+pub enum EncoderLit<'a> {
     /// Represents `binary` format of wire type `2`.
-    Bytes(Vec<u8>),
+    Bytes(&'a Vec<u8>),
 
     /// Represents `bool` format of wire type `0`.
-    Bool(bool),
+    Bool(&'a bool),
 
     /// Represents `bool` format of wire type `2` for packed repeated fields.
-    BoolList(Vec<bool>),
+    BoolList(&'a Vec<bool>),
 
     /// Represents `int32` format of wire type `0`.
-    Int32(i32),
+    Int32(&'a i32),
 
     /// Represents `int32` format of wire type `0` for packed repeated fields.
-    Int32List(Vec<i32>),
+    Int32List(&'a Vec<i32>),
 
     /// Represents `int64` format of wire type `0`.
-    Int64(i64),
+    Int64(&'a i64),
 
     /// Represents `int64` format of wire type `0` for packed repeated fields.
-    Int64List(Vec<i64>),
+    Int64List(&'a Vec<i64>),
 
     /// Represents `uint32` format of wire type `0`.
-    UInt32(u32),
+    UInt32(&'a u32),
 
     /// Represents `uint32` format of wire type `0` for packed repeated fields.
-    UInt32List(Vec<u32>),
+    UInt32List(&'a Vec<u32>),
 
     /// Represents `uint64` format of wire type `0`.
-    UInt64(u64),
+    UInt64(&'a u64),
 
     /// Represents `uint64` format of wire type `0` for packed repeated fields.
-    UInt64List(Vec<u64>),
+    UInt64List(&'a Vec<u64>),
 
     /// Represents `float` format of wire type `5`.
-    Float(f32),
+    Float(&'a f32),
 
     /// Represents `float` format of wire type `5` for packed repeated fields.
-    FloatList(Vec<f32>),
+    FloatList(&'a Vec<f32>),
 
     /// Represents `uint32` format of wire type `1`.
-    Double(f64),
+    Double(&'a f64),
 
     /// Represents `double` format of wire type `1` for packed repeated fields.
-    DoubleList(Vec<f64>),
+    DoubleList(&'a Vec<f64>),
 
     /// Represents `sint32` format of wire type `0`.
-    SInt32(i32),
+    SInt32(&'a i32),
 
     /// Represents `sint32` format of wire type `0` for packed repeated fields.
-    SInt32List(Vec<i32>),
+    SInt32List(&'a Vec<i32>),
 
     /// Represents `sint64` format of wire type `0`.
-    SInt64(i64),
+    SInt64(&'a i64),
 
     /// Represents `sint64` format of wire type `0` for packed repeated fields.
-    SInt64List(Vec<i64>),
+    SInt64List(&'a Vec<i64>),
 
     /// Represents `fixed32` format of wire type `5`.
-    Fixed32(u32),
+    Fixed32(&'a u32),
 
     /// Represents `fixed32` format of wire type `5` for packed repeated fields.
-    Fixed32List(Vec<u32>),
+    Fixed32List(&'a Vec<u32>),
 
     /// Represents `fixed64` format of wire type `1`.
-    Fixed64(u64),
+    Fixed64(&'a u64),
 
     /// Represents `fixed64` format of wire type `1` for packed repeated fields.
-    Fixed64List(Vec<u64>),
+    Fixed64List(&'a Vec<u64>),
 
     /// Represents `sfixed32` format of wire type `5`.
-    SFixed32(i32),
+    SFixed32(&'a i32),
 
     /// Represents `sfixed32` format of wire type `5` for packed repeated
     /// fields.
-    SFixed32List(Vec<i32>),
+    SFixed32List(&'a Vec<i32>),
 
     /// Represents `sfixed64` format of wire type `1`.
-    SFixed64(i64),
+    SFixed64(&'a i64),
 
     /// Represents `sfixed64` format of wire type `1` for packed repeated
     /// fields.
-    SFixed64List(Vec<i64>),
+    SFixed64List(&'a Vec<i64>),
 }
 
-impl From<bool> for EncoderLit {
-    fn from(val: bool) -> Self {
-        Self::Bool(val)
+impl<'a> From<&'a bool> for EncoderLit<'a> {
+    fn from(v: &'a bool) -> Self {
+        Self::Bool(v)
     }
 }
 
-impl From<Vec<bool>> for EncoderLit {
-    fn from(val: Vec<bool>) -> Self {
-        Self::BoolList(val)
+impl<'a> From<&'a Vec<bool>> for EncoderLit<'a> {
+    fn from(v: &'a Vec<bool>) -> Self {
+        Self::BoolList(v)
     }
 }
 
-impl From<i32> for EncoderLit {
-    fn from(val: i32) -> Self {
-        Self::Int32(val)
+impl<'a> From<&'a i32> for EncoderLit<'a> {
+    fn from(v: &'a i32) -> Self {
+        Self::Int32(v)
     }
 }
 
-impl From<Vec<i32>> for EncoderLit {
-    fn from(val: Vec<i32>) -> Self {
-        Self::Int32List(val)
+impl<'a> From<&'a Vec<i32>> for EncoderLit<'a> {
+    fn from(v: &'a Vec<i32>) -> Self {
+        Self::Int32List(v)
     }
 }
 
-impl From<i64> for EncoderLit {
-    fn from(val: i64) -> Self {
-        Self::Int64(val)
+impl<'a> From<&'a i64> for EncoderLit<'a> {
+    fn from(v: &'a i64) -> Self {
+        Self::Int64(v)
     }
 }
 
-impl From<Vec<i64>> for EncoderLit {
-    fn from(val: Vec<i64>) -> Self {
-        Self::Int64List(val)
+impl<'a> From<&'a Vec<i64>> for EncoderLit<'a> {
+    fn from(v: &'a Vec<i64>) -> Self {
+        Self::Int64List(v)
     }
 }
 
-impl From<u32> for EncoderLit {
-    fn from(val: u32) -> Self {
-        Self::UInt32(val)
+impl<'a> From<&'a u32> for EncoderLit<'a> {
+    fn from(v: &'a u32) -> Self {
+        Self::UInt32(v)
     }
 }
 
-impl From<Vec<u32>> for EncoderLit {
-    fn from(val: Vec<u32>) -> Self {
-        Self::UInt32List(val)
+impl<'a> From<&'a Vec<u32>> for EncoderLit<'a> {
+    fn from(v: &'a Vec<u32>) -> Self {
+        Self::UInt32List(v)
     }
 }
 
-impl From<u64> for EncoderLit {
-    fn from(val: u64) -> Self {
-        Self::UInt64(val)
+impl<'a> From<&'a u64> for EncoderLit<'a> {
+    fn from(v: &'a u64) -> Self {
+        Self::UInt64(v)
     }
 }
 
-impl From<Vec<u64>> for EncoderLit {
-    fn from(val: Vec<u64>) -> Self {
-        Self::UInt64List(val)
+impl<'a> From<&'a Vec<u64>> for EncoderLit<'a> {
+    fn from(v: &'a Vec<u64>) -> Self {
+        Self::UInt64List(v)
     }
 }
 
-impl From<f32> for EncoderLit {
-    fn from(val: f32) -> Self {
-        Self::Float(val)
+impl<'a> From<&'a f32> for EncoderLit<'a> {
+    fn from(v: &'a f32) -> Self {
+        Self::Float(v)
     }
 }
 
-impl From<Vec<f32>> for EncoderLit {
-    fn from(val: Vec<f32>) -> Self {
-        Self::FloatList(val)
+impl<'a> From<&'a Vec<f32>> for EncoderLit<'a> {
+    fn from(v: &'a Vec<f32>) -> Self {
+        Self::FloatList(v)
     }
 }
 
-impl From<f64> for EncoderLit {
-    fn from(val: f64) -> Self {
-        Self::Double(val)
+impl<'a> From<&'a f64> for EncoderLit<'a> {
+    fn from(v: &'a f64) -> Self {
+        Self::Double(v)
     }
 }
 
-impl From<Vec<f64>> for EncoderLit {
-    fn from(val: Vec<f64>) -> Self {
-        Self::DoubleList(val)
+impl<'a> From<&'a Vec<f64>> for EncoderLit<'a> {
+    fn from(v: &'a Vec<f64>) -> Self {
+        Self::DoubleList(v)
     }
 }
 
-impl From<Vec<u8>> for EncoderLit {
-    fn from(val: Vec<u8>) -> Self {
-        Self::Bytes(val)
+impl<'a> From<&'a Vec<u8>> for EncoderLit<'a> {
+    fn from(v: &'a Vec<u8>) -> Self {
+        Self::Bytes(v)
     }
 }

@@ -44,8 +44,8 @@
 //! let encoder = Encoder::default();
 //! 
 //! let mut dst = Vec::new();
-//! encoder.encode((1, 150i32), &mut dst).unwrap(); // common type
-//! encoder.encode((2, EncoderLit::SInt32(-150i32)), &mut dst).unwrap(); // specific type
+//! encoder.encode((1, &150i32), &mut dst).unwrap(); // common type
+//! encoder.encode((2, EncoderLit::SInt32(&-150i32)), &mut dst).unwrap(); // specific type
 //! ```
 //! 
 //! **Decoding example:**
