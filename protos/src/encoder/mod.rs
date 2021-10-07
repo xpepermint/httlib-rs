@@ -81,31 +81,31 @@ impl Encoder {
     {
         match field.1.into() {
             EncoderLit::Bool(val) => self.encode_bool(field.0, val, dst),
-            EncoderLit::BoolList(val) => self.encode_bool_list(field.0, val, dst),
+            EncoderLit::BoolVec(val) => self.encode_bool_list(field.0, val, dst),
             EncoderLit::Int32(val) => self.encode_int32(field.0, val, dst),
-            EncoderLit::Int32List(val) => self.encode_int32_list(field.0, val, dst),
+            EncoderLit::Int32Vec(val) => self.encode_int32_list(field.0, val, dst),
             EncoderLit::Int64(val) => self.encode_int64(field.0, val, dst),
-            EncoderLit::Int64List(val) => self.encode_int64_list(field.0, val, dst),
+            EncoderLit::Int64Vec(val) => self.encode_int64_list(field.0, val, dst),
             EncoderLit::UInt32(val) => self.encode_uint32(field.0, val, dst),
-            EncoderLit::UInt32List(val) => self.encode_uint32_list(field.0, val, dst),
+            EncoderLit::UInt32Vec(val) => self.encode_uint32_list(field.0, val, dst),
             EncoderLit::UInt64(val) => self.encode_uint64(field.0, val, dst),
-            EncoderLit::UInt64List(val) => self.encode_uint64_list(field.0, val, dst),
+            EncoderLit::UInt64Vec(val) => self.encode_uint64_list(field.0, val, dst),
             EncoderLit::Float(val) => self.encode_float(field.0, val, dst),
-            EncoderLit::FloatList(val) => self.encode_float_list(field.0, val, dst),
+            EncoderLit::FloatVec(val) => self.encode_float_list(field.0, val, dst),
             EncoderLit::Double(val) => self.encode_double(field.0, val, dst),
-            EncoderLit::DoubleList(val) => self.encode_double_list(field.0, val, dst),
+            EncoderLit::DoubleVec(val) => self.encode_double_list(field.0, val, dst),
             EncoderLit::SInt32(val) => self.encode_sint32(field.0, val, dst),
-            EncoderLit::SInt32List(val) => self.encode_sint32_list(field.0, val, dst),
+            EncoderLit::SInt32Vec(val) => self.encode_sint32_list(field.0, val, dst),
             EncoderLit::SInt64(val) => self.encode_sint64(field.0, val, dst),
-            EncoderLit::SInt64List(val) => self.encode_sint64_list(field.0, val, dst),
+            EncoderLit::SInt64Vec(val) => self.encode_sint64_list(field.0, val, dst),
             EncoderLit::Fixed32(val) => self.encode_fixed32(field.0, val, dst),
-            EncoderLit::Fixed32List(val) => self.encode_fixed32_list(field.0, val, dst),
+            EncoderLit::Fixed32Vec(val) => self.encode_fixed32_list(field.0, val, dst),
             EncoderLit::Fixed64(val) => self.encode_fixed64(field.0, val, dst),
-            EncoderLit::Fixed64List(val) => self.encode_fixed64_list(field.0, val, dst),
+            EncoderLit::Fixed64Vec(val) => self.encode_fixed64_list(field.0, val, dst),
             EncoderLit::SFixed32(val) => self.encode_sfixed32(field.0, val, dst),
-            EncoderLit::SFixed32List(val) => self.encode_sfixed32_list(field.0, val, dst),
+            EncoderLit::SFixed32Vec(val) => self.encode_sfixed32_list(field.0, val, dst),
             EncoderLit::SFixed64(val) => self.encode_sfixed64(field.0, val, dst),
-            EncoderLit::SFixed64List(val) => self.encode_sfixed64_list(field.0, val, dst),
+            EncoderLit::SFixed64Vec(val) => self.encode_sfixed64_list(field.0, val, dst),
             EncoderLit::Bytes(val) => self.encode_bytes(field.0, val, dst),
         }
     }
@@ -700,17 +700,17 @@ mod test {
         size += encoder.encode((15, &vec![1.0f64, 2.0f64]), &mut dst).unwrap();
         size += encoder.encode((16, &b"foo".to_vec()), &mut dst).unwrap();
         size += encoder.encode((17, EncoderLit::SInt32(&-10)), &mut dst).unwrap();
-        size += encoder.encode((18, EncoderLit::SInt32List(&vec![-10i32, 10i32])), &mut dst).unwrap();
+        size += encoder.encode((18, EncoderLit::SInt32Vec(&vec![-10i32, 10i32])), &mut dst).unwrap();
         size += encoder.encode((19, EncoderLit::SInt64(&-10)), &mut dst).unwrap();
-        size += encoder.encode((20, EncoderLit::SInt64List(&vec![-10i64, 10i64])), &mut dst).unwrap();
+        size += encoder.encode((20, EncoderLit::SInt64Vec(&vec![-10i64, 10i64])), &mut dst).unwrap();
         size += encoder.encode((21, EncoderLit::Fixed32(&10)), &mut dst).unwrap();
-        size += encoder.encode((22, EncoderLit::Fixed32List(&vec![1u32, 2u32])), &mut dst).unwrap();
+        size += encoder.encode((22, EncoderLit::Fixed32Vec(&vec![1u32, 2u32])), &mut dst).unwrap();
         size += encoder.encode((23, EncoderLit::Fixed64(&10)), &mut dst).unwrap();
-        size += encoder.encode((24, EncoderLit::Fixed64List(&vec![1u64, 2u64])), &mut dst).unwrap();
+        size += encoder.encode((24, EncoderLit::Fixed64Vec(&vec![1u64, 2u64])), &mut dst).unwrap();
         size += encoder.encode((25, EncoderLit::SFixed32(&-10)), &mut dst).unwrap();
-        size += encoder.encode((26, EncoderLit::SFixed32List(&vec![-10i32, 10i32])), &mut dst).unwrap();
+        size += encoder.encode((26, EncoderLit::SFixed32Vec(&vec![-10i32, 10i32])), &mut dst).unwrap();
         size += encoder.encode((27, EncoderLit::SFixed64(&-10)), &mut dst).unwrap();
-        size += encoder.encode((28, EncoderLit::SFixed64List(&vec![-10i64, 10i64])), &mut dst).unwrap();
+        size += encoder.encode((28, EncoderLit::SFixed64Vec(&vec![-10i64, 10i64])), &mut dst).unwrap();
         assert_eq!(dst, vec![
             10, 3, 102, 111, 111,
             16, 1,

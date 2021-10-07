@@ -17,80 +17,80 @@ pub enum DecoderLit {
     Bool(Vec<u8>),
 
     /// Represents `bool` format of wire type `2` for packed repeated fields.
-    BoolList(Vec<u8>),
+    BoolVec(Vec<u8>),
 
     /// Represents `int32` format of wire type `0`.
     Int32(Vec<u8>),
 
     /// Represents `int32` format of wire type `0` for packed repeated fields.
-    Int32List(Vec<u8>),
+    Int32Vec(Vec<u8>),
 
     /// Represents `int64` format of wire type `0`.
     Int64(Vec<u8>),
 
     /// Represents `int64` format of wire type `0` for packed repeated fields.
-    Int64List(Vec<u8>),
+    Int64Vec(Vec<u8>),
 
     /// Represents `uint32` format of wire type `0`.
     UInt32(Vec<u8>),
 
     /// Represents `uint32` format of wire type `0` for packed repeated fields.
-    UInt32List(Vec<u8>),
+    UInt32Vec(Vec<u8>),
 
     /// Represents `uint64` format of wire type `0`.
     UInt64(Vec<u8>),
 
     /// Represents `uint64` format of wire type `0` for packed repeated fields.
-    UInt64List(Vec<u8>),
+    UInt64Vec(Vec<u8>),
 
     /// Represents `float` format of wire type `5`.
     Float(Vec<u8>),
 
     /// Represents `float` format of wire type `5` for packed repeated fields.
-    FloatList(Vec<u8>),
+    FloatVec(Vec<u8>),
 
     /// Represents `uint32` format of wire type `1`.
     Double(Vec<u8>),
 
     /// Represents `double` format of wire type `1` for packed repeated fields.
-    DoubleList(Vec<u8>),
+    DoubleVec(Vec<u8>),
 
     /// Represents `sint32` format of wire type `0`.
     SInt32(Vec<u8>),
 
     /// Represents `sint32` format of wire type `0` for packed repeated fields.
-    SInt32List(Vec<u8>),
+    SInt32Vec(Vec<u8>),
 
     /// Represents `sint64` format of wire type `0`.
     SInt64(Vec<u8>),
 
     /// Represents `sint64` format of wire type `0` for packed repeated fields.
-    SInt64List(Vec<u8>),
+    SInt64Vec(Vec<u8>),
 
     /// Represents `fixed32` format of wire type `5`.
     Fixed32(Vec<u8>),
 
     /// Represents `fixed32` format of wire type `5` for packed repeated fields.
-    Fixed32List(Vec<u8>),
+    Fixed32Vec(Vec<u8>),
 
     /// Represents `fixed64` format of wire type `1`.
     Fixed64(Vec<u8>),
 
     /// Represents `fixed64` format of wire type `1` for packed repeated fields.
-    Fixed64List(Vec<u8>),
+    Fixed64Vec(Vec<u8>),
 
     /// Represents `sfixed32` format of wire type `5`.
     SFixed32(Vec<u8>),
 
     /// Represents `sfixed32` format of wire type `5` for packed repeated fields.
-    SFixed32List(Vec<u8>),
+    SFixed32Vec(Vec<u8>),
 
     /// Represents `sfixed64` format of wire type `1`.
     SFixed64(Vec<u8>),
 
     /// Represents `sfixed64` format of wire type `1` for packed repeated
     /// fields.
-    SFixed64List(Vec<u8>),
+    SFixed64Vec(Vec<u8>),
 }
 
 impl From<DecoderLit> for bool {
@@ -108,7 +108,7 @@ impl From<DecoderLit> for Vec<bool> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::BoolList(byt) => decode_bool_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::BoolVec(byt) => decode_bool_list(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst
@@ -132,9 +132,9 @@ impl From<DecoderLit> for Vec<i32> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::Int32List(byt) => decode_int32_list(&byt, &mut dst).unwrap_or(0),
-            DecoderLit::SInt32List(byt) => decode_sint32_list(&byt, &mut dst).unwrap_or(0),
-            DecoderLit::SFixed32List(byt) => decode_sfixed32_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::Int32Vec(byt) => decode_int32_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SInt32Vec(byt) => decode_sint32_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SFixed32Vec(byt) => decode_sfixed32_list(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst
@@ -158,9 +158,9 @@ impl From<DecoderLit> for Vec<i64> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::Int64List(byt) => decode_int64_list(&byt, &mut dst).unwrap_or(0),
-            DecoderLit::SInt64List(byt) => decode_sint64_list(&byt, &mut dst).unwrap_or(0),
-            DecoderLit::SFixed64List(byt) => decode_sfixed64_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::Int64Vec(byt) => decode_int64_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SInt64Vec(byt) => decode_sint64_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SFixed64Vec(byt) => decode_sfixed64_list(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst
@@ -183,8 +183,8 @@ impl From<DecoderLit> for Vec<u32> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::UInt32List(byt) => decode_uint32_list(&byt, &mut dst).unwrap_or(0),
-            DecoderLit::Fixed32List(byt) => decode_fixed32_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::UInt32Vec(byt) => decode_uint32_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::Fixed32Vec(byt) => decode_fixed32_list(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst
@@ -207,8 +207,8 @@ impl From<DecoderLit> for Vec<u64> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::UInt64List(byt) => decode_uint64_list(&byt, &mut dst).unwrap_or(0),
-            DecoderLit::Fixed64List(byt) => decode_fixed64_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::UInt64Vec(byt) => decode_uint64_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::Fixed64Vec(byt) => decode_fixed64_list(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst
@@ -230,7 +230,7 @@ impl From<DecoderLit> for Vec<f32> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::FloatList(byt) => decode_float_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::FloatVec(byt) => decode_float_list(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst
@@ -252,7 +252,7 @@ impl From<DecoderLit> for Vec<f64> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::DoubleList(byt) => decode_double_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::DoubleVec(byt) => decode_double_list(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst
