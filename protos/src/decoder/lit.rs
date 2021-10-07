@@ -55,16 +55,20 @@ pub enum DecoderLit {
     /// Represents `double` format of wire type `1` for packed repeated fields.
     DoubleVec(Vec<u8>),
 
-    /// Represents `sint32` format of wire type `0`.
+    /// Represents `sint32` format of wire type `0`. Use it when the value is
+    /// likely to be negative.
     SInt32(Vec<u8>),
 
     /// Represents `sint32` format of wire type `0` for packed repeated fields.
+    /// Use it when the values are likely to be negative.
     SInt32Vec(Vec<u8>),
 
-    /// Represents `sint64` format of wire type `0`.
+    /// Represents `sint64` format of wire type `0`. Use it when the value is
+    /// likely to be negative.
     SInt64(Vec<u8>),
 
     /// Represents `sint64` format of wire type `0` for packed repeated fields.
+    /// Use it when the values are likely to be negative.
     SInt64Vec(Vec<u8>),
 
     /// Represents `fixed32` format of wire type `5`.
