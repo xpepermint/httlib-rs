@@ -326,7 +326,7 @@ mod test {
         ];
         let size = decoder.decode(&mut src, &mut dst).unwrap(); // decode supported fields
         let mut index = 0;
-        for (tag, typ, byt) in dst {
+        for (tag, typ, byt) in dst.drain(..) {
             index += 1;
             assert_eq!(tag, index);
             if index == 1 {
