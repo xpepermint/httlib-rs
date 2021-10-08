@@ -101,7 +101,7 @@ pub fn decode_bool(buf: &[u8], dst: &mut bool) -> Result<usize, DecoderError> {
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
-pub fn decode_bool_list(
+pub fn decode_bool_vec(
     buf: &[u8],
     dst: &mut Vec<bool>,
 ) -> Result<usize, DecoderError> {
@@ -134,7 +134,7 @@ pub fn decode_int32(buf: &[u8], dst: &mut i32) -> Result<usize, DecoderError> {
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
-pub fn decode_int32_list(
+pub fn decode_int32_vec(
     buf: &[u8],
     dst: &mut Vec<i32>,
 ) -> Result<usize, DecoderError> {
@@ -167,7 +167,7 @@ pub fn decode_int64(buf: &[u8], dst: &mut i64) -> Result<usize, DecoderError> {
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
-pub fn decode_int64_list(
+pub fn decode_int64_vec(
     buf: &[u8],
     dst: &mut Vec<i64>,
 ) -> Result<usize, DecoderError> {
@@ -200,7 +200,7 @@ pub fn decode_uint32(buf: &[u8], dst: &mut u32) -> Result<usize, DecoderError> {
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
-pub fn decode_uint32_list(
+pub fn decode_uint32_vec(
     buf: &[u8],
     dst: &mut Vec<u32>,
 ) -> Result<usize, DecoderError> {
@@ -230,7 +230,7 @@ pub fn decode_uint64(buf: &[u8], dst: &mut u64) -> Result<usize, DecoderError> {
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
-pub fn decode_uint64_list(
+pub fn decode_uint64_vec(
     buf: &[u8],
     dst: &mut Vec<u64>,
 ) -> Result<usize, DecoderError> {
@@ -281,7 +281,7 @@ pub fn decode_sint32(buf: &[u8], dst: &mut i32) -> Result<usize, DecoderError> {
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
-pub fn decode_sint32_list(
+pub fn decode_sint32_vec(
     buf: &[u8],
     dst: &mut Vec<i32>,
 ) -> Result<usize, DecoderError> {
@@ -332,7 +332,7 @@ pub fn decode_sint64(buf: &[u8], dst: &mut i64) -> Result<usize, DecoderError> {
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
-pub fn decode_sint64_list(
+pub fn decode_sint64_vec(
     buf: &[u8],
     dst: &mut Vec<i64>,
 ) -> Result<usize, DecoderError> {
@@ -383,7 +383,7 @@ pub fn decode_fixed32(
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
-pub fn decode_fixed32_list(
+pub fn decode_fixed32_vec(
     buf: &[u8],
     dst: &mut Vec<u32>,
 ) -> Result<usize, DecoderError> {
@@ -426,7 +426,7 @@ pub fn decode_fixed64(
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
-pub fn decode_fixed64_list(
+pub fn decode_fixed64_vec(
     buf: &[u8],
     dst: &mut Vec<u64>,
 ) -> Result<usize, DecoderError> {
@@ -469,7 +469,7 @@ pub fn decode_sfixed32(
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
-pub fn decode_sfixed32_list(
+pub fn decode_sfixed32_vec(
     buf: &[u8],
     dst: &mut Vec<i32>,
 ) -> Result<usize, DecoderError> {
@@ -512,7 +512,7 @@ pub fn decode_sfixed64(
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
-pub fn decode_sfixed64_list(
+pub fn decode_sfixed64_vec(
     buf: &[u8],
     dst: &mut Vec<i64>,
 ) -> Result<usize, DecoderError> {
@@ -551,7 +551,7 @@ pub fn decode_float(buf: &[u8], dst: &mut f32) -> Result<usize, DecoderError> {
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
-pub fn decode_float_list(
+pub fn decode_float_vec(
     buf: &[u8],
     dst: &mut Vec<f32>,
 ) -> Result<usize, DecoderError> {
@@ -590,7 +590,7 @@ pub fn decode_double(buf: &[u8], dst: &mut f64) -> Result<usize, DecoderError> {
 /// 
 /// On success, the number of read bytes is returned otherwise an error is 
 /// thrown.
-pub fn decode_double_list(
+pub fn decode_double_vec(
     buf: &[u8],
     dst: &mut Vec<f64>,
 ) -> Result<usize, DecoderError> {

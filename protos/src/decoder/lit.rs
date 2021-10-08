@@ -112,7 +112,7 @@ impl From<DecoderLit> for Vec<bool> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::BoolVec(byt) => decode_bool_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::BoolVec(byt) => decode_bool_vec(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst
@@ -136,9 +136,9 @@ impl From<DecoderLit> for Vec<i32> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::Int32Vec(byt) => decode_int32_list(&byt, &mut dst).unwrap_or(0),
-            DecoderLit::SInt32Vec(byt) => decode_sint32_list(&byt, &mut dst).unwrap_or(0),
-            DecoderLit::SFixed32Vec(byt) => decode_sfixed32_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::Int32Vec(byt) => decode_int32_vec(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SInt32Vec(byt) => decode_sint32_vec(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SFixed32Vec(byt) => decode_sfixed32_vec(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst
@@ -162,9 +162,9 @@ impl From<DecoderLit> for Vec<i64> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::Int64Vec(byt) => decode_int64_list(&byt, &mut dst).unwrap_or(0),
-            DecoderLit::SInt64Vec(byt) => decode_sint64_list(&byt, &mut dst).unwrap_or(0),
-            DecoderLit::SFixed64Vec(byt) => decode_sfixed64_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::Int64Vec(byt) => decode_int64_vec(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SInt64Vec(byt) => decode_sint64_vec(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::SFixed64Vec(byt) => decode_sfixed64_vec(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst
@@ -187,8 +187,8 @@ impl From<DecoderLit> for Vec<u32> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::UInt32Vec(byt) => decode_uint32_list(&byt, &mut dst).unwrap_or(0),
-            DecoderLit::Fixed32Vec(byt) => decode_fixed32_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::UInt32Vec(byt) => decode_uint32_vec(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::Fixed32Vec(byt) => decode_fixed32_vec(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst
@@ -211,8 +211,8 @@ impl From<DecoderLit> for Vec<u64> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::UInt64Vec(byt) => decode_uint64_list(&byt, &mut dst).unwrap_or(0),
-            DecoderLit::Fixed64Vec(byt) => decode_fixed64_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::UInt64Vec(byt) => decode_uint64_vec(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::Fixed64Vec(byt) => decode_fixed64_vec(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst
@@ -234,7 +234,7 @@ impl From<DecoderLit> for Vec<f32> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::FloatVec(byt) => decode_float_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::FloatVec(byt) => decode_float_vec(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst
@@ -256,7 +256,7 @@ impl From<DecoderLit> for Vec<f64> {
     fn from(lit: DecoderLit) -> Self {
         let mut dst = vec![];
         match lit {
-            DecoderLit::DoubleVec(byt) => decode_double_list(&byt, &mut dst).unwrap_or(0),
+            DecoderLit::DoubleVec(byt) => decode_double_vec(&byt, &mut dst).unwrap_or(0),
             _ => return dst,
         };
         dst

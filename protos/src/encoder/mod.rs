@@ -81,31 +81,31 @@ impl Encoder {
     {
         match field.1.into() {
             EncoderLit::Bool(val) => self.encode_bool(field.0, val, dst),
-            EncoderLit::BoolVec(val) => self.encode_bool_list(field.0, val, dst),
+            EncoderLit::BoolVec(val) => self.encode_bool_vec(field.0, val, dst),
             EncoderLit::Int32(val) => self.encode_int32(field.0, val, dst),
-            EncoderLit::Int32Vec(val) => self.encode_int32_list(field.0, val, dst),
+            EncoderLit::Int32Vec(val) => self.encode_int32_vec(field.0, val, dst),
             EncoderLit::Int64(val) => self.encode_int64(field.0, val, dst),
-            EncoderLit::Int64Vec(val) => self.encode_int64_list(field.0, val, dst),
+            EncoderLit::Int64Vec(val) => self.encode_int64_vec(field.0, val, dst),
             EncoderLit::UInt32(val) => self.encode_uint32(field.0, val, dst),
-            EncoderLit::UInt32Vec(val) => self.encode_uint32_list(field.0, val, dst),
+            EncoderLit::UInt32Vec(val) => self.encode_uint32_vec(field.0, val, dst),
             EncoderLit::UInt64(val) => self.encode_uint64(field.0, val, dst),
-            EncoderLit::UInt64Vec(val) => self.encode_uint64_list(field.0, val, dst),
+            EncoderLit::UInt64Vec(val) => self.encode_uint64_vec(field.0, val, dst),
             EncoderLit::Float(val) => self.encode_float(field.0, val, dst),
-            EncoderLit::FloatVec(val) => self.encode_float_list(field.0, val, dst),
+            EncoderLit::FloatVec(val) => self.encode_float_vec(field.0, val, dst),
             EncoderLit::Double(val) => self.encode_double(field.0, val, dst),
-            EncoderLit::DoubleVec(val) => self.encode_double_list(field.0, val, dst),
+            EncoderLit::DoubleVec(val) => self.encode_double_vec(field.0, val, dst),
             EncoderLit::SInt32(val) => self.encode_sint32(field.0, val, dst),
-            EncoderLit::SInt32Vec(val) => self.encode_sint32_list(field.0, val, dst),
+            EncoderLit::SInt32Vec(val) => self.encode_sint32_vec(field.0, val, dst),
             EncoderLit::SInt64(val) => self.encode_sint64(field.0, val, dst),
-            EncoderLit::SInt64Vec(val) => self.encode_sint64_list(field.0, val, dst),
+            EncoderLit::SInt64Vec(val) => self.encode_sint64_vec(field.0, val, dst),
             EncoderLit::Fixed32(val) => self.encode_fixed32(field.0, val, dst),
-            EncoderLit::Fixed32Vec(val) => self.encode_fixed32_list(field.0, val, dst),
+            EncoderLit::Fixed32Vec(val) => self.encode_fixed32_vec(field.0, val, dst),
             EncoderLit::Fixed64(val) => self.encode_fixed64(field.0, val, dst),
-            EncoderLit::Fixed64Vec(val) => self.encode_fixed64_list(field.0, val, dst),
+            EncoderLit::Fixed64Vec(val) => self.encode_fixed64_vec(field.0, val, dst),
             EncoderLit::SFixed32(val) => self.encode_sfixed32(field.0, val, dst),
-            EncoderLit::SFixed32Vec(val) => self.encode_sfixed32_list(field.0, val, dst),
+            EncoderLit::SFixed32Vec(val) => self.encode_sfixed32_vec(field.0, val, dst),
             EncoderLit::SFixed64(val) => self.encode_sfixed64(field.0, val, dst),
-            EncoderLit::SFixed64Vec(val) => self.encode_sfixed64_list(field.0, val, dst),
+            EncoderLit::SFixed64Vec(val) => self.encode_sfixed64_vec(field.0, val, dst),
             EncoderLit::Bytes(val) => self.encode_bytes(field.0, val, dst),
         }
     }
@@ -135,7 +135,7 @@ impl Encoder {
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode_bool_list<W>(
+    pub fn encode_bool_vec<W>(
         &self,
         tag: u32,
         vals: &Vec<bool>,
@@ -179,7 +179,7 @@ impl Encoder {
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode_int32_list<W>(
+    pub fn encode_int32_vec<W>(
         &self,
         tag: u32,
         vals: &Vec<i32>,
@@ -220,7 +220,7 @@ impl Encoder {
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode_int64_list<W>(
+    pub fn encode_int64_vec<W>(
         &self,
         tag: u32,
         vals: &Vec<i64>,
@@ -261,7 +261,7 @@ impl Encoder {
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode_uint32_list<W>(
+    pub fn encode_uint32_vec<W>(
         &self,
         tag: u32,
         vals: &Vec<u32>,
@@ -302,7 +302,7 @@ impl Encoder {
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode_uint64_list<W>(
+    pub fn encode_uint64_vec<W>(
         &self,
         tag: u32,
         vals: &Vec<u64>,
@@ -343,7 +343,7 @@ impl Encoder {
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode_float_list<W>(
+    pub fn encode_float_vec<W>(
         &self,
         tag: u32,
         vals: &Vec<f32>,
@@ -384,7 +384,7 @@ impl Encoder {
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode_double_list<W>(
+    pub fn encode_double_vec<W>(
         &self,
         tag: u32,
         vals: &Vec<f64>,
@@ -445,7 +445,7 @@ impl Encoder {
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode_sint32_list<W>(
+    pub fn encode_sint32_vec<W>(
         &self,
         tag: u32,
         vals: &Vec<i32>,
@@ -486,7 +486,7 @@ impl Encoder {
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode_sint64_list<W>(
+    pub fn encode_sint64_vec<W>(
         &self,
         tag: u32,
         vals: &Vec<i64>,
@@ -527,7 +527,7 @@ impl Encoder {
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode_fixed32_list<W>(
+    pub fn encode_fixed32_vec<W>(
         &self,
         tag: u32,
         vals: &Vec<u32>,
@@ -568,7 +568,7 @@ impl Encoder {
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode_fixed64_list<W>(
+    pub fn encode_fixed64_vec<W>(
         &self,
         tag: u32,
         vals: &Vec<u64>,
@@ -609,7 +609,7 @@ impl Encoder {
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode_sfixed32_list<W>(
+    pub fn encode_sfixed32_vec<W>(
         &self,
         tag: u32,
         vals: &Vec<i32>,
@@ -650,7 +650,7 @@ impl Encoder {
     /// 
     /// On success the number of written bytes is returned otherwise an error is 
     /// thrown.
-    pub fn encode_sfixed64_list<W>(
+    pub fn encode_sfixed64_vec<W>(
         &self,
         tag: u32,
         vals: &Vec<i64>,
