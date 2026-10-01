@@ -67,14 +67,18 @@ pub(crate) fn decode_integer(buf: &[u8], dst: &mut u32, prefix_size: u8) -> Resu
 
     let mut shift = 0;
     loop {
-        let byte = if buf.is_empty() {
+        let byte = if total >= buf.len() {
             return Err(DecoderError::IntegerUnderflow);
         } else {
             total += 1;
             buf[total - 1]
         };
-        
-        value += ((byte & 0b01111111) as u32) << shift;
+
+        // The 5-octet limit below bounds `value`, but keep the addition
+        // checked so that a malformed sequence can never overflow silently.
+        value = value
+            .checked_add(((byte & 0b01111111) as u32) << shift)
+            .ok_or(DecoderError::IntegerOverflow)?;
         shift += 7;
 
         if byte & 0b10000000 == 0 { // most significant bit is set (continuation)
@@ -105,6 +109,10 @@ pub(crate) fn decode_integer(buf: &[u8], dst: &mut u32, prefix_size: u8) -> Resu
 /// 
 /// [5.2.]: https://tools.ietf.org/html/rfc7541#section-5.2
 pub(crate) fn decode_string(buf: &[u8], speed: DecoderSpeed, dst: &mut Vec<u8>) -> Result<usize, DecoderError> {
+    if buf.is_empty() {
+        return Err(DecoderError::IntegerUnderflow);
+    }
+
     let huffman = buf[0] & 128 == 128;
 
     let mut len = 0;
@@ -171,5 +179,42 @@ mod test {
             decode_string(&bytes, DecoderSpeed::FourBits, &mut dst).unwrap();
             assert_eq!(dst, value);
         }
+    }
+
+    /// The function should return an error instead of panicking when the
+    /// integer is truncated before its terminating octet is reached.
+    #[test]
+    fn decode_integer_errors_on_truncated_input() {
+        let examples = vec![
+            (vec![0x3f], 5), // prefix is completely filled, no octets left
+            (vec![0x7f], 7),
+            (vec![0xff], 7),
+            (vec![0x7f, 0xc5], 7), // terminator missing
+            (vec![0xff, 0xff, 0xff, 0xff], 8),
+        ];
+        for (bytes, prefix) in examples {
+            let mut dst = 0;
+            assert_eq!(decode_integer(&bytes, &mut dst, prefix), Err(DecoderError::IntegerUnderflow));
+        }
+    }
+
+    /// The function should return an error instead of overflowing when an
+    /// integer is encoded with more than the supported number of octets.
+    #[test]
+    fn decode_integer_errors_on_overflow() {
+        let mut dst = 0;
+        let bytes = vec![0xff, 0xff, 0xff, 0xff, 0xff, 0xff];
+        assert_eq!(decode_integer(&bytes, &mut dst, 8), Err(DecoderError::IntegerOverflow));
+    }
+
+    /// The function should return an error instead of panicking when the buffer
+    /// is empty.
+    #[test]
+    fn decode_string_errors_on_empty_input() {
+        let mut dst = Vec::new();
+        assert_eq!(
+            decode_string(&[], DecoderSpeed::FiveBits, &mut dst),
+            Err(DecoderError::IntegerUnderflow)
+        );
     }
 }

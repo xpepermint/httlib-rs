@@ -591,4 +591,51 @@ mod test {
         assert_eq!(dst.len(), 1);
         assert_eq!(buf, vec![16, 4, 102, 111, 111]);
     }
+
+    /// Should return an error instead of panicking when a malformed or truncated
+    /// sequence is provided. Each of the sequences below used to panic.
+    #[test]
+    fn decodes_malformed_input() {
+        let examples = vec![
+            vec![0x00],             // literal with new name, name string missing
+            vec![0x34, 0x22, 0x42], // literal with indexed name, value string missing
+            vec![0x67],             // indexed literal, value string missing
+            vec![0x68],             // indexed literal, value string missing
+            vec![0x00, 0x01, 0x00], // literal with truncated value string
+            vec![0x3f],             // truncated dynamic table size update
+            vec![0x7f],             // truncated integer
+            vec![0xff],             // truncated integer
+            vec![0x00, 0x00, 0x7f], // truncated integer
+            vec![0x0f, 0x80, 0x80], // truncated integer
+            vec![0xff, 0xff, 0xff, 0xff, 0xff, 0xff], // integer overflow
+        ];
+        for bytes in examples {
+            let mut decoder = Decoder::default();
+            let mut buf = bytes.clone();
+            let mut dst = Vec::new();
+            assert!(decoder.decode(&mut buf, &mut dst).is_err(), "expected error for {:02x?}", bytes);
+        }
+    }
+
+    /// Should never panic, no matter the input. This is a cheap deterministic
+    /// smoke test using a fixed seed (no external dependencies).
+    #[test]
+    fn never_panics_on_arbitrary_input() {
+        let mut state: u64 = 0x9e3779b97f4a7c15;
+        let mut next = move || {
+            state = state
+                .wrapping_mul(6364136223846793005)
+                .wrapping_add(1442695040888963407);
+            state >> 33
+        };
+
+        for _ in 0..10000 {
+            let len = (next() % 32) as usize;
+            let bytes: Vec<u8> = (0..len).map(|_| next() as u8).collect();
+            let mut decoder = Decoder::default();
+            let mut buf = bytes;
+            let mut dst = Vec::new();
+            let _ = decoder.decode(&mut buf, &mut dst); // must not panic
+        }
+    }
 }
